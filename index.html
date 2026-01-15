@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - Dashboard 26.1 (Clean Mobile UI)</title>
+    <title>zetmeoOS - Dashboard 27.0 (App UX)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -51,7 +51,7 @@
             background-color: var(--bg-body); color: var(--text-main);
             font-family: 'Consolas', 'Segoe UI', sans-serif;
             padding: 20px; max-width: 900px; margin: 0 auto; line-height: 1.6;
-            padding-bottom: 120px; transition: all var(--transition-speed);
+            padding-bottom: 120px; transition: all var(--transition-speed); /* Padding bottom lớn để tránh Bottom Bar */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -112,13 +112,11 @@
         .task-item input:checked + .task-label { text-decoration: line-through; color: #666; }
         .task-item input:checked + .task-label .task-id-tag { opacity: 0.5; filter: grayscale(100%); }
         
-        /* MINI PROGRESS */
+        /* MINI PROGRESS & TIME */
         .mini-progress-container { display: inline-block; width: 60px; height: 6px; background-color: #444; border-radius: 3px; margin-left: 10px; vertical-align: middle; display: none; position: relative; }
         .mini-progress-fill { height: 100%; background-color: var(--pastel-pink); border-radius: 3px; width: 0%; transition: width 0.3s; }
         .mini-progress-text { font-size: 0.7em; color: var(--pastel-pink); margin-left: 5px; display: none; }
         .has-children .mini-progress-container, .has-children .mini-progress-text { display: inline-block; }
-
-        /* TIME TRACKER */
         .task-actions { display: flex; gap: 5px; margin-left: auto; align-items: center; }
         .time-tracker-box { display: flex; align-items: center; margin-right: 5px; background: #222; border-radius: 4px; border: 1px solid #444; padding: 2px 5px; }
         .time-input { width: 40px; background: transparent; border: none; color: var(--pastel-peach); font-family: 'Consolas'; font-size: 0.9em; text-align: center; }
@@ -140,90 +138,61 @@
         .task-note-box a:hover { color: #fff; }
         .note-line { display: block; margin-bottom: 4px; }
 
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); } 70% { box-shadow: 0 0 0 5px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
-
-        /* BRAIN DUMP STYLES */
-        .brain-dump-box {
-            margin-top: 40px; margin-bottom: 20px; 
-            border: 2px dashed var(--text-dim); border-radius: 12px;
-            padding: 20px; background-color: rgba(0,0,0,0.2);
-        }
+        /* BRAIN DUMP */
+        .brain-dump-box { margin-top: 40px; margin-bottom: 20px; border: 2px dashed var(--text-dim); border-radius: 12px; padding: 20px; background-color: rgba(0,0,0,0.2); }
         .brain-dump-header { font-weight: bold; color: var(--pastel-peach); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .brain-dump-controls { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn-bd { 
-            background: #333; border: 1px solid #555; color: #ccc; 
-            padding: 5px 10px; font-size: 0.8em; border-radius: 4px; cursor: pointer; 
-        }
+        .btn-bd { background: #333; border: 1px solid #555; color: #ccc; padding: 5px 10px; font-size: 0.8em; border-radius: 4px; cursor: pointer; }
         .btn-bd:hover { border-color: var(--pastel-blue); color: var(--pastel-blue); }
-        .brain-dump-textarea {
-            width: 100%; min-height: 150px; background: transparent; 
-            border: 1px solid #444; color: #ddd; font-family: 'Consolas', monospace; 
-            padding: 10px; border-radius: 6px; resize: vertical; line-height: 1.5; font-size: 0.95em;
-            box-sizing: border-box; 
-        }
+        .brain-dump-textarea { width: 100%; min-height: 150px; background: transparent; border: 1px solid #444; color: #ddd; font-family: 'Consolas', monospace; padding: 10px; border-radius: 6px; resize: vertical; line-height: 1.5; font-size: 0.95em; box-sizing: border-box; }
         .brain-dump-textarea:focus { outline: none; border-color: var(--pastel-blue); }
 
-        /* BOOK IDEAS STYLES */
-        .book-ideas-box {
-            margin-bottom: 80px; 
-            border: 2px solid var(--book-border); border-radius: 12px;
-            padding: 20px; background-color: var(--book-bg);
-            transition: all 0.3s;
-        }
+        /* BOOK IDEAS */
+        .book-ideas-box { margin-bottom: 80px; border: 2px solid var(--book-border); border-radius: 12px; padding: 20px; background-color: var(--book-bg); transition: all 0.3s; }
         .book-header { font-weight: bold; color: var(--book-border); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
         .book-controls { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
-        .btn-book { 
-            background: rgba(0,0,0,0.3); border: 1px solid var(--book-border); color: var(--book-border);
-            padding: 5px 15px; font-size: 0.85em; border-radius: 4px; cursor: pointer; font-weight: bold;
-        }
+        .btn-book { background: rgba(0,0,0,0.3); border: 1px solid var(--book-border); color: var(--book-border); padding: 5px 15px; font-size: 0.85em; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-book:hover { background-color: var(--book-border); color: #333; }
         .btn-book-merge { background-color: var(--pastel-peach); color: #333; border: none; font-weight: bold; margin-left: auto; }
         
-        .book-textarea {
-            width: 100%; min-height: 150px; background: rgba(0,0,0,0.2); 
-            border: 1px solid var(--book-border); color: #eee; font-family: 'Consolas', 'Segoe UI', sans-serif; 
-            padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 1.0em;
-            margin-bottom: 10px;
-            box-sizing: border-box; 
-        }
+        .book-textarea { width: 100%; min-height: 150px; background: rgba(0,0,0,0.2); border: 1px solid var(--book-border); color: #eee; font-family: 'Consolas', 'Segoe UI', sans-serif; padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 1.0em; margin-bottom: 10px; box-sizing: border-box; }
         .book-textarea:focus { outline: none; box-shadow: 0 0 10px rgba(255, 192, 217, 0.2); }
 
-        /* --- UI BUTTONS (SMART MENU MOBILE) --- */
-        .fab-container {
-            position: fixed; bottom: 25px; right: 25px; z-index: 1000;
-            display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 15px;
+        /* --- BOTTOM NAVIGATION BAR (DOCK) --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid #444; z-index: 1000;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
         }
-        
-        /* Nút chính (Menu) */
-        #btn-menu-toggle {
-            width: 60px; height: 60px; border-radius: 50%; border: none;
-            background: var(--pastel-blue); color: #333;
-            font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: transform 0.3s;
+        .nav-item {
+            background: transparent; border: none; color: #888;
+            font-size: 20px; cursor: pointer; padding: 10px 20px;
+            border-radius: 8px; transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
         }
-        #btn-menu-toggle.active { transform: rotate(45deg); background: var(--pastel-red); color: #fff; }
+        .nav-item.active, .nav-item:hover { color: var(--pastel-blue); background: rgba(255,255,255,0.05); }
+        .nav-label { font-size: 10px; font-weight: bold; text-transform: uppercase; }
 
-        /* Nút con (Ẩn mặc định) */
-        .fab-btn {
-            background-color: #333; color: #eee; border: 1px solid #555;
-            padding: 12px 20px; border-radius: 30px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            font-size: 0.9em; display: flex; align-items: center; gap: 8px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0; transform: translateY(20px) scale(0.8); pointer-events: none;
-            position: absolute; bottom: 0; right: 0; white-space: nowrap;
+        /* --- GHOST SCROLL ELEVATOR --- */
+        .scroll-widget {
+            position: fixed; bottom: 75px; right: 15px; z-index: 990;
+            display: flex; flex-direction: column; gap: 8px;
+            opacity: 0.4; transition: opacity 0.3s;
         }
-        
-        .fab-container.show .fab-btn {
-            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; position: static;
+        .scroll-widget:hover, .scroll-widget:active { opacity: 1; }
+        .scroll-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(50, 50, 50, 0.8); backdrop-filter: blur(5px);
+            border: 1px solid #555; color: #fff; font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-        
-        .fab-btn:hover { background-color: var(--pastel-pink); color: #333; border-color: var(--pastel-pink); }
+        .scroll-btn:hover { background: var(--pastel-blue); border-color: var(--pastel-blue); color: #333; }
 
-        /* MODAL */
-        #edit-modal, #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 200; align-items: center; justify-content: center; }
+        /* MODAL & HELPERS */
+        #edit-modal, #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background-color: var(--bg-box); padding: 20px; border-radius: 10px; width: 95%; max-width: 1100px; display: flex; flex-direction: column; height: 90vh; }
         .modal-body { display: flex; flex: 1; gap: 20px; overflow: hidden; position: relative; }
         #editor-container { flex: 3; display: flex; gap: 10px; overflow: hidden; }
@@ -255,9 +224,12 @@
         
         .data-center-label { font-size: 0.8em; color: #888; margin-right: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
 
-        #toast { visibility: hidden; min-width: 250px; background-color: var(--check-green); color: #333; font-weight: bold; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 80px; transform: translateX(-50%); }
+        #toast { visibility: hidden; min-width: 250px; background-color: var(--check-green); color: #333; font-weight: bold; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         #restore-input { display: none; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); } 70% { box-shadow: 0 0 0 5px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
     </style>
 </head>
 <body>
@@ -309,10 +281,28 @@
 
     <div id="toast">🎉 Xong thêm 1 việc!</div>
     
-    <div class="fab-container" id="fab-menu">
-        <button class="fab-btn" onclick="toggleTheme()">🎨 ĐỔI GIAO DIỆN</button>
-        <button class="fab-btn" onclick="openModal()">⚙️ CẬP NHẬT / SYNC</button>
-        <button id="btn-menu-toggle" onclick="toggleMenu()">≡</button>
+    <div class="bottom-nav">
+        <button class="nav-item" onclick="toggleTheme()">
+            <span>🎨</span>
+            <span class="nav-label">Theme</span>
+        </button>
+        <button class="nav-item" onclick="syncUp()">
+            <span>☁️</span>
+            <span class="nav-label">Upload</span>
+        </button>
+        <button class="nav-item" onclick="syncDown()">
+            <span>🌨️</span>
+            <span class="nav-label">Download</span>
+        </button>
+        <button class="nav-item" onclick="openModal()">
+            <span>⚙️</span>
+            <span class="nav-label">Setting</span>
+        </button>
+    </div>
+
+    <div class="scroll-widget">
+        <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆</button>
+        <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">⬇</button>
     </div>
 
     <input type="file" id="restore-input" accept=".json" onchange="restoreData(this)">
@@ -342,10 +332,6 @@
             </div>
             
             <div style="background:#111; padding:10px; border-radius:6px; border:1px solid #333; display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:10px; margin-bottom:10px;">
-                <span class="data-center-label">☁️ CLOUD SYNC:</span>
-                <button class="btn-data btn-sync" onclick="syncUp()">☁️ UPLOAD (Lưu lên Mây)</button>
-                <button class="btn-data btn-sync" onclick="syncDown()">🌨️ DOWNLOAD (Tải về máy)</button>
-                <span style="border-left:1px solid #555; margin:0 5px; height:20px;"></span>
                 <span class="data-center-label">💾 LOCAL:</span>
                 <button class="btn-data" onclick="backupFull(true)">📤 BACKUP</button>
                 <button class="btn-data" onclick="document.getElementById('restore-input').click()">📥 RESTORE</button>
@@ -576,22 +562,6 @@
             }
         }
 
-        /* --- SMART MENU TOGGLE --- */
-        function toggleMenu() {
-            const container = document.getElementById('fab-menu');
-            const toggleBtn = document.getElementById('btn-menu-toggle');
-            
-            if (container.classList.contains('show')) {
-                container.classList.remove('show');
-                toggleBtn.classList.remove('active');
-                toggleBtn.innerText = "≡";
-            } else {
-                container.classList.add('show');
-                toggleBtn.classList.add('active');
-                toggleBtn.innerText = "×";
-            }
-        }
-
         // --- BRAIN DUMP LOGIC ---
         function saveBrainDump() {
             const content = document.getElementById('brain-dump-area').value;
@@ -602,6 +572,7 @@
             document.getElementById('brain-dump-area').value = content;
         }
         function insertBDTemplate() {
+            // NEW TEMPLATE FORMAT (V23.1)
             const template = `\n\n--- KHO NHÁP CỦA MEO (Xả láng, không cần đẹp) ---\n\n- [Việc] \n- [?] `;
             const area = document.getElementById('brain-dump-area');
             area.value += template;
@@ -749,8 +720,14 @@
 
         async function syncUp() {
             if (!confirm("⚠️ Upload sẽ GHI ĐÈ dữ liệu trên Cloud bằng dữ liệu hiện tại. Tiếp tục?")) return;
-            const btn = document.querySelector('.btn-sync');
-            const originalText = btn.innerText; btn.innerText = "⏳ Đang đẩy lên...";
+            const btn = document.querySelector('.btn-sync'); // Visual feedback can be refined
+            // Find the sync button in the new dock
+            const buttons = document.querySelectorAll('.nav-item');
+            const syncBtn = buttons[1]; // Index 1 is Upload
+            const originalIcon = syncBtn.querySelector('span').innerText;
+            
+            syncBtn.querySelector('span').innerText = "⏳";
+
             const recordId = await getRecordID();
             if (!recordId) return;
             const payload = JSON.stringify(localStorage);
@@ -763,13 +740,18 @@
                 if (response.ok) alert("✅ Đã lưu lên Mây thành công!");
                 else alert("❌ Lỗi khi lưu! Dữ liệu quá lớn?");
             } catch (error) { alert("❌ Lỗi mạng: " + error.message); } 
-            finally { btn.innerText = originalText; }
+            finally { syncBtn.querySelector('span').innerText = originalIcon; }
         }
 
         async function syncDown() {
             if (!confirm("⚠️ Download sẽ GHI ĐÈ dữ liệu máy này bằng dữ liệu trên Cloud. Tiếp tục?")) return;
-            const btn = document.querySelectorAll('.btn-sync')[1];
-            const originalText = btn.innerText; btn.innerText = "⏳ Đang tải về...";
+            
+            const buttons = document.querySelectorAll('.nav-item');
+            const syncBtn = buttons[2]; // Index 2 is Download
+            const originalIcon = syncBtn.querySelector('span').innerText;
+            
+            syncBtn.querySelector('span').innerText = "⏳";
+
             const recordId = await getRecordID();
             if (!recordId) return;
             try {
@@ -785,7 +767,7 @@
                     location.reload();
                 } else { alert("⚠️ Trên Cloud chưa có dữ liệu gì cả!"); }
             } catch (error) { alert("❌ Lỗi khi tải: " + error.message); } 
-            finally { btn.innerText = originalText; }
+            finally { syncBtn.querySelector('span').innerText = originalIcon; }
         }
 
         // --- TIME TRACKER LOGIC ---
