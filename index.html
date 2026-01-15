@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V31.0 (Archive System)</title>
+    <title>zetmeoOS - V32.0</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -99,13 +99,23 @@
         .tab-pane { display: none; padding: 15px; min-height: 100px; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s; }
 
-        /* TASK LIST */
+        /* TASK LIST & FOLDING FIX */
         .task-list { list-style: none; padding: 0; margin: 0; }
         .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); }
         .task-item:hover { background-color: rgba(255,255,255,0.05); }
         .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
-        .toggle-btn { cursor: pointer; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; margin-right: 5px; color: var(--sub-3); font-size: 14px; margin-top: 2px; user-select: none; }
-        .rotated { transform: rotate(90deg); } .spacer { width: 25px; } .hidden-task { display: none !important; }
+        
+        /* IMPROVED TOGGLE BTN FOR MOBILE */
+        .toggle-btn { 
+            cursor: pointer; width: 40px; height: 30px; /* Bigger touch area */
+            display: flex; align-items: center; justify-content: center; 
+            margin-right: 5px; color: var(--sub-3); font-size: 16px; 
+            user-select: none; background: rgba(255,255,255,0.05); border-radius: 4px;
+        }
+        .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.1); } 
+        .spacer { width: 40px; margin-right: 5px; } 
+        .hidden-task { display: none !important; }
+
         .task-item input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-dim); border-radius: 50%; margin-right: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
         .task-item input:checked { background-color: var(--check-bg); border-color: var(--check-bg); }
         .task-item input:checked::after { content: '✔'; color: #333; font-size: 14px; font-weight: 700; }
@@ -134,13 +144,12 @@
         .log-input:focus { outline: 1px solid var(--box-color); }
         .btn-log-save { background: var(--box-color); color: #333; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; font-size: 0.9em; cursor: pointer; margin-top: 5px; }
 
-        /* STUDIOS */
+        /* STUDIOS (SIMPLIFIED) */
         .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); }
         .studio-header { font-weight: 700; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; }
-        .studio-controls { display: flex; gap: 5px; margin-bottom: 10px; }
-        .studio-select { flex: 1; background: #333; color: #eee; border: 1px solid #555; padding: 10px; border-radius: 6px; font-size: 0.9em; min-width: 0;}
-        .studio-btn { width: 90px; background: var(--text-dim); color: #222; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; font-size: 0.8em; }
-        .studio-textarea { width: 100%; min-height: 180px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; padding: 10px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
+        .studio-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .studio-btn { flex: 1; background: var(--text-dim); color: #222; border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9em; }
+        .studio-textarea { width: 100%; min-height: 200px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: var(--font-main); padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
         .studio-textarea:focus { outline: 1px solid var(--text-dim); }
         #braindom-box { border-color: var(--sub-2); } #braindom-box .studio-header { color: var(--sub-2); } #braindom-box .studio-btn { background-color: var(--sub-2); }
         #writer-box { border-color: var(--sub-1); } #writer-box .studio-header { color: var(--sub-1); } #writer-box .studio-btn { background-color: var(--sub-1); }
@@ -172,7 +181,6 @@
         .btn-close { background-color: #444; border: 1px solid #666; color: #eee; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; width: 100%; font-size: 0.9em;}
         .btn-compare { background-color: var(--sub-3); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
         
-        /* ARCHIVE LIST STYLES */
         #archive-list-container { overflow-y: auto; flex: 1; background: #1a1a1a; border: 1px solid #444; padding: 10px; border-radius: 6px; }
         .archive-item { background: #2d2d2d; border-bottom: 1px solid #444; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         .archive-content { color: #aaa; font-size: 0.9em; flex: 1; margin-right: 10px; }
@@ -221,30 +229,19 @@
     <div id="braindom-box" class="studio-box">
         <div class="studio-header">🧠 BRAINDOM STUDIO</div>
         <div class="studio-controls">
-            <select id="braindom-action" class="studio-select">
-                <option value="template">➕ Chèn Mẫu (Việc/Gấp/Time)</option>
-                <option value="copy">📋 Copy nội dung</option>
-                <option value="clear">🗑️ Xóa hết nháp</option>
-            </select>
-            <button class="studio-btn" onclick="executeBraindomAction()">THỰC HIỆN</button>
+            <button class="studio-btn" onclick="saveBraindom()">LƯU</button>
+            <button class="studio-btn" onclick="copyBrainDump()">COPY</button>
+            <button class="studio-btn" onclick="clearBrainDump()" style="background:var(--main-color)">XÓA</button>
         </div>
-        <textarea id="brain-dump-area" class="studio-textarea" placeholder="Đầu óc đang rối? Ném hết vào đây... (Tự động lưu)"></textarea>
+        <textarea id="brain-dump-area" class="studio-textarea" placeholder="Nháp nhanh ý tưởng tại đây..."></textarea>
     </div>
 
     <div id="writer-box" class="studio-box">
         <div class="studio-header">📖 WRITER STUDIO</div>
         <div class="studio-controls">
-            <select id="writer-action" class="studio-select">
-                <option value="idea">💎 Chèn: Ý tưởng thô</option>
-                <option value="char">👤 Chèn: Hồ sơ Nhân vật</option>
-                <option value="chapter">🎬 Chèn: Cấu trúc Chương</option>
-                <option value="merge">📥 GỘP VÀO BẢN THẢO CHUNG</option>
-                <option value="view">👁️ XEM/SỬA BẢN THẢO</option>
-                <option value="export">💾 Xuất File .TXT</option>
-            </select>
-            <button class="studio-btn" onclick="executeWriterAction()">THỰC HIỆN</button>
+            <button class="studio-btn" onclick="saveWriter()">LƯU</button>
         </div>
-        <textarea id="book-ideas-area" class="studio-textarea" placeholder="Nơi những kiệt tác bắt đầu..."></textarea>
+        <textarea id="book-ideas-area" class="studio-textarea" placeholder="Viết và lưu lại..."></textarea>
     </div>
 
     <div id="toast">🎉 Xong thêm 1 việc!</div>
@@ -315,18 +312,6 @@
         </div>
     </div>
 
-    <div id="archive-modal">
-        <div class="modal-content">
-            <h3 style="color:var(--pastel-lavender); margin-top:0;">📚 BẢN THẢO CHUNG</h3>
-            <textarea id="archive-textarea" style="flex:1; background:#1a1a1a; color:#eee; border:1px solid #555; padding:15px; font-family:'Consolas', monospace; resize:none; font-size:16px; box-sizing: border-box;"></textarea>
-            <div class="modal-actions">
-                <button class="btn-data" onclick="exportMasterDraft()" style="border-color:var(--check-bg); color:var(--check-bg)">💾 XUẤT .TXT</button>
-                <button class="btn-close" onclick="document.getElementById('archive-modal').style.display='none'">Đóng</button>
-                <button class="btn-save" onclick="saveArchive()">LƯU</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // CONFIG
         const AIRTABLE = {
@@ -346,7 +331,7 @@
             document.getElementById('daily-quote-card').style.backgroundImage = `url('images/${randomImg}')`;
         }
 
-        const defaultData = `!!! Lam đây! Bản V31: Đã có Archive!
+        const defaultData = `!!! Lam đây! Braindom & Writer đã được tối ưu!
 # A. 🔥 URGENT
 - [A-01] Mua bút vẽ | Màu nước Winsor & Newton
 - [A-02] Tham khảo web | https://google.com
@@ -437,7 +422,7 @@
                         const li = document.createElement('li');
                         li.className = `task-item indent-${level}`;
                         li.setAttribute('data-id', taskId);
-                        li.setAttribute('data-level', level); // Fix Folding
+                        li.setAttribute('data-level', level); 
                         li.innerHTML = `
                             <span class="toggle-placeholder"><span class="spacer"></span></span>
                             <input type="checkbox" id="${taskId}" onclick="checkTask(this)">
@@ -451,13 +436,28 @@
             initFolding(container); calculateStats(); 
         }
 
-        // --- ARCHIVE LOGIC (NEW V31) ---
+        // --- BRAINDOM LOGIC (SIMPLIFIED V32) ---
+        function saveBraindom() { 
+            localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); 
+            document.getElementById('toast').innerText="Đã lưu Braindom!"; document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",2000);
+        }
+        function loadBrainDump() { document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || ''; }
+        function copyBrainDump() { navigator.clipboard.writeText(document.getElementById('brain-dump-area').value); alert("Đã copy!"); }
+        function clearBrainDump() { if(confirm('Xóa hết nháp?')) { document.getElementById('brain-dump-area').value = ""; saveBraindom(); } }
+
+        // --- WRITER LOGIC (SIMPLIFIED V32) ---
+        function saveWriter() { 
+            localStorage.setItem('zetmeo_writer_content', document.getElementById('book-ideas-area').value); 
+            document.getElementById('toast').innerText="Đã lưu Writer!"; document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",2000);
+        }
+        function loadBookIdeas() { document.getElementById('book-ideas-area').value = localStorage.getItem('zetmeo_writer_content') || ''; }
+
+        // --- ARCHIVE LOGIC ---
         function getArchive() { return JSON.parse(localStorage.getItem('zetmeo_archive_master') || '[]'); }
         function saveArchiveData(arr) { localStorage.setItem('zetmeo_archive_master', JSON.stringify(arr)); }
 
         function archiveCompletedTasks() {
             let currentData = document.getElementById('input-data').value;
-            // Scan for checked items in DOM to identify their content
             const checkedBoxes = document.querySelectorAll('.task-item input[type="checkbox"]:checked');
             if (checkedBoxes.length === 0) { alert("Không có task nào đã xong để lưu trữ!"); return; }
             if (!confirm(`Bạn có chắc muốn lưu trữ ${checkedBoxes.length} task đã xong?`)) return;
@@ -473,7 +473,7 @@
                 let isChecked = false;
                 
                 if (isTask) {
-                    let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim(); // Raw text part
+                    let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
                     let hash = stringToHash(cleanLine);
                     if (localStorage.getItem('task-' + hash) === "true") {
                         isChecked = true;
@@ -481,13 +481,11 @@
                 }
 
                 if (isChecked) {
-                    // Add to archive
                     archiveArr.unshift({
                         content: trimmed,
                         date: new Date().toLocaleDateString(),
                         timestamp: Date.now()
                     });
-                    // Remove checked status from localStorage to keep it clean
                     let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
                     localStorage.removeItem('task-' + stringToHash(cleanLine));
                     removedCount++;
@@ -496,11 +494,8 @@
                 }
             });
 
-            // Save everything
             saveArchiveData(archiveArr);
             localStorage.setItem('dashboardData', newLines.join('\n'));
-            
-            // Reload
             alert(`✅ Đã lưu trữ ${removedCount} task thành công!`);
             location.reload();
         }
@@ -537,39 +532,24 @@
 
             if(!confirm("Khôi phục task này về màn hình chính?")) return;
 
-            // Remove from archive
             archiveArr.splice(index, 1);
             saveArchiveData(archiveArr);
 
-            // Append to dashboard data
             let currentData = localStorage.getItem('dashboardData') || defaultData;
-            
-            // Smart Restore Logic (Find Box)
             let boxCode = null;
-            let match = taskToRestore.content.match(/\[([A-Z])-?/); // Detect [A-..]
+            let match = taskToRestore.content.match(/\[([A-Z])-?/); 
             if (match) boxCode = match[1];
 
             if (boxCode) {
-                // Try to find section "# A." or "# Box A"
                 let regex = new RegExp(`(#\\s*${boxCode}\\..*$)`, "m");
                 let matchPos = currentData.match(regex);
-                
                 if (matchPos) {
-                    // Insert after the header line
                     let insertIndex = matchPos.index + matchPos[0].length;
                     currentData = currentData.slice(0, insertIndex) + "\n" + taskToRestore.content + currentData.slice(insertIndex);
-                } else {
-                    // Not found, append to end
-                    currentData += "\n" + taskToRestore.content;
-                }
-            } else {
-                // No code, append to end
-                currentData += "\n" + taskToRestore.content;
-            }
+                } else { currentData += "\n" + taskToRestore.content; }
+            } else { currentData += "\n" + taskToRestore.content; }
 
             localStorage.setItem('dashboardData', currentData);
-            
-            // Refresh
             alert("✅ Đã khôi phục!");
             location.reload();
         }
@@ -644,18 +624,25 @@
             } update(); activeInterval = setInterval(update, 1000); 
         }
         function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'classic' ? '' : 'classic'); localStorage.setItem('theme', document.body.getAttribute('data-theme')); }
-        function saveBrainDump() { localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); }
-        function loadBrainDump() { document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || ''; }
-        function insertBDTemplate() { document.getElementById('brain-dump-area').value += `\n\n--- KHO NHÁP ---\n- [Việc] \n- [?] `; saveBrainDump(); }
-        function copyBrainDump() { navigator.clipboard.writeText(document.getElementById('brain-dump-area').value); alert("Đã copy!"); }
-        function clearBrainDump() { if(confirm('Xóa?')) { document.getElementById('brain-dump-area').value = ""; saveBrainDump(); } }
-        function saveBookIdeas() { localStorage.setItem('zetmeo_book_draft_current', document.getElementById('book-ideas-area').value); }
-        function loadBookIdeas() { document.getElementById('book-ideas-area').value = localStorage.getItem('zetmeo_book_draft_current') || ''; }
-        function insertBookTemplate(type) { document.getElementById('book-ideas-area').value += (type==='char' ? `\n👤 Nhân vật:` : (type==='chapter' ? `\n🎬 Chương:` : `\n💎 Ý tưởng:`)); saveBookIdeas(); }
-        function mergeToMasterDraft() { const cur = document.getElementById('book-ideas-area').value.trim(); if(!cur) return; if(confirm("Gộp?")) { localStorage.setItem('zetmeo_book_master', (localStorage.getItem('zetmeo_book_master')||"") + "\n\n--- " + new Date().toLocaleString() + " ---\n" + cur); document.getElementById('book-ideas-area').value=""; saveBookIdeas(); alert("Đã gộp!"); } }
-        function openArchiveModal() { document.getElementById('archive-textarea').value = localStorage.getItem('zetmeo_book_master')||""; document.getElementById('archive-modal').style.display='flex'; }
-        function saveArchive() { localStorage.setItem('zetmeo_book_master', document.getElementById('archive-textarea').value); document.getElementById('archive-modal').style.display='none'; }
-        function exportMasterDraft() { const content = document.getElementById('archive-textarea').value; const blob = new Blob(["\uFEFF" + content], { type: "text/plain;charset=utf-8" }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_MASTER_${new Date().toISOString().slice(0,10)}.txt`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        
+        async function getRecordID() {
+            let recordId = localStorage.getItem('zetmeo_cloud_record_id'); if (recordId) return recordId;
+            try { const response = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const data = await response.json();
+                if (data.records && data.records.length > 0) { recordId = data.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } 
+                else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; }
+            } catch (error) { return null; }
+        }
+        async function syncUp() { if(!confirm("Upload?")) return; const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})}).then(r=>r.ok?alert("✅ OK"):alert("Lỗi")).finally(()=>btn.innerHTML=oldText); }
+        async function syncDown() { if(!confirm("Download?")) return; const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } }).finally(()=>btn.innerHTML=oldText); }
+        function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
+        function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
+        function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
+        function closeModal(){ document.getElementById('edit-modal').style.display='none'; }
+        function saveData(){ localStorage.setItem('dashboardData', document.getElementById('input-data').value); renderDashboard(document.getElementById('input-data').value); closeModal(); }
+        function toggleCompare() { const btn = document.getElementById('btn-compare'); const colOld = document.getElementById('col-old'); const inputArea = document.getElementById('input-data'); const diffView = document.getElementById('diff-view'); const historyPanel = document.getElementById('history-panel'); if (inputArea.style.display !== 'none') { btn.innerText = "👁️ EDIT"; btn.style.background = "#fff"; colOld.style.display = 'flex'; inputArea.style.display = 'none'; diffView.style.display = 'block'; historyPanel.style.display = 'none'; diffView.innerHTML = generateDiffHtml(document.getElementById('old-data').value, inputArea.value); } else { btn.innerText = "So Sánh"; btn.style.background = "var(--sub-3)"; colOld.style.display = 'none'; inputArea.style.display = 'block'; diffView.style.display = 'none'; historyPanel.style.display = 'flex'; } }
+        function generateDiffHtml(oldText, newText) { const oldLines = oldText.split('\n').map(l => l.trim()).filter(l => l); const newLines = newText.split('\n').map(l => l.trim()).filter(l => l); let html = ''; newLines.forEach(line => { if (oldLines.includes(line)) html += `<div class="diff-line diff-same">${line}</div>`; else html += `<div class="diff-line diff-added">+ ${line}</div>`; }); let removedHtml = ''; oldLines.forEach(line => { if (!newLines.includes(line)) removedHtml += `<div class="diff-line diff-removed">- ${line}</div>`; }); return html + (removedHtml ? `<div style="margin-top:10px; border-top:1px dashed #555; padding-top:5px; font-size:0.8em; color:#888">ĐÃ XÓA:</div>` + removedHtml : ''); }
+        
         function checkTask(cb) { localStorage.setItem(cb.id, cb.checked); calculateStats(); if(cb.checked) { document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",2000);} }
         function calculateStats() {
             const statsContainer = document.getElementById('stats-content'); statsContainer.innerHTML = ''; 
@@ -732,25 +719,6 @@
         function getLogs() { return JSON.parse(localStorage.getItem('zetmeo_time_logs') || '{}'); }
         function logTime(id, min) { let l=getLogs(); if(!l[id]) l[id]=[]; l[id].push({date:new Date().toISOString(), min:min}); localStorage.setItem('zetmeo_time_logs',JSON.stringify(l)); document.getElementById('toast').innerText=`Đã ghi ${min}p!`; document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",3000); }
         function stringToHash(s) { let h=0; for(let i=0;i<s.length;i++) h=Math.abs(((h<<5)-h)+s.charCodeAt(i)); return h; }
-        async function getRecordID() {
-            let recordId = localStorage.getItem('zetmeo_cloud_record_id'); if (recordId) return recordId;
-            try { const response = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const data = await response.json();
-                if (data.records && data.records.length > 0) { recordId = data.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } 
-                else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; }
-            } catch (error) { return null; }
-        }
-        async function syncUp() { if(!confirm("Upload?")) return; const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})}).then(r=>r.ok?alert("✅ OK"):alert("Lỗi")).finally(()=>btn.innerHTML=oldText); }
-        async function syncDown() { if(!confirm("Download?")) return; const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } }).finally(()=>btn.innerHTML=oldText); }
-        function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
-        function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
-        function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
-        function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
-        function closeModal(){ document.getElementById('edit-modal').style.display='none'; }
-        function saveData(){ localStorage.setItem('dashboardData', document.getElementById('input-data').value); renderDashboard(document.getElementById('input-data').value); closeModal(); }
-        function toggleCompare() { const btn = document.getElementById('btn-compare'); const colOld = document.getElementById('col-old'); const inputArea = document.getElementById('input-data'); const diffView = document.getElementById('diff-view'); const historyPanel = document.getElementById('history-panel'); if (inputArea.style.display !== 'none') { btn.innerText = "👁️ EDIT"; btn.style.background = "#fff"; colOld.style.display = 'flex'; inputArea.style.display = 'none'; diffView.style.display = 'block'; historyPanel.style.display = 'none'; diffView.innerHTML = generateDiffHtml(document.getElementById('old-data').value, inputArea.value); } else { btn.innerText = "So Sánh"; btn.style.background = "var(--sub-3)"; colOld.style.display = 'none'; inputArea.style.display = 'block'; diffView.style.display = 'none'; historyPanel.style.display = 'flex'; } }
-        function generateDiffHtml(oldText, newText) { const oldLines = oldText.split('\n').map(l => l.trim()).filter(l => l); const newLines = newText.split('\n').map(l => l.trim()).filter(l => l); let html = ''; newLines.forEach(line => { if (oldLines.includes(line)) html += `<div class="diff-line diff-same">${line}</div>`; else html += `<div class="diff-line diff-added">+ ${line}</div>`; }); let removedHtml = ''; oldLines.forEach(line => { if (!newLines.includes(line)) removedHtml += `<div class="diff-line diff-removed">- ${line}</div>`; }); return html + (removedHtml ? `<div style="margin-top:10px; border-top:1px dashed #555; padding-top:5px; font-size:0.8em; color:#888">ĐÃ XÓA:</div>` + removedHtml : ''); }
-        function executeBraindomAction() { const action = document.getElementById('braindom-action').value; if (action === 'template') insertBDTemplate(); else if (action === 'copy') copyBrainDump(); else if (action === 'clear') clearBrainDump(); }
-        function executeWriterAction() { const action = document.getElementById('writer-action').value; if (action === 'merge') mergeToMasterDraft(); else if (action === 'view') openArchiveModal(); else if (action === 'export') exportBookTxt(); else insertBookTemplate(action); }
 
         window.onload = function() { 
             const data = localStorage.getItem('dashboardData') || defaultData; 
@@ -761,8 +729,8 @@
             initAutoBackupScheduler();
             loadBrainDump(); 
             loadBookIdeas(); 
-            document.getElementById('brain-dump-area').addEventListener('input', saveBrainDump);
-            document.getElementById('book-ideas-area').addEventListener('input', saveBookIdeas); 
+            document.getElementById('brain-dump-area').addEventListener('input', () => { localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); });
+            document.getElementById('book-ideas-area').addEventListener('input', () => { localStorage.setItem('zetmeo_writer_content', document.getElementById('book-ideas-area').value); });
         }
     </script>
 </body>
