@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - Dashboard 26.0 (Cloud Sync)</title>
+    <title>zetmeoOS - Dashboard 26.1 (Clean Mobile UI)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -189,10 +189,38 @@
         }
         .book-textarea:focus { outline: none; box-shadow: 0 0 10px rgba(255, 192, 217, 0.2); }
 
-        /* UI BUTTONS */
-        #btn-edit { position: fixed; bottom: 20px; right: 20px; background-color: var(--pastel-blue); color: #333; padding: 15px 25px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100; transition: background-color var(--transition-speed); }
-        #btn-theme { position: fixed; bottom: 20px; left: 20px; background-color: var(--bg-box); color: var(--pastel-pink); border: 2px solid var(--pastel-pink); padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100; transition: all 0.3s; }
-        #btn-theme:hover { background-color: var(--pastel-pink); color: #333; }
+        /* --- UI BUTTONS (SMART MENU MOBILE) --- */
+        .fab-container {
+            position: fixed; bottom: 25px; right: 25px; z-index: 1000;
+            display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 15px;
+        }
+        
+        /* Nút chính (Menu) */
+        #btn-menu-toggle {
+            width: 60px; height: 60px; border-radius: 50%; border: none;
+            background: var(--pastel-blue); color: #333;
+            font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        #btn-menu-toggle.active { transform: rotate(45deg); background: var(--pastel-red); color: #fff; }
+
+        /* Nút con (Ẩn mặc định) */
+        .fab-btn {
+            background-color: #333; color: #eee; border: 1px solid #555;
+            padding: 12px 20px; border-radius: 30px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 0.9em; display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0; transform: translateY(20px) scale(0.8); pointer-events: none;
+            position: absolute; bottom: 0; right: 0; white-space: nowrap;
+        }
+        
+        .fab-container.show .fab-btn {
+            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; position: static;
+        }
+        
+        .fab-btn:hover { background-color: var(--pastel-pink); color: #333; border-color: var(--pastel-pink); }
 
         /* MODAL */
         #edit-modal, #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 200; align-items: center; justify-content: center; }
@@ -281,8 +309,12 @@
 
     <div id="toast">🎉 Xong thêm 1 việc!</div>
     
-    <button id="btn-theme" onclick="toggleTheme()">🎨 ĐỔI GIAO DIỆN</button>
-    <button id="btn-edit" onclick="openModal()">⚙️ CẬP NHẬT</button>
+    <div class="fab-container" id="fab-menu">
+        <button class="fab-btn" onclick="toggleTheme()">🎨 ĐỔI GIAO DIỆN</button>
+        <button class="fab-btn" onclick="openModal()">⚙️ CẬP NHẬT / SYNC</button>
+        <button id="btn-menu-toggle" onclick="toggleMenu()">≡</button>
+    </div>
+
     <input type="file" id="restore-input" accept=".json" onchange="restoreData(this)">
 
     <div id="edit-modal">
@@ -317,7 +349,7 @@
                 <span class="data-center-label">💾 LOCAL:</span>
                 <button class="btn-data" onclick="backupFull(true)">📤 BACKUP</button>
                 <button class="btn-data" onclick="document.getElementById('restore-input').click()">📥 RESTORE</button>
-                <button class="btn-data" onclick="exportCSV()" style="margin-left:auto; border-color:var(--pastel-green)">📊 EXPORT CSV</button>
+                <button class="btn-data" onclick="exportCSV()" style="margin-left:auto; border-color:var(--pastel-green)">📊 EXPORT EXCEL (.csv)</button>
             </div>
 
             <div class="modal-actions">
@@ -347,13 +379,13 @@
 
     <script>
         // --- AIRTABLE CONFIGURATION ---
-     const AIRTABLE = {
-    // Mẹo: Cắt đôi chuỗi token để GitHub không chặn
-    PAT: 'patE1cRnlN0yvjW1y' + '.' + 'c084f80cf32df8ee63f63f22477ca64fb60ef67cfd61917776460ae282722b36',
-    BASE_ID: 'app9cWP64Qbz0T1QT',
-    TABLE_ID: 'tbluPfLWGE5oHVOqX',
-    API_URL: `https://api.airtable.com/v0/app9cWP64Qbz0T1QT/tbluPfLWGE5oHVOqX`
-};
+        const AIRTABLE = {
+            PAT: 'patE1cRnlN0yvjW1y' + '.' + 'c084f80cf32df8ee63f63f22477ca64fb60ef67cfd61917776460ae282722b36',
+            BASE_ID: 'app9cWP64Qbz0T1QT',
+            TABLE_ID: 'tbluPfLWGE5oHVOqX',
+            API_URL: `https://api.airtable.com/v0/app9cWP64Qbz0T1QT/tbluPfLWGE5oHVOqX`
+        };
+
         const quotesDB = [
             {t: "Chúng ta đau khổ trong tưởng tượng nhiều hơn là trong thực tế.", a: "Seneca"},
             {t: "Kỷ luật là làm những điều bạn ghét như thể bạn yêu thích nó.", a: "Mike Tyson"},
@@ -382,7 +414,7 @@
             card.style.backgroundImage = `url('images/${imgIndex}.jpg')`;
         }
 
-        const defaultData = `!!! Lam đây! Cloud Sync đã sẵn sàng. Vào CẬP NHẬT để thử nhé!
+        const defaultData = `!!! Lam đây! Braindom Studio đã sẵn sàng!
 # A. 🔥 URGENT
 - [A-01] Mua bút vẽ | Màu nước Winsor & Newton
 - [A-02] Tham khảo web | https://google.com
@@ -544,6 +576,22 @@
             }
         }
 
+        /* --- SMART MENU TOGGLE --- */
+        function toggleMenu() {
+            const container = document.getElementById('fab-menu');
+            const toggleBtn = document.getElementById('btn-menu-toggle');
+            
+            if (container.classList.contains('show')) {
+                container.classList.remove('show');
+                toggleBtn.classList.remove('active');
+                toggleBtn.innerText = "≡";
+            } else {
+                container.classList.add('show');
+                toggleBtn.classList.add('active');
+                toggleBtn.innerText = "×";
+            }
+        }
+
         // --- BRAIN DUMP LOGIC ---
         function saveBrainDump() {
             const content = document.getElementById('brain-dump-area').value;
@@ -554,7 +602,6 @@
             document.getElementById('brain-dump-area').value = content;
         }
         function insertBDTemplate() {
-            // NEW TEMPLATE FORMAT (V23.1)
             const template = `\n\n--- KHO NHÁP CỦA MEO (Xả láng, không cần đẹp) ---\n\n- [Việc] \n- [?] `;
             const area = document.getElementById('brain-dump-area');
             area.value += template;
@@ -669,33 +716,24 @@
             }, 1000);
         }
 
-        // --- AIRTABLE CLOUD SYNC (NEW) ---
+        // --- AIRTABLE CLOUD SYNC ---
         async function getRecordID() {
-            // Thử lấy ID đã lưu
             let recordId = localStorage.getItem('zetmeo_cloud_record_id');
             if (recordId) return recordId;
-
-            // Nếu chưa có, hỏi Airtable
             try {
                 const response = await fetch(AIRTABLE.API_URL, {
                     headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` }
                 });
                 const data = await response.json();
-                
                 if (data.records && data.records.length > 0) {
-                    // Lấy dòng đầu tiên tìm thấy
                     recordId = data.records[0].id;
                     localStorage.setItem('zetmeo_cloud_record_id', recordId);
                     return recordId;
                 } else {
-                    // Nếu chưa có dòng nào, tạo mới
                     const createResponse = await fetch(AIRTABLE.API_URL, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${AIRTABLE.PAT}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ fields: { "Data": "{}" } }) // Tạo dòng rỗng trước
+                        headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fields: { "Data": "{}" } })
                     });
                     const createData = await createResponse.json();
                     recordId = createData.id;
@@ -711,74 +749,43 @@
 
         async function syncUp() {
             if (!confirm("⚠️ Upload sẽ GHI ĐÈ dữ liệu trên Cloud bằng dữ liệu hiện tại. Tiếp tục?")) return;
-            
-            const btn = document.querySelector('.btn-sync'); // Visual feedback
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ Đang đẩy lên...";
-
+            const btn = document.querySelector('.btn-sync');
+            const originalText = btn.innerText; btn.innerText = "⏳ Đang đẩy lên...";
             const recordId = await getRecordID();
             if (!recordId) return;
-
             const payload = JSON.stringify(localStorage);
-            
             try {
                 const response = await fetch(`${AIRTABLE.API_URL}/${recordId}`, {
                     method: 'PATCH',
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE.PAT}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        fields: {
-                            "Data": payload
-                        }
-                    })
+                    headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fields: { "Data": payload } })
                 });
-
-                if (response.ok) {
-                    alert("✅ Đã lưu lên Mây thành công!");
-                } else {
-                    alert("❌ Lỗi khi lưu! Có thể do dữ liệu quá lớn hoặc sai cấu trúc.");
-                }
-            } catch (error) {
-                alert("❌ Lỗi mạng: " + error.message);
-            } finally {
-                btn.innerText = originalText;
-            }
+                if (response.ok) alert("✅ Đã lưu lên Mây thành công!");
+                else alert("❌ Lỗi khi lưu! Dữ liệu quá lớn?");
+            } catch (error) { alert("❌ Lỗi mạng: " + error.message); } 
+            finally { btn.innerText = originalText; }
         }
 
         async function syncDown() {
             if (!confirm("⚠️ Download sẽ GHI ĐÈ dữ liệu máy này bằng dữ liệu trên Cloud. Tiếp tục?")) return;
-
             const btn = document.querySelectorAll('.btn-sync')[1];
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ Đang tải về...";
-
+            const originalText = btn.innerText; btn.innerText = "⏳ Đang tải về...";
             const recordId = await getRecordID();
             if (!recordId) return;
-
             try {
                 const response = await fetch(`${AIRTABLE.API_URL}/${recordId}`, {
                     headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` }
                 });
                 const data = await response.json();
-                
                 if (data.fields && data.fields.Data) {
                     const cloudData = JSON.parse(data.fields.Data);
                     localStorage.clear();
-                    Object.keys(cloudData).forEach(key => {
-                        localStorage.setItem(key, cloudData[key]);
-                    });
+                    Object.keys(cloudData).forEach(key => { localStorage.setItem(key, cloudData[key]); });
                     alert("✅ Đồng bộ thành công! Trang sẽ tải lại.");
                     location.reload();
-                } else {
-                    alert("⚠️ Trên Cloud chưa có dữ liệu gì cả!");
-                }
-            } catch (error) {
-                alert("❌ Lỗi khi tải: " + error.message);
-            } finally {
-                btn.innerText = originalText;
-            }
+                } else { alert("⚠️ Trên Cloud chưa có dữ liệu gì cả!"); }
+            } catch (error) { alert("❌ Lỗi khi tải: " + error.message); } 
+            finally { btn.innerText = originalText; }
         }
 
         // --- TIME TRACKER LOGIC ---
