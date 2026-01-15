@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V29.0 (Tab Layout)</title>
+    <title>zetmeoOS - V29.1 (Fixed Tabs)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -89,7 +89,7 @@
         .box[data-type*="FOUNDATION"] { --box-color: var(--col-found); } 
         .box[data-type*="KHO"] { --box-color: var(--col-kho); }
 
-        /* NEW HEADER LAYOUT */
+        /* HEADER LAYOUT */
         .box-header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px; border-bottom: 1px solid #444;
@@ -111,7 +111,7 @@
         .tab-btn {
             flex: 1; padding: 12px; background: transparent; border: none; color: #777;
             font-weight: bold; font-size: 0.9em; cursor: pointer; border-bottom: 3px solid transparent;
-            text-transform: uppercase;
+            text-transform: uppercase; transition: all 0.2s;
         }
         .tab-btn.active { color: var(--box-color); border-bottom-color: var(--box-color); background: rgba(255,255,255,0.02); }
         
@@ -152,20 +152,24 @@
         /* --- TAB CONTENT: NOTE --- */
         .box-note-display { 
             white-space: pre-wrap; color: #ddd; font-size: 0.95em; line-height: 1.6; 
-            padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px;
-            margin-bottom: 10px; border: 1px dashed #444;
+            padding: 12px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px;
+            margin-bottom: 15px; border: 1px dashed #444;
         }
-        .box-note-editor { width: 100%; height: 150px; background: #222; border: 1px solid #555; color: #eee; padding: 10px; border-radius: 6px; box-sizing: border-box; display: none; font-family: sans-serif; line-height: 1.5; }
+        .box-note-editor { 
+            width: 100%; height: 150px; background: #222; border: 1px solid #555; 
+            color: #eee; padding: 10px; border-radius: 6px; box-sizing: border-box; 
+            display: none; font-family: sans-serif; line-height: 1.5; margin-bottom: 10px;
+        }
         .note-controls { display: flex; gap: 10px; }
         .btn-note-action { 
-            padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; flex: 1;
+            padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; flex: 1; font-size: 0.9em;
         }
         .btn-note-edit { background: var(--box-color); color: #333; }
         .btn-note-save { background: var(--check-bg); color: #333; display: none; }
         .btn-note-cancel { background: #444; color: #eee; display: none; }
 
         /* --- TAB CONTENT: LOG --- */
-        .log-form { display: flex; flex-direction: column; gap: 15px; }
+        .log-form { display: flex; flex-direction: column; gap: 15px; padding-top: 5px;}
         .log-input-group { display: flex; flex-direction: column; gap: 5px; }
         .log-label { font-size: 0.8em; color: #888; font-weight: bold; text-transform: uppercase; }
         .log-input { 
@@ -174,7 +178,7 @@
         .log-input:focus { outline: 1px solid var(--box-color); }
         .btn-log-save { 
             background: var(--box-color); color: #333; border: none; padding: 12px; 
-            border-radius: 6px; font-weight: bold; font-size: 1em; cursor: pointer; margin-top: 10px;
+            border-radius: 6px; font-weight: bold; font-size: 1em; cursor: pointer; margin-top: 5px;
         }
 
         /* --- STUDIO STYLES --- */
@@ -390,12 +394,12 @@
                 if (trimmedLine.startsWith('!!!')) { document.getElementById('lam-msg').textContent = trimmedLine.replace('!!!','').trim(); return; }
                 
                 // Note mở rộng (Markdown)
-                if (trimmedLine.startsWith('^')) { /* ... (Giữ nguyên logic note cũ nếu cần, nhưng giờ ít dùng) ... */ return; }
+                if (trimmedLine.startsWith('^')) { return; }
 
                 if (trimmedLine.startsWith('#')) {
                     currentTaskItem = null;
                     const title = trimmedLine.replace('#','').trim();
-                    const boxId = title.replace(/\s/g,'').replace(/[^a-zA-Z0-9]/g,'');
+                    const boxId = 'box-' + stringToHash(title);
                     
                     // Create Box Container
                     currentBox = document.createElement('div'); currentBox.className = 'box';
@@ -415,13 +419,13 @@
                     // 2. TABS NAV
                     const tabsHTML = `
                         <div class="tab-nav">
-                            <button class="tab-btn active" onclick="switchBoxTab('${boxId}', 'task')">Task</button>
-                            <button class="tab-btn" onclick="switchBoxTab('${boxId}', 'note')">Note</button>
-                            <button class="tab-btn" onclick="switchBoxTab('${boxId}', 'log')">Log</button>
+                            <button class="tab-btn active" onclick="switchBoxTab(this, '${boxId}', 'task')">Task</button>
+                            <button class="tab-btn" onclick="switchBoxTab(this, '${boxId}', 'note')">Note</button>
+                            <button class="tab-btn" onclick="switchBoxTab(this, '${boxId}', 'log')">Log</button>
                         </div>
                     `;
 
-                    // 3. TAB CONTENT: TASK (UL will be appended here)
+                    // 3. TAB CONTENT: TASK
                     const taskPaneHTML = `<div id="tab-task-${boxId}" class="tab-pane active"></div>`;
                     
                     // 4. TAB CONTENT: NOTE
@@ -485,7 +489,6 @@
                         li.className = `task-item indent-${level}`;
                         li.setAttribute('data-id', taskId);
                         
-                        // Simple Item (Checkbox + Label only)
                         li.innerHTML = `
                             <span class="toggle-placeholder"><span class="spacer"></span></span>
                             <input type="checkbox" id="${taskId}" onclick="checkTask(this)">
@@ -501,24 +504,28 @@
             initFolding(container); calculateStats(); 
         }
 
-        // --- TAB LOGIC ---
-        function switchBoxTab(boxId, tabName) {
-            const box = document.querySelector(`.box h2:contains('${boxId}')`)?.closest('.box') || document.querySelector(`#tab-task-${boxId}`).closest('.box');
+        // --- TAB LOGIC (FIXED) ---
+        function switchBoxTab(btn, boxId, tabName) {
+            // Find parent Box container
+            const box = btn.closest('.box');
             
-            // Update Buttons
-            box.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            box.querySelector(`.tab-btn[onclick*="'${tabName}'"]`).classList.add('active');
+            // Deactivate all tabs & buttons in this box
+            box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
             
-            // Update Panes
-            box.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            // Activate selected
+            btn.classList.add('active');
             document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active');
         }
 
-        // --- BOX NOTE LOGIC ---
+        // --- BOX NOTE LOGIC (FIXED) ---
         function loadBoxNote(boxId) {
             const content = localStorage.getItem(`zetmeo_note_${boxId}`) || "(Chưa có ghi chú)";
-            document.getElementById(`note-display-${boxId}`).innerText = content;
-            document.getElementById(`note-editor-${boxId}`).value = content === "(Chưa có ghi chú)" ? "" : content;
+            const displayEl = document.getElementById(`note-display-${boxId}`);
+            if(displayEl) {
+                displayEl.innerText = content;
+                document.getElementById(`note-editor-${boxId}`).value = content === "(Chưa có ghi chú)" ? "" : content;
+            }
         }
         function editBoxNote(boxId) {
             document.getElementById(`note-display-${boxId}`).style.display = 'none';
@@ -542,7 +549,7 @@
             document.getElementById(`btn-cancel-${boxId}`).style.display = 'none';
         }
 
-        // --- LOG LOGIC ---
+        // --- LOG LOGIC (FIXED) ---
         function saveLogFromTab(boxId) {
             const code = document.getElementById(`log-code-${boxId}`).value.trim();
             const min = parseInt(document.getElementById(`log-time-${boxId}`).value);
@@ -551,7 +558,9 @@
             // Find task ID by Code (Scan DOM)
             let foundId = null;
             document.querySelectorAll('.task-item').forEach(item => {
-                if(item.innerText.includes(code)) foundId = item.getAttribute('data-id');
+                if(item.innerText.includes(`[${code}]`) || item.innerText.includes(code)) {
+                    foundId = item.getAttribute('data-id');
+                }
             });
 
             if(foundId) {
