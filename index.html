@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V33.0 (Creative Archives)</title>
+    <title>zetmeoOS - V34.0</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -99,14 +99,25 @@
         .tab-pane { display: none; padding: 15px; min-height: 100px; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s; }
 
-        /* TASK LIST */
+        /* TASK LIST & FOLDING FIX V34 */
         .task-list { list-style: none; padding: 0; margin: 0; }
         .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); }
         .task-item:hover { background-color: rgba(255,255,255,0.05); }
         .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
-        .toggle-btn { cursor: pointer; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 5px; color: var(--sub-3); font-size: 16px; user-select: none; background: rgba(255,255,255,0.05); border-radius: 4px; }
-        .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.1); } .spacer { width: 40px; margin-right: 5px; } .hidden-task { display: none !important; }
-        .task-item input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-dim); border-radius: 50%; margin-right: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        
+        /* IMPROVED TOGGLE BTN FOR MOBILE - Z-INDEX BOOST */
+        .toggle-btn { 
+            cursor: pointer; width: 44px; height: 32px; /* Bigger touch area */
+            display: flex; align-items: center; justify-content: center; 
+            margin-right: 2px; color: #fff; font-size: 16px; 
+            user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px;
+            z-index: 10; position: relative; /* Ensure it's on top */
+        }
+        .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.2); } 
+        .spacer { width: 44px; margin-right: 2px; } 
+        .hidden-task { display: none !important; }
+
+        .task-item input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-dim); border-radius: 50%; margin-right: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 5px; }
         .task-item input:checked { background-color: var(--check-bg); border-color: var(--check-bg); }
         .task-item input:checked::after { content: '✔'; color: #333; font-size: 14px; font-weight: 700; }
         .task-label { flex: 1; cursor: pointer; line-height: 1.5; font-size: 1.05em; color: #ececec; } 
@@ -134,18 +145,12 @@
         .log-input:focus { outline: 1px solid var(--box-color); }
         .btn-log-save { background: var(--box-color); color: #333; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; font-size: 0.9em; cursor: pointer; margin-top: 5px; }
 
-        /* STUDIOS (UPDATED V33) */
-        .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); }
+        /* STUDIOS (BUTTONS MOVED DOWN) */
+        .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); display: flex; flex-direction: column; }
         .studio-header { font-weight: 700; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; }
-        .studio-controls { display: flex; gap: 10px; margin-bottom: 10px; }
-        /* Nút Studio đồng bộ với nút Sửa Note */
-        .studio-btn { 
-            flex: 1; background: var(--text-dim); color: #222; border: none; 
-            padding: 10px 15px; border-radius: 6px; font-weight: 700; 
-            cursor: pointer; white-space: nowrap; font-size: 0.9em; /* Đồng bộ size */
-        }
+        .studio-controls { display: flex; gap: 10px; margin-top: 10px; } /* Moved margin to top */
+        .studio-btn { flex: 1; background: var(--text-dim); color: #222; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; font-size: 0.9em; }
         .btn-studio-delete { background-color: #444 !important; color: #888 !important; }
-        
         .studio-textarea { width: 100%; min-height: 200px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: var(--font-main); padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
         .studio-textarea:focus { outline: 1px solid var(--text-dim); }
         
@@ -227,24 +232,24 @@
 
     <div id="braindom-box" class="studio-box">
         <div class="studio-header">🧠 BRAINDOM STUDIO</div>
+        <textarea id="brain-dump-area" class="studio-textarea" placeholder="Nháp nhanh ý tưởng tại đây..."></textarea>
         <div class="studio-controls">
             <button class="studio-btn" onclick="saveAndArchive('braindom')">LƯU</button>
             <button class="studio-btn" onclick="openStudioArchive('braindom')">KHO</button>
             <button class="studio-btn" onclick="copyStudioContent('braindom')">COPY</button>
             <button class="studio-btn btn-studio-delete" onclick="clearStudio('braindom')">XÓA</button>
         </div>
-        <textarea id="brain-dump-area" class="studio-textarea" placeholder="Nháp nhanh ý tưởng tại đây..."></textarea>
     </div>
 
     <div id="writer-box" class="studio-box">
         <div class="studio-header">📖 WRITER STUDIO</div>
+        <textarea id="book-ideas-area" class="studio-textarea" placeholder="Viết và lưu lại..."></textarea>
         <div class="studio-controls">
             <button class="studio-btn" onclick="saveAndArchive('writer')">LƯU</button>
             <button class="studio-btn" onclick="openStudioArchive('writer')">KHO</button>
             <button class="studio-btn" onclick="copyStudioContent('writer')">COPY</button>
             <button class="studio-btn btn-studio-delete" onclick="clearStudio('writer')">XÓA</button>
         </div>
-        <textarea id="book-ideas-area" class="studio-textarea" placeholder="Viết và lưu lại..."></textarea>
     </div>
 
     <div id="toast">🎉 Xong thêm 1 việc!</div>
@@ -345,7 +350,7 @@
             document.getElementById('daily-quote-card').style.backgroundImage = `url('images/${randomImg}')`;
         }
 
-        const defaultData = `!!! Lam đây! Braindom & Writer đã được tối ưu!
+        const defaultData = `!!! Lam đây! Bản V34: Mobile Fixed!
 # A. 🔥 URGENT
 - [A-01] Mua bút vẽ | Màu nước Winsor & Newton
 - [A-02] Tham khảo web | https://google.com
@@ -450,7 +455,7 @@
             initFolding(container); calculateStats(); 
         }
 
-        // --- BRAINDOM & WRITER LOGIC (UNIFIED V33) ---
+        // --- BRAINDOM & WRITER LOGIC ---
         function saveAndArchive(type) {
             const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
             const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
@@ -459,10 +464,7 @@
             const content = document.getElementById(areaId).value.trim();
             if(!content) { alert("Chưa có nội dung để lưu!"); return; }
 
-            // 1. Save current state (Visual)
             localStorage.setItem(currentKey, content);
-
-            // 2. Append to Master Archive
             const now = new Date().toLocaleString();
             const separator = `\n\n--- ${now} ---\n`;
             const currentArchive = localStorage.getItem(archiveKey) || "";
@@ -747,9 +749,14 @@
                     const placeholder = item.querySelector('.toggle-placeholder');
                     if (nextItem && nextLevel > currentLevel) {
                         placeholder.innerHTML = '▶'; placeholder.className = 'toggle-btn';
+                        // Add click handler specifically to the toggle button
+                        placeholder.onclick = function(e) { 
+                            e.stopPropagation(); // Stop click from reaching the checkbox
+                            toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); 
+                        };
+                        
                         const isExpanded = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true';
                         if (isExpanded) { placeholder.classList.add('rotated'); placeholder.innerHTML = '▼'; }
-                        placeholder.onclick = function() { toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); };
                         if (!isExpanded) hideChildren(items, index, currentLevel);
                     } else { placeholder.className = 'spacer'; }
                 });
