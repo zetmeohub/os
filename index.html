@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V29.2</title>
+    <title>zetmeoOS - V30.0 (Quicksand)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="zetmeoOS">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/96/check-all--v1.png">
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/check-all--v1.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -17,6 +21,7 @@
             --bg-body: #232323; --bg-box: #2d2d2d;
             --text-main: #fcfcfc; --text-dim: #b0b0b0;
             --transition-speed: 0.3s;
+            --font-main: 'Quicksand', sans-serif; /* Font mới */
 
             /* --- THEME 1: PASTEL --- */
             --main-color: #FF90BC; --sub-1: #FFC0D9; --sub-2: #F9F9E0; --sub-3: #8ACDD7;
@@ -40,11 +45,15 @@
 
         body {
             background-color: var(--bg-body); color: var(--text-main);
-            font-family: 'Consolas', 'Segoe UI', sans-serif;
+            font-family: var(--font-main); /* Áp dụng font Quicksand */
             padding: 15px; max-width: 900px; margin: 0 auto; line-height: 1.5;
             padding-bottom: 120px; transition: all var(--transition-speed);
             -webkit-tap-highlight-color: transparent;
+            font-weight: 500;
         }
+
+        /* Áp dụng font cho các thành phần form */
+        button, input, textarea, select { font-family: var(--font-main); }
 
         /* --- HEADER & QUOTE --- */
         .header-section { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; margin-bottom: 20px; }
@@ -57,8 +66,8 @@
         }
         .quote-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.3)); z-index: 1; }
         .quote-content { position: relative; z-index: 2; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
-        .quote-text { font-size: 1.1em; font-weight: bold; font-style: italic; line-height: 1.4; margin-bottom: 10px; font-family: 'Georgia', serif; }
-        .quote-author { font-size: 0.85em; color: var(--sub-2); text-align: right; display: block; }
+        .quote-text { font-size: 1.1em; font-weight: 700; font-style: italic; line-height: 1.4; margin-bottom: 10px; }
+        .quote-author { font-size: 0.85em; color: var(--sub-2); text-align: right; display: block; font-weight: 600; }
 
         @media (max-width: 700px) { 
             .header-section { grid-template-columns: 1fr; } 
@@ -66,9 +75,9 @@
         }
 
         .stats-container { background-color: #1a1e24; border: 1px solid #444; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .stats-header { color: var(--sub-3); font-weight: bold; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 0.9em; }
+        .stats-header { color: var(--sub-3); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 0.9em; }
         .stat-row { margin-bottom: 8px; }
-        .stat-label { display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 4px; }
+        .stat-label { display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 4px; font-weight: 600; }
         .stat-bar-bg { background-color: #333; height: 6px; border-radius: 4px; overflow: hidden; }
         .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
         .bar-urgent { background-color: var(--col-urgent); } .bar-core { background-color: var(--col-core); } .bar-foundation { background-color: var(--col-found); } .bar-total { background: linear-gradient(90deg, var(--col-urgent), var(--col-core)); }
@@ -95,7 +104,7 @@
             padding: 15px; border-bottom: 1px solid #444;
             background: linear-gradient(to right, rgba(255,255,255,0.03), transparent);
         }
-        .box-title { margin: 0; color: var(--box-color); font-size: 1.4em; text-transform: uppercase; font-weight: bold; } /* Font size 1.4em */
+        .box-title { margin: 0; color: var(--box-color); font-size: 1.4em; text-transform: uppercase; font-weight: 700; }
         
         .header-timers { display: flex; gap: 8px; }
         .timer-btn {
@@ -110,7 +119,7 @@
         .tab-nav { display: flex; background: #222; border-bottom: 1px solid #444; }
         .tab-btn {
             flex: 1; padding: 12px; background: transparent; border: none; color: #777;
-            font-weight: bold; font-size: 0.9em; cursor: pointer; border-bottom: 3px solid transparent;
+            font-weight: 700; font-size: 0.9em; cursor: pointer; border-bottom: 3px solid transparent;
             text-transform: uppercase; transition: all 0.2s;
         }
         .tab-btn.active { color: var(--box-color); border-bottom-color: var(--box-color); background: rgba(255,255,255,0.02); }
@@ -125,10 +134,17 @@
             padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; 
             background-color: rgba(255,255,255,0.02);
         }
+        .task-item:hover { background-color: rgba(255,255,255,0.05); }
+        
         .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
         
-        .toggle-btn { cursor: pointer; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; margin-right: 5px; color: var(--sub-3); font-size: 14px; margin-top: 2px; }
+        /* FOLDING ARROW */
+        .toggle-btn { 
+            cursor: pointer; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; 
+            margin-right: 5px; color: var(--sub-3); font-size: 14px; margin-top: 2px; user-select: none;
+        }
         .rotated { transform: rotate(90deg); } .spacer { width: 25px; }
+        .hidden-task { display: none !important; } /* Class ẩn task con */
 
         .task-item input[type="checkbox"] { 
             appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-dim); border-radius: 50%; margin-right: 12px; 
@@ -139,7 +155,7 @@
         
         .task-label { flex: 1; cursor: pointer; line-height: 1.5; font-size: 1.05em; color: #ececec; } 
         .task-id-tag { 
-            font-family: 'Consolas', monospace; font-size: 0.85em; font-weight: bold; 
+            font-family: var(--font-main); font-size: 0.85em; font-weight: 700; 
             padding: 1px 6px; border-radius: 4px; margin-right: 8px; 
             color: #222; display: inline-block; background-color: var(--box-color, #ccc); 
         }
@@ -149,7 +165,7 @@
         .mini-progress-fill { height: 100%; background-color: var(--box-color); border-radius: 2px; width: 0%; transition: width 0.3s; }
         .has-children .mini-progress-container { display: inline-block; }
 
-        /* --- TAB CONTENT: NOTE (UPDATED COLORS) --- */
+        /* --- TAB CONTENT: NOTE --- */
         .box-note-display { 
             white-space: pre-wrap; color: #ddd; font-size: 0.95em; line-height: 1.6; 
             padding: 12px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px;
@@ -158,11 +174,11 @@
         .box-note-editor { 
             width: 100%; height: 150px; background: #222; border: 1px solid #555; 
             color: #eee; padding: 10px; border-radius: 6px; box-sizing: border-box; 
-            display: none; font-family: sans-serif; line-height: 1.5; margin-bottom: 10px;
+            display: none; line-height: 1.5; margin-bottom: 10px;
         }
         .note-controls { display: flex; gap: 10px; }
         .btn-note-action { 
-            padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; flex: 1; font-size: 0.9em;
+            padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; flex: 1; font-size: 0.9em;
         }
         .btn-note-edit { background: var(--box-color); color: #333; }
         .btn-note-save { background: var(--box-color); color: #333; display: none; } /* Màu động theo Box */
@@ -171,26 +187,30 @@
         /* --- TAB CONTENT: LOG --- */
         .log-form { display: flex; flex-direction: column; gap: 15px; padding-top: 5px;}
         .log-input-group { display: flex; flex-direction: column; gap: 5px; }
-        .log-label { font-size: 0.8em; color: #888; font-weight: bold; text-transform: uppercase; }
+        .log-label { font-size: 0.8em; color: #888; font-weight: 700; text-transform: uppercase; }
         .log-input { 
             background: #222; border: 1px solid #555; color: #fff; padding: 12px; border-radius: 6px; font-size: 1.1em; 
         }
         .log-input:focus { outline: 1px solid var(--box-color); }
+        
+        /* FIX BUTTON LƯU LOG SIZE */
         .btn-log-save { 
-            background: var(--box-color); color: #333; border: none; padding: 12px; 
-            border-radius: 6px; font-weight: bold; font-size: 1em; cursor: pointer; margin-top: 5px;
+            background: var(--box-color); color: #333; border: none; 
+            padding: 10px 15px; /* Giống nút Sửa note */
+            border-radius: 6px; font-weight: 700; font-size: 0.9em; /* Giống nút Sửa note */
+            cursor: pointer; margin-top: 5px;
         }
 
-        /* --- STUDIO STYLES (UPDATED FONT SIZE & TITLE) --- */
+        /* --- STUDIO STYLES --- */
         .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); }
         .studio-header { 
-            font-weight: bold; color: var(--text-dim); margin-bottom: 10px; 
-            text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; /* Đồng bộ size với Session A-D */
+            font-weight: 700; color: var(--text-dim); margin-bottom: 10px; 
+            text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; 
         }
         .studio-controls { display: flex; gap: 5px; margin-bottom: 10px; }
-        .studio-select { flex: 1; background: #333; color: #eee; border: 1px solid #555; padding: 10px; border-radius: 6px; font-family: 'Segoe UI', sans-serif; font-size: 0.9em; min-width: 0;}
-        .studio-btn { width: 90px; background: var(--text-dim); color: #222; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 0.8em; }
-        .studio-textarea { width: 100%; min-height: 180px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: 'Consolas', 'Segoe UI', sans-serif; padding: 10px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
+        .studio-select { flex: 1; background: #333; color: #eee; border: 1px solid #555; padding: 10px; border-radius: 6px; font-size: 0.9em; min-width: 0;}
+        .studio-btn { width: 90px; background: var(--text-dim); color: #222; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; font-size: 0.8em; }
+        .studio-textarea { width: 100%; min-height: 180px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; padding: 10px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
         .studio-textarea:focus { outline: 1px solid var(--text-dim); }
         #braindom-box { border-color: var(--sub-2); } #braindom-box .studio-header { color: var(--sub-2); } #braindom-box .studio-btn { background-color: var(--sub-2); }
         #writer-box { border-color: var(--sub-1); } #writer-box .studio-header { color: var(--sub-1); } #writer-box .studio-btn { background-color: var(--sub-1); }
@@ -199,7 +219,7 @@
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #444; z-index: 1000; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -4px 15px rgba(0,0,0,0.3); }
         .nav-item { background: transparent; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 2px; }
         .nav-item:active { color: var(--main-color); transform: scale(0.9); }
-        .nav-label { font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; }
 
         /* --- GHOST ELEVATOR --- */
         .scroll-widget { position: fixed; bottom: 75px; right: 15px; z-index: 990; display: flex; flex-direction: column; gap: 10px; opacity: 0.3; transition: opacity 0.3s; }
@@ -213,20 +233,20 @@
         #editor-container { flex: 3; display: flex; gap: 10px; overflow: hidden; }
         #history-panel { flex: 1; border-left: 1px solid #444; padding-left: 10px; display: flex; flex-direction: column; overflow: hidden; }
         .editor-col { flex: 1; display: flex; flex-direction: column; }
-        .editor-label { font-weight: bold; color: var(--sub-2); margin-bottom: 5px; display: block;}
-        textarea { background-color: #111; color: #eee; border: 1px solid #555; padding: 10px; flex: 1; font-family: monospace; resize: none; margin-bottom: 10px; font-size: 16px; line-height: 1.6; box-sizing: border-box; }
+        .editor-label { font-weight: 700; color: var(--sub-2); margin-bottom: 5px; display: block;}
+        textarea { background-color: #111; color: #eee; border: 1px solid #555; padding: 10px; flex: 1; resize: none; margin-bottom: 10px; font-size: 16px; line-height: 1.6; box-sizing: border-box; }
         
         .data-center-row { background: #222; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; margin-bottom: 10px; align-items: center; justify-content: center; }
-        .btn-data { background-color: var(--main-color); color: #4a2c2a; border: none; font-weight: bold; padding: 8px 12px; font-size: 0.8em; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        .btn-data { background-color: var(--main-color); color: #4a2c2a; border: none; font-weight: 700; padding: 8px 12px; font-size: 0.8em; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
         .modal-actions { margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .btn-save { background-color: var(--check-bg); border: none; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
-        .btn-close { background-color: #444; border: 1px solid #666; color: #eee; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; width: 100%; font-size: 0.9em;}
-        .btn-compare { background-color: var(--sub-3); border: none; padding: 12px 0; cursor: pointer; font-weight: bold; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
+        .btn-save { background-color: var(--check-bg); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
+        .btn-close { background-color: #444; border: 1px solid #666; color: #eee; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; width: 100%; font-size: 0.9em;}
+        .btn-compare { background-color: var(--sub-3); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
         
-        #toast { visibility: hidden; min-width: 250px; background-color: var(--check-bg); color: #333; font-weight: bold; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); }
+        #toast { visibility: hidden; min-width: 250px; background-color: var(--check-bg); color: #333; font-weight: 700; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         #restore-input { display: none; }
-        #diff-view { flex: 1; background-color: #0d1117; border: 1px solid #444; padding: 15px; overflow-y: auto; font-family: monospace; font-size: 17px; line-height: 1.6; display: none; }
+        #diff-view { flex: 1; background-color: #0d1117; border: 1px solid #444; padding: 15px; overflow-y: auto; font-size: 17px; line-height: 1.6; display: none; }
         .diff-line { padding: 2px 5px; border-bottom: 1px solid #222; white-space: pre-wrap; word-break: break-all; }
         .diff-added { background-color: var(--diff-add-bg); color: var(--diff-add-text); border-left: 3px solid var(--check-bg); }
         .diff-removed { background-color: var(--diff-rem-bg); color: var(--diff-rem-text); border-left: 3px solid var(--main-color); text-decoration: line-through; opacity: 0.7; }
@@ -346,7 +366,7 @@
     <div id="archive-modal">
         <div class="modal-content">
             <h3 style="color:var(--pastel-lavender); margin-top:0;">📚 BẢN THẢO CHUNG</h3>
-            <textarea id="archive-textarea" style="flex:1; background:#1a1a1a; color:#eee; border:1px solid #555; padding:15px; font-family:'Consolas', monospace; resize:none; font-size:16px; box-sizing: border-box;"></textarea>
+            <textarea id="archive-textarea" style="flex:1; background:#1a1a1a; color:#eee; border:1px solid #555; padding:15px; resize:none; font-size:16px; box-sizing: border-box;"></textarea>
             <div class="modal-actions">
                 <button class="btn-data" onclick="exportMasterDraft()" style="border-color:var(--check-bg); color:var(--check-bg)">💾 XUẤT .TXT</button>
                 <button class="btn-close" onclick="document.getElementById('archive-modal').style.display='none'">Đóng</button>
@@ -374,7 +394,7 @@
             document.getElementById('daily-quote-card').style.backgroundImage = `url('images/${randomImg}')`;
         }
 
-        const defaultData = `!!! Lam đây! Tab mode activated!
+        const defaultData = `!!! Lam đây! Giao diện mới đã hoàn tất!
 # A. 🔥 URGENT
 - [A-01] Mua bút vẽ | Màu nước Winsor & Newton
 - [A-02] Tham khảo web | https://google.com
@@ -492,6 +512,9 @@
                         li.className = `task-item indent-${level}`;
                         li.setAttribute('data-id', taskId);
                         
+                        // QUAN TRỌNG: GẮN ATTRIBUTE LEVEL CHO FOLDING
+                        li.setAttribute('data-level', level); 
+
                         li.innerHTML = `
                             <span class="toggle-placeholder"><span class="spacer"></span></span>
                             <input type="checkbox" id="${taskId}" onclick="checkTask(this)">
@@ -509,14 +532,9 @@
 
         // --- TAB LOGIC (FIXED) ---
         function switchBoxTab(btn, boxId, tabName) {
-            // Find parent Box container
             const box = btn.closest('.box');
-            
-            // Deactivate all tabs & buttons in this box
             box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            
-            // Activate selected
             btn.classList.add('active');
             document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active');
         }
@@ -542,7 +560,7 @@
             const content = document.getElementById(`note-editor-${boxId}`).value;
             localStorage.setItem(`zetmeo_note_${boxId}`, content);
             document.getElementById(`note-display-${boxId}`).innerText = content || "(Chưa có ghi chú)";
-            cancelBoxNote(boxId); // Reset view
+            cancelBoxNote(boxId); 
         }
         function cancelBoxNote(boxId) {
             document.getElementById(`note-display-${boxId}`).style.display = 'block';
@@ -557,25 +575,20 @@
             const code = document.getElementById(`log-code-${boxId}`).value.trim();
             const min = parseInt(document.getElementById(`log-time-${boxId}`).value);
             if (!code || isNaN(min) || min <= 0) { alert("Nhập thiếu Code hoặc Time!"); return; }
-            
-            // Find task ID by Code (Scan DOM)
             let foundId = null;
             document.querySelectorAll('.task-item').forEach(item => {
                 if(item.innerText.includes(`[${code}]`) || item.innerText.includes(code)) {
                     foundId = item.getAttribute('data-id');
                 }
             });
-
             if(foundId) {
                 logTime(foundId, min);
                 document.getElementById(`log-time-${boxId}`).value = '';
                 alert(`✅ Đã log ${min}p cho ${code}`);
-            } else {
-                alert("❌ Không tìm thấy mã task này!");
-            }
+            } else { alert("❌ Không tìm thấy mã task này!"); }
         }
 
-        // --- TIMER LOGIC (HEADER) ---
+        // --- TIMER LOGIC ---
         let activeInterval, audioCtx;
         function playBeep() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'sine'; o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.5); g.gain.setValueAtTime(0.5, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); o.start(); o.stop(audioCtx.currentTime + 0.5); }
 
@@ -609,7 +622,7 @@
             update(); activeInterval = setInterval(update, 1000); 
         }
 
-        // --- CORE FUNCTIONS (PRESERVED) ---
+        // --- CORE FUNCTIONS ---
         function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'classic' ? '' : 'classic'); localStorage.setItem('theme', document.body.getAttribute('data-theme')); }
         function saveBrainDump() { localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); }
         function loadBrainDump() { document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || ''; }
