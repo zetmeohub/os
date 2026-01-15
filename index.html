@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V34.0</title>
+    <title>zetmeoOS - V35.0 (Auto-Save)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -46,6 +46,19 @@
             -webkit-tap-highlight-color: transparent; font-weight: 500;
         }
         button, input, textarea, select { font-family: var(--font-main); }
+
+        /* SYNC STATUS BADGE (NEW V35) */
+        #sync-badge {
+            position: fixed; top: 15px; right: 15px; z-index: 9999;
+            padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700;
+            display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: all 0.3s;
+        }
+        .status-waiting { background: #f1c40f; color: #222; display: flex !important; animation: pulse-yellow 2s infinite; }
+        .status-saving { background: #3498db; color: #fff; display: flex !important; }
+        .status-synced { background: #2ecc71; color: #fff; display: flex !important; }
+        .status-error { background: #e74c3c; color: #fff; display: flex !important; }
+
+        @keyframes pulse-yellow { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         /* HEADER */
         .header-section { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; margin-bottom: 20px; }
@@ -99,19 +112,18 @@
         .tab-pane { display: none; padding: 15px; min-height: 100px; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s; }
 
-        /* TASK LIST & FOLDING FIX V34 */
+        /* TASK LIST */
         .task-list { list-style: none; padding: 0; margin: 0; }
         .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); }
         .task-item:hover { background-color: rgba(255,255,255,0.05); }
         .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
         
-        /* IMPROVED TOGGLE BTN FOR MOBILE - Z-INDEX BOOST */
         .toggle-btn { 
-            cursor: pointer; width: 44px; height: 32px; /* Bigger touch area */
+            cursor: pointer; width: 44px; height: 32px;
             display: flex; align-items: center; justify-content: center; 
             margin-right: 2px; color: #fff; font-size: 16px; 
             user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px;
-            z-index: 10; position: relative; /* Ensure it's on top */
+            z-index: 10; position: relative; 
         }
         .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.2); } 
         .spacer { width: 44px; margin-right: 2px; } 
@@ -145,10 +157,10 @@
         .log-input:focus { outline: 1px solid var(--box-color); }
         .btn-log-save { background: var(--box-color); color: #333; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; font-size: 0.9em; cursor: pointer; margin-top: 5px; }
 
-        /* STUDIOS (BUTTONS MOVED DOWN) */
+        /* STUDIOS */
         .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); display: flex; flex-direction: column; }
         .studio-header { font-weight: 700; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; }
-        .studio-controls { display: flex; gap: 10px; margin-top: 10px; } /* Moved margin to top */
+        .studio-controls { display: flex; gap: 10px; margin-top: 10px; }
         .studio-btn { flex: 1; background: var(--text-dim); color: #222; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; font-size: 0.9em; }
         .btn-studio-delete { background-color: #444 !important; color: #888 !important; }
         .studio-textarea { width: 100%; min-height: 200px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: var(--font-main); padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
@@ -208,6 +220,8 @@
 </head>
 <body>
 
+    <div id="sync-badge" class=""></div>
+
     <div class="header-section">
         <div class="quote-card" id="daily-quote-card">
             <div class="quote-overlay"></div>
@@ -256,8 +270,8 @@
     
     <div class="bottom-nav">
         <button class="nav-item" onclick="toggleTheme()"><span>🎨</span><span class="nav-label">Theme</span></button>
-        <button class="nav-item" onclick="syncUp()"><span>☁️</span><span class="nav-label">Upload</span></button>
-        <button class="nav-item" onclick="syncDown()"><span>🌨️</span><span class="nav-label">Download</span></button>
+        <button class="nav-item" onclick="syncUp(false)"><span>☁️</span><span class="nav-label">Upload</span></button>
+        <button class="nav-item" onclick="syncDown(false)"><span>🌨️</span><span class="nav-label">Download</span></button>
         <button class="nav-item" onclick="openModal()"><span>⚙️</span><span class="nav-label">Setting</span></button>
     </div>
 
@@ -341,6 +355,47 @@
         };
         const quotesDB = [{t:"Chúng ta đau khổ trong tưởng tượng nhiều hơn là trong thực tế.",a:"Seneca"},{t:"Kỷ luật là làm những điều bạn ghét như thể bạn yêu thích nó.",a:"Mike Tyson"},{t:"Cách tốt nhất để dự đoán tương lai là tạo ra nó.",a:"Peter Drucker"},{t:"Tập trung là nghệ thuật biết nói KHÔNG.",a:"Steve Jobs"},{t:"Không có áp lực, không có kim cương.",a:"Thomas Carlyle"}];
 
+        // --- AUTO-SAVE SYSTEM (V35 CORE) ---
+        let autoSaveTimer;
+        const SAVE_DELAY = 5000; // 5 seconds debounce
+
+        function updateSyncStatus(status) {
+            const badge = document.getElementById('sync-badge');
+            badge.className = ''; 
+            
+            switch(status) {
+                case 'waiting':
+                    badge.innerText = "⏳ Đang chờ...";
+                    badge.classList.add('status-waiting');
+                    break;
+                case 'saving':
+                    badge.innerText = "☁️ Đang lưu...";
+                    badge.classList.add('status-saving');
+                    break;
+                case 'synced':
+                    badge.innerText = "✅ Đã đồng bộ";
+                    badge.classList.add('status-synced');
+                    setTimeout(() => { badge.style.display = 'none'; }, 3000); // Hide after 3s
+                    break;
+                case 'error':
+                    badge.innerText = "❌ Lỗi mạng!";
+                    badge.classList.add('status-error');
+                    break;
+                default:
+                    badge.style.display = 'none';
+            }
+        }
+
+        function triggerAutoSave() {
+            updateSyncStatus('waiting');
+            if (autoSaveTimer) clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                syncUp(true); // Trigger Auto Sync
+            }, SAVE_DELAY);
+        }
+
+        // --- END AUTO-SAVE SYSTEM ---
+
         function initDailyQuote() {
             const today = new Date(); const start = new Date(today.getFullYear(),0,0); const diff = today-start; const oneDay = 1000*60*60*24;
             const dayOfYear = Math.floor(diff/oneDay); const quote = quotesDB[dayOfYear%quotesDB.length];
@@ -350,7 +405,7 @@
             document.getElementById('daily-quote-card').style.backgroundImage = `url('images/${randomImg}')`;
         }
 
-        const defaultData = `!!! Lam đây! Bản V34: Mobile Fixed!
+        const defaultData = `!!! Lam đây! Auto-Save đã kích hoạt!
 # A. 🔥 URGENT
 - [A-01] Mua bút vẽ | Màu nước Winsor & Newton
 - [A-02] Tham khảo web | https://google.com
@@ -474,6 +529,8 @@
             document.getElementById('toast').innerText = "✅ Đã lưu & thêm vào Kho!";
             document.getElementById('toast').className = "show";
             setTimeout(()=>document.getElementById('toast').className="", 3000);
+            
+            triggerAutoSave(); // Trigger Auto Save
         }
 
         function openStudioArchive(type) {
@@ -503,6 +560,7 @@
                 const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
                 document.getElementById(areaId).value = "";
                 localStorage.setItem(currentKey, "");
+                triggerAutoSave(); // Trigger Auto Save
             }
         }
 
@@ -551,6 +609,7 @@
             saveArchiveData(archiveArr);
             localStorage.setItem('dashboardData', newLines.join('\n'));
             alert(`✅ Đã lưu trữ ${removedCount} task thành công!`);
+            triggerAutoSave(); // Force Auto Save
             location.reload();
         }
 
@@ -605,6 +664,7 @@
 
             localStorage.setItem('dashboardData', currentData);
             alert("✅ Đã khôi phục!");
+            triggerAutoSave(); // Force Auto Save
             location.reload();
         }
 
@@ -639,6 +699,7 @@
             localStorage.setItem(`zetmeo_note_${boxId}`, content);
             document.getElementById(`note-display-${boxId}`).innerText = content || "(Chưa có ghi chú)";
             cancelBoxNote(boxId); 
+            triggerAutoSave(); // Trigger Auto Save
         }
         function cancelBoxNote(boxId) {
             document.getElementById(`note-display-${boxId}`).style.display = 'block';
@@ -661,6 +722,7 @@
                 logTime(foundId, min);
                 document.getElementById(`log-time-${boxId}`).value = '';
                 alert(`✅ Đã log ${min}p cho ${code}`);
+                triggerAutoSave(); // Trigger Auto Save
             } else { alert("❌ Không tìm thấy mã task này!"); }
         }
 
@@ -686,18 +748,59 @@
                 else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; }
             } catch (error) { return null; }
         }
-        async function syncUp() { if(!confirm("Upload?")) return; const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})}).then(r=>r.ok?alert("✅ OK"):alert("Lỗi")).finally(()=>btn.innerHTML=oldText); }
-        async function syncDown() { if(!confirm("Download?")) return; const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } }).finally(()=>btn.innerHTML=oldText); }
+        
+        // MODIFIED SYNC UP FOR AUTO-SAVE
+        async function syncUp(isAuto = false) { 
+            if(!isAuto && !confirm("Upload thủ công?")) return; 
+            
+            // Cancel auto-timer if manual
+            if(!isAuto && autoSaveTimer) clearTimeout(autoSaveTimer);
+
+            // Update UI to Saving
+            if(isAuto) updateSyncStatus('saving');
+            const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; 
+            if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>";
+            
+            const rid = await getRecordID(); if(!rid) { if(isAuto) updateSyncStatus('error'); return; }
+            
+            fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})})
+            .then(r=> {
+                if(r.ok) {
+                    if(!isAuto) alert("✅ OK");
+                    if(isAuto) updateSyncStatus('synced');
+                } else {
+                    if(!isAuto) alert("Lỗi");
+                    if(isAuto) updateSyncStatus('error');
+                }
+            })
+            .catch(() => { if(isAuto) updateSyncStatus('error'); })
+            .finally(()=> { if(!isAuto) btn.innerHTML=oldText; });
+        }
+
+        async function syncDown(isAuto = false) { 
+            if(!isAuto && !confirm("Download?")) return; 
+            const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; 
+            if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; 
+            const rid = await getRecordID(); if(!rid) return; 
+            fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ 
+                if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } 
+            }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); 
+        }
+        
         function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
         function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
         function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
         function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('edit-modal').style.display='none'; }
-        function saveData(){ localStorage.setItem('dashboardData', document.getElementById('input-data').value); renderDashboard(document.getElementById('input-data').value); closeModal(); }
+        function saveData(){ localStorage.setItem('dashboardData', document.getElementById('input-data').value); renderDashboard(document.getElementById('input-data').value); closeModal(); triggerAutoSave(); }
         function toggleCompare() { const btn = document.getElementById('btn-compare'); const colOld = document.getElementById('col-old'); const inputArea = document.getElementById('input-data'); const diffView = document.getElementById('diff-view'); const historyPanel = document.getElementById('history-panel'); if (inputArea.style.display !== 'none') { btn.innerText = "👁️ EDIT"; btn.style.background = "#fff"; colOld.style.display = 'flex'; inputArea.style.display = 'none'; diffView.style.display = 'block'; historyPanel.style.display = 'none'; diffView.innerHTML = generateDiffHtml(document.getElementById('old-data').value, inputArea.value); } else { btn.innerText = "So Sánh"; btn.style.background = "var(--sub-3)"; colOld.style.display = 'none'; inputArea.style.display = 'block'; diffView.style.display = 'none'; historyPanel.style.display = 'flex'; } }
         function generateDiffHtml(oldText, newText) { const oldLines = oldText.split('\n').map(l => l.trim()).filter(l => l); const newLines = newText.split('\n').map(l => l.trim()).filter(l => l); let html = ''; newLines.forEach(line => { if (oldLines.includes(line)) html += `<div class="diff-line diff-same">${line}</div>`; else html += `<div class="diff-line diff-added">+ ${line}</div>`; }); let removedHtml = ''; oldLines.forEach(line => { if (!newLines.includes(line)) removedHtml += `<div class="diff-line diff-removed">- ${line}</div>`; }); return html + (removedHtml ? `<div style="margin-top:10px; border-top:1px dashed #555; padding-top:5px; font-size:0.8em; color:#888">ĐÃ XÓA:</div>` + removedHtml : ''); }
         
-        function checkTask(cb) { localStorage.setItem(cb.id, cb.checked); calculateStats(); if(cb.checked) { document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",2000);} }
+        function checkTask(cb) { 
+            localStorage.setItem(cb.id, cb.checked); 
+            calculateStats(); 
+            triggerAutoSave(); // Trigger Auto Save on Check
+        }
         function calculateStats() {
             const statsContainer = document.getElementById('stats-content'); statsContainer.innerHTML = ''; 
             const boxes = document.querySelectorAll('.box'); updateMiniProgressBars();
@@ -749,12 +852,10 @@
                     const placeholder = item.querySelector('.toggle-placeholder');
                     if (nextItem && nextLevel > currentLevel) {
                         placeholder.innerHTML = '▶'; placeholder.className = 'toggle-btn';
-                        // Add click handler specifically to the toggle button
                         placeholder.onclick = function(e) { 
-                            e.stopPropagation(); // Stop click from reaching the checkbox
+                            e.stopPropagation(); 
                             toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); 
                         };
-                        
                         const isExpanded = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true';
                         if (isExpanded) { placeholder.classList.add('rotated'); placeholder.innerHTML = '▼'; }
                         if (!isExpanded) hideChildren(items, index, currentLevel);
@@ -786,13 +887,18 @@
             initDailyQuote(); 
             if (localStorage.getItem('theme') === 'classic') document.body.setAttribute('data-theme', 'classic');
             initAutoBackupScheduler();
-            // Load current visual state
             document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || '';
             document.getElementById('book-ideas-area').value = localStorage.getItem('zetmeo_writer_content') || '';
             
-            // Auto-save visual state on typing
-            document.getElementById('brain-dump-area').addEventListener('input', () => { localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); });
-            document.getElementById('book-ideas-area').addEventListener('input', () => { localStorage.setItem('zetmeo_writer_content', document.getElementById('book-ideas-area').value); });
+            // Auto-save triggers
+            document.getElementById('brain-dump-area').addEventListener('input', () => { 
+                localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); 
+                triggerAutoSave(); 
+            });
+            document.getElementById('book-ideas-area').addEventListener('input', () => { 
+                localStorage.setItem('zetmeo_writer_content', document.getElementById('book-ideas-area').value); 
+                triggerAutoSave(); 
+            });
         }
     </script>
 </body>
