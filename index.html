@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V29.1 (Fixed Tabs)</title>
+    <title>zetmeoOS - V29.2</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -95,7 +95,7 @@
             padding: 15px; border-bottom: 1px solid #444;
             background: linear-gradient(to right, rgba(255,255,255,0.03), transparent);
         }
-        .box-title { margin: 0; color: var(--box-color); font-size: 1.2em; text-transform: uppercase; font-weight: bold; }
+        .box-title { margin: 0; color: var(--box-color); font-size: 1.4em; text-transform: uppercase; font-weight: bold; } /* Font size 1.4em */
         
         .header-timers { display: flex; gap: 8px; }
         .timer-btn {
@@ -149,7 +149,7 @@
         .mini-progress-fill { height: 100%; background-color: var(--box-color); border-radius: 2px; width: 0%; transition: width 0.3s; }
         .has-children .mini-progress-container { display: inline-block; }
 
-        /* --- TAB CONTENT: NOTE --- */
+        /* --- TAB CONTENT: NOTE (UPDATED COLORS) --- */
         .box-note-display { 
             white-space: pre-wrap; color: #ddd; font-size: 0.95em; line-height: 1.6; 
             padding: 12px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px;
@@ -165,7 +165,7 @@
             padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; flex: 1; font-size: 0.9em;
         }
         .btn-note-edit { background: var(--box-color); color: #333; }
-        .btn-note-save { background: var(--check-bg); color: #333; display: none; }
+        .btn-note-save { background: var(--box-color); color: #333; display: none; } /* Màu động theo Box */
         .btn-note-cancel { background: #444; color: #eee; display: none; }
 
         /* --- TAB CONTENT: LOG --- */
@@ -181,9 +181,12 @@
             border-radius: 6px; font-weight: bold; font-size: 1em; cursor: pointer; margin-top: 5px;
         }
 
-        /* --- STUDIO STYLES --- */
+        /* --- STUDIO STYLES (UPDATED FONT SIZE & TITLE) --- */
         .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); }
-        .studio-header { font-weight: bold; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .studio-header { 
+            font-weight: bold; color: var(--text-dim); margin-bottom: 10px; 
+            text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; /* Đồng bộ size với Session A-D */
+        }
         .studio-controls { display: flex; gap: 5px; margin-bottom: 10px; }
         .studio-select { flex: 1; background: #333; color: #eee; border: 1px solid #555; padding: 10px; border-radius: 6px; font-family: 'Segoe UI', sans-serif; font-size: 0.9em; min-width: 0;}
         .studio-btn { width: 90px; background: var(--text-dim); color: #222; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; font-size: 0.8em; }
@@ -273,7 +276,7 @@
     </div>
 
     <div id="writer-box" class="studio-box">
-        <div class="studio-header">📖 WRITER'S STUDIO (GÓC Ý TƯỞNG VIẾT SÁCH)</div>
+        <div class="studio-header">📖 WRITER STUDIO</div>
         <div class="studio-controls">
             <select id="writer-action" class="studio-select">
                 <option value="idea">💎 Chèn: Ý tưởng thô</option>
@@ -382,7 +385,7 @@
 # C. 🧱 FOUNDATION
 - [C-01] Học tiếng Anh
 
-# D. 💤 KHO Ý TƯỞNG / (LÀM KHI RẢNH)
+# D. 💤 KHO Ý TƯỞNG
 - [D-01] Sắp xếp lại tủ sách`;
 
         function renderDashboard(text) {
