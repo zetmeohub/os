@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - Dashboard 27.0 (App UX)</title>
+    <title>zetmeoOS - Dashboard 27.1 (Square UI)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -51,13 +51,24 @@
             background-color: var(--bg-body); color: var(--text-main);
             font-family: 'Consolas', 'Segoe UI', sans-serif;
             padding: 20px; max-width: 900px; margin: 0 auto; line-height: 1.6;
-            padding-bottom: 120px; transition: all var(--transition-speed); /* Padding bottom lớn để tránh Bottom Bar */
+            padding-bottom: 120px; transition: all var(--transition-speed);
             -webkit-tap-highlight-color: transparent;
         }
 
         /* --- HEADER & QUOTE --- */
         .header-section { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; margin-bottom: 25px; min-height: 220px; }
-        @media (max-width: 700px) { .header-section { grid-template-columns: 1fr; } }
+        
+        /* MOBILE RESPONSIVE FIX */
+        @media (max-width: 700px) { 
+            .header-section { grid-template-columns: 1fr; } 
+            
+            /* --- FIX HÌNH VUÔNG TRÊN MOBILE --- */
+            .quote-card {
+                aspect-ratio: 1 / 1; /* Ép buộc tỷ lệ 1:1 */
+                width: 100%;
+                min-height: auto; /* Bỏ chiều cao tối thiểu cũ */
+            }
+        }
 
         .quote-card {
             background-color: #222; border-radius: 12px; border: 2px solid var(--pastel-red);
@@ -191,7 +202,7 @@
         }
         .scroll-btn:hover { background: var(--pastel-blue); border-color: var(--pastel-blue); color: #333; }
 
-        /* MODAL & HELPERS */
+        /* MODAL */
         #edit-modal, #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background-color: var(--bg-box); padding: 20px; border-radius: 10px; width: 95%; max-width: 1100px; display: flex; flex-direction: column; height: 90vh; }
         .modal-body { display: flex; flex: 1; gap: 20px; overflow: hidden; position: relative; }
@@ -395,9 +406,12 @@
             const quoteContainer = document.getElementById('quote-text');
             quoteContainer.innerHTML = `<span style="display:block; font-size:0.9em; margin-bottom:8px; color:var(--pastel-pink); font-family:'Segoe UI', sans-serif;">Anh Meo à,</span> "${quote.t}"`;
             document.getElementById('quote-author').textContent = `— ${quote.a}`;
-            const imgIndex = (dayOfYear % 10) + 1; 
+            
+            // --- XỬ LÝ ẢNH (Ưu tiên ảnh có sẵn 5.jpg, 6.jpg) ---
+            const myImages = ['5.jpg', '6.jpg']; 
+            const randomImg = myImages[Math.floor(Math.random() * myImages.length)];
             const card = document.getElementById('daily-quote-card');
-            card.style.backgroundImage = `url('images/${imgIndex}.jpg')`;
+            card.style.backgroundImage = `url('images/${randomImg}')`;
         }
 
         const defaultData = `!!! Lam đây! Braindom Studio đã sẵn sàng!
@@ -720,13 +734,9 @@
 
         async function syncUp() {
             if (!confirm("⚠️ Upload sẽ GHI ĐÈ dữ liệu trên Cloud bằng dữ liệu hiện tại. Tiếp tục?")) return;
-            const btn = document.querySelector('.btn-sync'); // Visual feedback can be refined
-            // Find the sync button in the new dock
-            const buttons = document.querySelectorAll('.nav-item');
-            const syncBtn = buttons[1]; // Index 1 is Upload
-            const originalIcon = syncBtn.querySelector('span').innerText;
-            
-            syncBtn.querySelector('span').innerText = "⏳";
+            const btn = document.querySelectorAll('.nav-item')[1]; // Upload btn
+            const originalIcon = btn.querySelector('span').innerText;
+            btn.querySelector('span').innerText = "⏳";
 
             const recordId = await getRecordID();
             if (!recordId) return;
@@ -740,17 +750,14 @@
                 if (response.ok) alert("✅ Đã lưu lên Mây thành công!");
                 else alert("❌ Lỗi khi lưu! Dữ liệu quá lớn?");
             } catch (error) { alert("❌ Lỗi mạng: " + error.message); } 
-            finally { syncBtn.querySelector('span').innerText = originalIcon; }
+            finally { btn.querySelector('span').innerText = originalIcon; }
         }
 
         async function syncDown() {
             if (!confirm("⚠️ Download sẽ GHI ĐÈ dữ liệu máy này bằng dữ liệu trên Cloud. Tiếp tục?")) return;
-            
-            const buttons = document.querySelectorAll('.nav-item');
-            const syncBtn = buttons[2]; // Index 2 is Download
-            const originalIcon = syncBtn.querySelector('span').innerText;
-            
-            syncBtn.querySelector('span').innerText = "⏳";
+            const btn = document.querySelectorAll('.nav-item')[2]; // Download btn
+            const originalIcon = btn.querySelector('span').innerText;
+            btn.querySelector('span').innerText = "⏳";
 
             const recordId = await getRecordID();
             if (!recordId) return;
@@ -767,7 +774,7 @@
                     location.reload();
                 } else { alert("⚠️ Trên Cloud chưa có dữ liệu gì cả!"); }
             } catch (error) { alert("❌ Lỗi khi tải: " + error.message); } 
-            finally { syncBtn.querySelector('span').innerText = originalIcon; }
+            finally { btn.querySelector('span').innerText = originalIcon; }
         }
 
         // --- TIME TRACKER LOGIC ---
