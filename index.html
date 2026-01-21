@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V35.0 (Auto-Save)</title>
+    <title>zetmeoOS - V35.5 (Studio Editor)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -47,7 +47,7 @@
         }
         button, input, textarea, select { font-family: var(--font-main); }
 
-        /* SYNC STATUS BADGE (NEW V35) */
+        /* SYNC STATUS BADGE */
         #sync-badge {
             position: fixed; top: 15px; right: 15px; z-index: 9999;
             padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700;
@@ -197,7 +197,20 @@
         .btn-compare { background-color: var(--sub-3); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
         
         /* ARCHIVE LIST STYLES */
-        #archive-list-container, #studio-archive-content { overflow-y: auto; flex: 1; background: #1a1a1a; border: 1px solid #444; padding: 10px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; color: #ddd; }
+        #archive-list-container { overflow-y: auto; flex: 1; background: #1a1a1a; border: 1px solid #444; padding: 10px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; color: #ddd; }
+        /* Studio Archive Specific */
+        .studio-archive-textarea { flex: 1; background: #1a1a1a; color: #ccc; border: 1px solid #555; padding: 15px; overflow-y: auto; margin-bottom: 10px; font-family: monospace; resize: none; line-height: 1.5; font-size: 15px; }
+        .studio-archive-textarea:read-only { background: #111; cursor: default; }
+        .studio-archive-textarea:focus { outline: 1px solid var(--sub-3); background: #000; color: #fff; }
+        
+        /* New Archive Buttons */
+        .archive-toolbar { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-arc { padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; font-size: 0.9em; flex: 1; color: #333; }
+        .btn-arc-copy { background: var(--sub-3); }
+        .btn-arc-edit { background: var(--sub-2); }
+        .btn-arc-save { background: var(--check-bg); display: none; }
+        .btn-arc-close { background: #444; color: #eee; border: 1px solid #555; }
+
         .archive-item { background: #2d2d2d; border-bottom: 1px solid #444; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         .archive-content { color: #aaa; font-size: 0.9em; flex: 1; margin-right: 10px; }
         .archive-date { font-size: 0.7em; color: #666; display: block; margin-bottom: 2px; }
@@ -282,6 +295,7 @@
 
     <input type="file" id="restore-input" accept=".json" onchange="restoreData(this)">
 
+    <!-- MAIN SETTING MODAL -->
     <div id="edit-modal">
         <div class="modal-content">
             <h3 style="color:var(--pastel-lavender); margin-top:0; display:flex; justify-content:space-between;">
@@ -324,6 +338,7 @@
         </div>
     </div>
 
+    <!-- TASK ARCHIVE LIST MODAL -->
     <div id="archive-list-modal">
         <div class="modal-content">
             <h3 style="color:var(--col-core); margin-top:0;">🏛️ KHO LƯU TRỮ (Đã xong)</h3>
@@ -334,13 +349,19 @@
         </div>
     </div>
 
+    <!-- STUDIO ARCHIVE MODAL (UPDATED) -->
     <div id="studio-archive-modal">
         <div class="modal-content">
             <h3 id="studio-archive-title" style="color:var(--pastel-lavender); margin-top:0;">📚 KHO LƯU TRỮ</h3>
-            <div id="studio-archive-content" style="flex:1; background:#1a1a1a; color:#eee; border:1px solid #555; padding:15px; overflow-y:auto; margin-bottom:10px;"></div>
-            <div class="modal-actions">
-                <button class="btn-data" onclick="copyStudioArchiveText()" style="background:var(--check-bg); color:#333;">COPY TOÀN BỘ</button>
-                <button class="btn-close" onclick="document.getElementById('studio-archive-modal').style.display='none'">Đóng</button>
+            
+            <!-- Changed from DIV to TEXTAREA for editing -->
+            <textarea id="studio-archive-content" class="studio-archive-textarea" readonly></textarea>
+            
+            <div class="archive-toolbar">
+                <button class="btn-arc btn-arc-copy" onclick="copyStudioArchiveText()">COPY</button>
+                <button id="btn-arc-edit" class="btn-arc btn-arc-edit" onclick="startEditArchive()">SỬA</button>
+                <button id="btn-arc-save" class="btn-arc btn-arc-save" onclick="saveEditArchive()">LƯU</button>
+                <button class="btn-arc btn-arc-close" onclick="document.getElementById('studio-archive-modal').style.display='none'">ĐÓNG</button>
             </div>
         </div>
     </div>
@@ -523,7 +544,7 @@
             const now = new Date().toLocaleString();
             const separator = `\n\n--- ${now} ---\n`;
             const currentArchive = localStorage.getItem(archiveKey) || "";
-            const newArchive = currentArchive + separator + content;
+            const newArchive = separator + content + currentArchive; // Newest on top
             localStorage.setItem(archiveKey, newArchive);
 
             document.getElementById('toast').innerText = "✅ Đã lưu & thêm vào Kho!";
@@ -533,14 +554,51 @@
             triggerAutoSave(); // Trigger Auto Save
         }
 
+        // --- STUDIO ARCHIVE EDITOR LOGIC (NEW V35.5) ---
+        let currentStudioMode = '';
+
         function openStudioArchive(type) {
+            currentStudioMode = type;
             const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
-            const content = localStorage.getItem(archiveKey) || "(Chưa có nội dung lưu trữ)";
+            const content = localStorage.getItem(archiveKey) || "";
             const title = type === 'braindom' ? '🧠 KHO BRAINDOM' : '📖 KHO WRITER';
             
             document.getElementById('studio-archive-title').innerText = title;
-            document.getElementById('studio-archive-content').innerText = content;
+            const textArea = document.getElementById('studio-archive-content');
+            textArea.value = content;
+            
+            // Reset state
+            textArea.readOnly = true;
+            document.getElementById('btn-arc-edit').style.display = 'inline-block';
+            document.getElementById('btn-arc-save').style.display = 'none';
+
             document.getElementById('studio-archive-modal').style.display = 'flex';
+        }
+
+        function startEditArchive() {
+            const textArea = document.getElementById('studio-archive-content');
+            textArea.readOnly = false;
+            textArea.focus();
+            
+            document.getElementById('btn-arc-edit').style.display = 'none';
+            document.getElementById('btn-arc-save').style.display = 'inline-block';
+        }
+
+        function saveEditArchive() {
+            if(!currentStudioMode) return;
+            const textArea = document.getElementById('studio-archive-content');
+            const newContent = textArea.value;
+            const archiveKey = currentStudioMode === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
+            
+            localStorage.setItem(archiveKey, newContent);
+            
+            // Reset UI
+            textArea.readOnly = true;
+            document.getElementById('btn-arc-edit').style.display = 'inline-block';
+            document.getElementById('btn-arc-save').style.display = 'none';
+            
+            alert("✅ Đã cập nhật Kho!");
+            triggerAutoSave();
         }
 
         function copyStudioContent(type) {
@@ -550,7 +608,8 @@
         }
 
         function copyStudioArchiveText() {
-            navigator.clipboard.writeText(document.getElementById('studio-archive-content').innerText);
+            const text = document.getElementById('studio-archive-content').value;
+            navigator.clipboard.writeText(text);
             alert("Đã copy toàn bộ Kho lưu trữ!");
         }
 
@@ -788,6 +847,11 @@
         }
         
         function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
+        
+        function initAutoBackupScheduler() {
+            // Auto backup logic if needed (optional)
+        }
+
         function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
         function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
         function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
