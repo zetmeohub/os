@@ -3,903 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V35.0 (Auto-Save)</title>
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="zetmeoOS">
-    <link rel="apple-touch-icon" href="https://getdrawings.com/free-icon/cat-icon-png-53.png">
-    <link rel="icon" type="image/png" href="https://getdrawings.com/free-icon/cat-icon-png-53.png">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>zetmeoOS - V35.1 (Security Patch)</title>
 
     <style>
         :root {
             --bg-body: #232323; --bg-box: #2d2d2d;
             --text-main: #fcfcfc; --text-dim: #b0b0b0;
-            --transition-speed: 0.3s;
-            --font-main: 'Quicksand', sans-serif;
-
-            /* THEME COLORS */
             --main-color: #FF90BC; --sub-1: #FFC0D9; --sub-2: #F9F9E0; --sub-3: #8ACDD7;
-            --check-bg: #ABE7B2; --check-tick: #444;
-            
-            /* BOX COLORS */
-            --col-urgent: #FF90BC; --col-core: #8ACDD7; --col-found: #FFC0D9; --col-kho: #95a5a6;
-
-            --diff-add-bg: rgba(46, 160, 67, 0.15); --diff-add-text: #7ee787;
-            --diff-rem-bg: rgba(248, 81, 73, 0.15); --diff-rem-text: #ff7b72;
+            --check-bg: #ABE7B2; --col-urgent: #FF90BC; --col-core: #8ACDD7; --col-found: #FFC0D9; --col-kho: #95a5a6;
         }
 
-        [data-theme="classic"] {
-            --main-color: #ffadad; --sub-1: #e0bbe4; --sub-2: #ffdac1; --sub-3: #a0c4ff;
-            --check-bg: #4cd137; --check-tick: #fff;
-            --col-urgent: #ff6b6b; --col-core: #48dbfb; --col-found: #feca57; --col-kho: #b2bec3;
-        }
-
-        body {
-            background-color: var(--bg-body); color: var(--text-main);
-            font-family: var(--font-main); padding: 15px; max-width: 900px; margin: 0 auto; 
-            line-height: 1.5; padding-bottom: 120px; transition: all var(--transition-speed);
-            -webkit-tap-highlight-color: transparent; font-weight: 500;
-        }
-        button, input, textarea, select { font-family: var(--font-main); }
-
-        /* SYNC STATUS BADGE (NEW V35) */
-        #sync-badge {
-            position: fixed; top: 15px; right: 15px; z-index: 9999;
-            padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700;
-            display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: all 0.3s;
-        }
-        .status-waiting { background: #f1c40f; color: #222; display: flex !important; animation: pulse-yellow 2s infinite; }
-        .status-saving { background: #3498db; color: #fff; display: flex !important; }
-        .status-synced { background: #2ecc71; color: #fff; display: flex !important; }
-        .status-error { background: #e74c3c; color: #fff; display: flex !important; }
-
-        @keyframes pulse-yellow { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-        /* HEADER */
-        .header-section { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; margin-bottom: 20px; }
-        .quote-card {
-            background-color: #222; border-radius: 12px; border: 2px solid var(--main-color);
-            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
-            background-size: cover; background-position: center; transition: border-color var(--transition-speed);
-        }
-        .quote-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.3)); z-index: 1; }
-        .quote-content { position: relative; z-index: 2; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
-        .quote-text { font-size: 1.1em; font-weight: 700; font-style: italic; line-height: 1.4; margin-bottom: 10px; }
-        .quote-author { font-size: 0.85em; color: var(--sub-2); text-align: right; display: block; font-weight: 600; }
-        @media (max-width: 700px) { .header-section { grid-template-columns: 1fr; } .quote-card { aspect-ratio: 1 / 1; width: 100%; min-height: unset; box-sizing: border-box; } }
-
-        .stats-container { background-color: #1a1e24; border: 1px solid #444; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .stats-header { color: var(--sub-3); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 0.9em; }
-        .stat-row { margin-bottom: 8px; }
-        .stat-label { display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 4px; font-weight: 600; }
-        .stat-bar-bg { background-color: #333; height: 6px; border-radius: 4px; overflow: hidden; }
-        .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-        .bar-urgent { background-color: var(--col-urgent); } .bar-core { background-color: var(--col-core); } .bar-foundation { background-color: var(--col-found); } .bar-total { background: linear-gradient(90deg, var(--col-urgent), var(--col-core)); }
-
-        .lam-reminder-bar {
-            background-color: var(--main-color); color: #4a2c2a; padding: 12px 20px;
-            border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); font-weight: 700;
-            display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 30px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 1em;
-        }
-        .lam-icon { margin-right: 10px; font-size: 1.5em; animation: bounce 2s infinite; }
-        .lam-label { margin-right: 10px; text-transform: uppercase; font-size: 0.75em; letter-spacing: 1px; background: rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 6px; }
-
-        /* BOX */
-        .box { border: 1px solid #444; background-color: var(--bg-box); padding: 0; border-radius: 10px; margin-bottom: 25px; overflow: hidden; position: relative; }
-        .box[data-type*="URGENT"] { --box-color: var(--col-urgent); } 
-        .box[data-type*="CORE"] { --box-color: var(--col-core); } 
-        .box[data-type*="FOUNDATION"] { --box-color: var(--col-found); } 
-        .box[data-type*="KHO"] { --box-color: var(--col-kho); }
-
-        .box-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #444; background: linear-gradient(to right, rgba(255,255,255,0.03), transparent); }
-        .box-title { margin: 0; color: var(--box-color); font-size: 1.4em; text-transform: uppercase; font-weight: 700; }
-        .header-timers { display: flex; gap: 8px; }
-        .timer-btn { background: transparent; border: 1px solid var(--box-color); color: var(--box-color); padding: 4px 10px; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 0.8em; min-width: 35px; transition: all 0.2s; }
-        .timer-btn:active { background: var(--box-color); color: #333; }
-        .timer-running { background-color: #fff !important; color: #d63031 !important; border-color: #d63031 !important; animation: pulse 1s infinite; }
-
-        /* TABS */
-        .tab-nav { display: flex; background: #222; border-bottom: 1px solid #444; }
-        .tab-btn { flex: 1; padding: 12px; background: transparent; border: none; color: #777; font-weight: 700; font-size: 0.9em; cursor: pointer; border-bottom: 3px solid transparent; text-transform: uppercase; transition: all 0.2s; }
-        .tab-btn.active { color: var(--box-color); border-bottom-color: var(--box-color); background: rgba(255,255,255,0.02); }
-        .tab-pane { display: none; padding: 15px; min-height: 100px; }
-        .tab-pane.active { display: block; animation: fadeIn 0.3s; }
-
-        /* TASK LIST */
-        .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); }
-        .task-item:hover { background-color: rgba(255,255,255,0.05); }
-        .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
+        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Consolas', sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; padding-bottom: 120px; }
+        .box { border: 1px solid #444; background-color: var(--bg-box); padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 6px solid var(--main-color); }
+        h2 { color: var(--main-color); margin-top: 0; border-bottom: 1px dashed #555; }
         
-        .toggle-btn { 
-            cursor: pointer; width: 44px; height: 32px;
-            display: flex; align-items: center; justify-content: center; 
-            margin-right: 2px; color: #fff; font-size: 16px; 
-            user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px;
-            z-index: 10; position: relative; 
-        }
-        .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.2); } 
-        .spacer { width: 44px; margin-right: 2px; } 
-        .hidden-task { display: none !important; }
-
-        .task-item input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-dim); border-radius: 50%; margin-right: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 5px; }
-        .task-item input:checked { background-color: var(--check-bg); border-color: var(--check-bg); }
-        .task-item input:checked::after { content: '✔'; color: #333; font-size: 14px; font-weight: 700; }
-        .task-label { flex: 1; cursor: pointer; line-height: 1.5; font-size: 1.05em; color: #ececec; } 
-        .task-id-tag { font-family: var(--font-main); font-size: 0.85em; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 8px; color: #222; display: inline-block; background-color: var(--box-color, #ccc); }
-        .task-item input:checked + .task-label { text-decoration: line-through; color: #666; }
-        .task-item input:checked + .task-label .task-id-tag { opacity: 0.3; filter: grayscale(100%); }
-        .mini-progress-container { display: inline-block; width: 40px; height: 4px; background-color: #444; border-radius: 2px; margin-left: 5px; vertical-align: middle; display: none; }
-        .mini-progress-fill { height: 100%; background-color: var(--box-color); border-radius: 2px; width: 0%; transition: width 0.3s; }
-        .has-children .mini-progress-container { display: inline-block; }
-
-        /* TAB NOTE */
-        .box-note-display { white-space: pre-wrap; color: #ddd; font-size: 0.95em; line-height: 1.6; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px; margin-bottom: 15px; border: 1px dashed #444; }
-        .box-note-editor { width: 100%; height: 150px; background: #222; border: 1px solid #555; color: #eee; padding: 10px; border-radius: 6px; box-sizing: border-box; display: none; line-height: 1.5; margin-bottom: 10px; }
-        .note-controls { display: flex; gap: 10px; }
-        .btn-note-action { padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; flex: 1; font-size: 0.9em; }
-        .btn-note-edit { background: var(--box-color); color: #333; }
-        .btn-note-save { background: var(--box-color); color: #333; display: none; }
-        .btn-note-cancel { background: #444; color: #eee; display: none; }
-
-        /* TAB LOG */
-        .log-form { display: flex; flex-direction: column; gap: 15px; padding-top: 5px;}
-        .log-input-group { display: flex; flex-direction: column; gap: 5px; }
-        .log-label { font-size: 0.8em; color: #888; font-weight: 700; text-transform: uppercase; }
-        .log-input { background: #222; border: 1px solid #555; color: #fff; padding: 12px; border-radius: 6px; font-size: 1.1em; }
-        .log-input:focus { outline: 1px solid var(--box-color); }
-        .btn-log-save { background: var(--box-color); color: #333; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; font-size: 0.9em; cursor: pointer; margin-top: 5px; }
-
-        /* STUDIOS */
-        .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); display: flex; flex-direction: column; }
-        .studio-header { font-weight: 700; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; }
-        .studio-controls { display: flex; gap: 10px; margin-top: 10px; }
-        .studio-btn { flex: 1; background: var(--text-dim); color: #222; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; font-size: 0.9em; }
-        .btn-studio-delete { background-color: #444 !important; color: #888 !important; }
-        .studio-textarea { width: 100%; min-height: 200px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: var(--font-main); padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
-        .studio-textarea:focus { outline: 1px solid var(--text-dim); }
+        /* STUDIO STYLES */
+        .studio-box { margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 20px; background: rgba(0,0,0,0.2); }
+        .studio-textarea { width: 100%; min-height: 150px; background: #111; color: #eee; border: 1px solid #444; padding: 15px; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .studio-btn { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; background: var(--main-color); color: #222; }
         
-        #braindom-box { border-color: var(--sub-2); } #braindom-box .studio-header { color: var(--sub-2); } #braindom-box .studio-btn { background-color: var(--sub-2); }
-        #writer-box { border-color: var(--sub-1); } #writer-box .studio-header { color: var(--sub-1); } #writer-box .studio-btn { background-color: var(--sub-1); }
+        .archive-item-card { background: rgba(255,255,255,0.03); border: 1px solid #444; padding: 10px; margin-top: 10px; border-radius: 8px; }
+        .archive-item-btns { display: flex; gap: 10px; margin-top: 5px; }
+        .mini-btn { background: #444; color: #eee; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
-        /* BOTTOM DOCK */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #444; z-index: 1000; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -4px 15px rgba(0,0,0,0.3); }
-        .nav-item { background: transparent; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .nav-item:active { color: var(--main-color); transform: scale(0.9); }
-        .nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; }
-
-        .scroll-widget { position: fixed; bottom: 75px; right: 15px; z-index: 990; display: flex; flex-direction: column; gap: 10px; opacity: 0.3; transition: opacity 0.3s; }
-        .scroll-widget:active, .scroll-widget:hover { opacity: 1; }
-        .scroll-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(50, 50, 50, 0.9); backdrop-filter: blur(5px); border: 1px solid #666; color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        /* MODAL */
-        #edit-modal, #archive-modal, #archive-list-modal, #studio-archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background-color: var(--bg-box); padding: 15px; border-radius: 10px; width: 95%; max-width: 1100px; display: flex; flex-direction: column; height: 90vh; }
-        .modal-body { display: flex; flex: 1; gap: 15px; overflow: hidden; position: relative; }
-        #editor-container { flex: 3; display: flex; gap: 10px; overflow: hidden; }
-        #history-panel { flex: 1; border-left: 1px solid #444; padding-left: 10px; display: flex; flex-direction: column; overflow: hidden; }
-        .editor-col { flex: 1; display: flex; flex-direction: column; }
-        .editor-label { font-weight: 700; color: var(--sub-2); margin-bottom: 5px; display: block;}
-        textarea { background-color: #111; color: #eee; border: 1px solid #555; padding: 10px; flex: 1; resize: none; margin-bottom: 10px; font-size: 16px; line-height: 1.6; box-sizing: border-box; }
+        /* NAV & MODAL */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #1e1e1e; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #444; }
+        .nav-item { background: none; border: none; color: #888; cursor: pointer; text-align: center; }
         
-        .data-center-row { background: #222; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; margin-bottom: 10px; align-items: center; justify-content: center; }
-        .btn-data { background-color: var(--main-color); color: #4a2c2a; border: none; font-weight: 700; padding: 8px 12px; font-size: 0.8em; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-        .modal-actions { margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .btn-save { background-color: var(--check-bg); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
-        .btn-close { background-color: #444; border: 1px solid #666; color: #eee; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; width: 100%; font-size: 0.9em;}
-        .btn-compare { background-color: var(--sub-3); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
+        #edit-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: #2d2d2d; padding: 20px; border-radius: 10px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .setting-field { margin-bottom: 15px; }
+        .setting-field label { display: block; font-size: 0.8em; color: var(--sub-3); margin-bottom: 5px; }
+        .setting-input { width: 100%; padding: 10px; background: #111; border: 1px solid #555; color: #eee; border-radius: 4px; box-sizing: border-box; }
         
-        /* ARCHIVE LIST STYLES */
-        #archive-list-container, #studio-archive-content { overflow-y: auto; flex: 1; background: #1a1a1a; border: 1px solid #444; padding: 10px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; color: #ddd; }
-        .archive-item { background: #2d2d2d; border-bottom: 1px solid #444; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .archive-content { color: #aaa; font-size: 0.9em; flex: 1; margin-right: 10px; }
-        .archive-date { font-size: 0.7em; color: #666; display: block; margin-bottom: 2px; }
-        .btn-restore { background: var(--sub-3); border: none; color: #222; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        #toast { visibility: hidden; min-width: 250px; background-color: var(--check-bg); color: #333; font-weight: 700; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        #restore-input { display: none; }
-        #diff-view { flex: 1; background-color: #0d1117; border: 1px solid #444; padding: 15px; overflow-y: auto; font-size: 17px; line-height: 1.6; display: none; }
-        .diff-line { padding: 2px 5px; border-bottom: 1px solid #222; white-space: pre-wrap; word-break: break-all; }
-        .diff-added { background-color: var(--diff-add-bg); color: var(--diff-add-text); border-left: 3px solid var(--check-bg); }
-        .diff-removed { background-color: var(--diff-rem-bg); color: var(--diff-rem-text); border-left: 3px solid var(--main-color); text-decoration: line-through; opacity: 0.7; }
-        .diff-same { color: #666; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadein { from {bottom: 60px; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 60px; opacity: 0;} }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); } 70% { box-shadow: 0 0 0 5px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
+        #toast { visibility: hidden; background: var(--check-bg); color: #333; padding: 16px; position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%); border-radius: 50px; font-weight: bold; }
+        #toast.show { visibility: visible; }
     </style>
 </head>
 <body>
 
-    <div id="sync-badge" class=""></div>
-
-    <div class="header-section">
-        <div class="quote-card" id="daily-quote-card">
-            <div class="quote-overlay"></div>
-            <div class="quote-content">
-                <div class="quote-text" id="quote-text"></div>
-                <span class="quote-author" id="quote-author"></span>
-            </div>
-        </div>
-        <div class="stats-container">
-            <div class="stats-header">📊 NĂNG LƯỢNG & TIẾN ĐỘ</div>
-            <div id="stats-content"></div>
-        </div>
-    </div>
-
-    <div class="lam-reminder-bar" id="lam-bar">
-        <span class="lam-icon">👩‍💼</span>
-        <span class="lam-label">Lam nhắn cho Meo:</span>
-        <span class="lam-text" id="lam-msg">"..."</span>
-    </div>
-
+    <div class="box" id="lam-reminder">👩‍💼 <span id="lam-msg">Chào anh Meo! Hãy dán Token mới vào Setting nhé.</span></div>
+    
     <div id="dashboard-container"></div>
 
-    <div id="braindom-box" class="studio-box">
-        <div class="studio-header">🧠 BRAINDOM STUDIO</div>
-        <textarea id="brain-dump-area" class="studio-textarea" placeholder="Nháp nhanh ý tưởng tại đây..."></textarea>
-        <div class="studio-controls">
-            <button class="studio-btn" onclick="saveAndArchive('braindom')">LƯU</button>
-            <button class="studio-btn" onclick="openStudioArchive('braindom')">KHO</button>
-            <button class="studio-btn" onclick="copyStudioContent('braindom')">COPY</button>
-            <button class="studio-btn btn-studio-delete" onclick="clearStudio('braindom')">XÓA</button>
-        </div>
+    <div class="studio-box">
+        <h3>🧠 BRAINDOM</h3>
+        <textarea id="brain-dump-area" class="studio-textarea" placeholder="Nhập nháp..."></textarea>
+        <button id="braindom-btn" class="studio-btn" onclick="handleStudioSave('braindom')">LƯU VÀO KHO</button>
+        <div id="braindom-archive"></div>
     </div>
 
-    <div id="writer-box" class="studio-box">
-        <div class="studio-header">📖 WRITER STUDIO</div>
-        <textarea id="book-ideas-area" class="studio-textarea" placeholder="Viết và lưu lại..."></textarea>
-        <div class="studio-controls">
-            <button class="studio-btn" onclick="saveAndArchive('writer')">LƯU</button>
-            <button class="studio-btn" onclick="openStudioArchive('writer')">KHO</button>
-            <button class="studio-btn" onclick="copyStudioContent('writer')">COPY</button>
-            <button class="studio-btn btn-studio-delete" onclick="clearStudio('writer')">XÓA</button>
-        </div>
+    <div class="studio-box">
+        <h3>📖 WRITER</h3>
+        <textarea id="book-ideas-area" class="studio-textarea" placeholder="Nhập bản thảo..."></textarea>
+        <button id="writer-btn" class="studio-btn" onclick="handleStudioSave('writer')">LƯU VÀO KHO</button>
+        <div id="writer-archive"></div>
     </div>
 
-    <div id="toast">🎉 Xong thêm 1 việc!</div>
-    
     <div class="bottom-nav">
-        <button class="nav-item" onclick="toggleTheme()"><span>🎨</span><span class="nav-label">Theme</span></button>
-        <button class="nav-item" onclick="syncUp(false)"><span>☁️</span><span class="nav-label">Upload</span></button>
-        <button class="nav-item" onclick="syncDown(false)"><span>🌨️</span><span class="nav-label">Download</span></button>
-        <button class="nav-item" onclick="openModal()"><span>⚙️</span><span class="nav-label">Setting</span></button>
+        <button class="nav-item" onclick="syncUp()"><span>☁️</span><br>Up</button>
+        <button class="nav-item" onclick="syncDown()"><span>🌨️</span><br>Down</button>
+        <button class="nav-item" onclick="openModal()"><span>⚙️</span><br>Setting</button>
     </div>
-
-    <div class="scroll-widget">
-        <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆</button>
-        <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">⬇</button>
-    </div>
-
-    <input type="file" id="restore-input" accept=".json" onchange="restoreData(this)">
 
     <div id="edit-modal">
         <div class="modal-content">
-            <h3 style="color:var(--pastel-lavender); margin-top:0; display:flex; justify-content:space-between;">
-                <span>📝 CẬP NHẬT</span>
-                <span style="font-size:0.6em; color:#666; font-weight:normal">Dùng Ctrl+Z nếu xóa nhầm</span>
-            </h3>
-            <div class="modal-body">
-                <div id="editor-container">
-                    <div class="editor-col" id="col-old" style="display:none">
-                        <span class="editor-label">📁 GỐC</span>
-                        <textarea id="old-data" readonly style="opacity:0.7; border-style:dashed;"></textarea>
-                    </div>
-                    <div class="editor-col" id="col-new">
-                        <span class="editor-label">✏️ MỚI</span>
-                        <textarea id="input-data" placeholder="Paste data vào đây..."></textarea>
-                        <div id="diff-view"></div>
-                    </div>
-                </div>
-                <div id="history-panel">
-                    <span class="editor-label" style="color:var(--pastel-peach)">🕒 LỊCH SỬ</span>
-                    <div id="history-list" class="history-list"></div>
-                </div>
+            <h3 style="color:var(--main-color)">⚙️ CẤU HÌNH HỆ THỐNG</h3>
+            
+            <div class="setting-field">
+                <label>AIRTABLE PERSONAL ACCESS TOKEN (PAT)</label>
+                <input type="password" id="set-airtable-pat" class="setting-input" placeholder="Dán PAT mới vào đây...">
             </div>
             
-            <div class="data-center-row" style="background:#2d2d2d; border-color:var(--col-urgent);">
-                <button class="btn-data" onclick="archiveCompletedTasks()" style="background:var(--col-urgent); color:#333;">🧹 DỌN DẸP (ARCHIVE)</button>
-                <button class="btn-data" onclick="openArchiveList()" style="background:var(--col-core); color:#333;">🏛️ KHO LƯU TRỮ</button>
+            <div class="setting-field">
+                <label>RECORD ID (Dành cho đồng bộ Cloud)</label>
+                <input type="text" id="set-record-id" class="setting-input" placeholder="recXXXXXXXXXXXXXX">
             </div>
 
-            <div class="data-center-row">
-                <button class="btn-data" onclick="backupFull(true)">📤 BACKUP</button>
-                <button class="btn-data" onclick="document.getElementById('restore-input').click()">📥 RESTORE</button>
-                <button class="btn-data" onclick="exportCSV()">📊 EXPORT CSV</button>
+            <div class="setting-field">
+                <label>DỮ LIỆU DASHBOARD (MARKDOWN)</label>
+                <textarea id="input-data" style="height: 200px;" class="setting-input"></textarea>
             </div>
-            <div class="modal-actions">
-                <button class="btn-compare" onclick="toggleCompare()" id="btn-compare">So Sánh</button>
-                <button class="btn-close" onclick="closeModal()">Đóng</button>
-                <button class="btn-save" onclick="saveData()">Lưu</button>
+
+            <div style="display:flex; gap:10px;">
+                <button class="studio-btn" style="background:#444; color:#fff" onclick="closeModal()">ĐÓNG</button>
+                <button class="studio-btn" onclick="saveSettings()">LƯU TẤT CẢ</button>
             </div>
         </div>
     </div>
 
-    <div id="archive-list-modal">
-        <div class="modal-content">
-            <h3 style="color:var(--col-core); margin-top:0;">🏛️ KHO LƯU TRỮ (Đã xong)</h3>
-            <div id="archive-list-container"></div>
-            <div class="modal-actions">
-                <button class="btn-close" onclick="document.getElementById('archive-list-modal').style.display='none'">Đóng</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="studio-archive-modal">
-        <div class="modal-content">
-            <h3 id="studio-archive-title" style="color:var(--pastel-lavender); margin-top:0;">📚 KHO LƯU TRỮ</h3>
-            <div id="studio-archive-content" style="flex:1; background:#1a1a1a; color:#eee; border:1px solid #555; padding:15px; overflow-y:auto; margin-bottom:10px;"></div>
-            <div class="modal-actions">
-                <button class="btn-data" onclick="copyStudioArchiveText()" style="background:var(--check-bg); color:#333;">COPY TOÀN BỘ</button>
-                <button class="btn-close" onclick="document.getElementById('studio-archive-modal').style.display='none'">Đóng</button>
-            </div>
-        </div>
-    </div>
+    <div id="toast"></div>
 
     <script>
-        // CONFIG
-        const AIRTABLE = {
-            PAT: 'patE1cRnlN0yvjW1y' + '.' + 'c084f80cf32df8ee63f63f22477ca64fb60ef67cfd61917776460ae282722b36',
-            BASE_ID: 'app9cWP64Qbz0T1QT',
-            TABLE_ID: 'tbluPfLWGE5oHVOqX',
-            API_URL: `https://api.airtable.com/v0/app9cWP64Qbz0T1QT/tbluPfLWGE5oHVOqX`
-        };
-        const quotesDB = [{t:"Chúng ta đau khổ trong tưởng tượng nhiều hơn là trong thực tế.",a:"Seneca"},{t:"Kỷ luật là làm những điều bạn ghét như thể bạn yêu thích nó.",a:"Mike Tyson"},{t:"Cách tốt nhất để dự đoán tương lai là tạo ra nó.",a:"Peter Drucker"},{t:"Tập trung là nghệ thuật biết nói KHÔNG.",a:"Steve Jobs"},{t:"Không có áp lực, không có kim cương.",a:"Thomas Carlyle"}];
+        let currentEditingId = null;
 
-        // --- AUTO-SAVE SYSTEM (V35 CORE) ---
-        let autoSaveTimer;
-        const SAVE_DELAY = 5000; // 5 seconds debounce
+        // --- AIRTABLE CONFIG (SAFE VERSION) ---
+        function getAirtableConfig() {
+            return {
+                pat: localStorage.getItem('zetmeo_pat') || '',
+                recordId: localStorage.getItem('zetmeo_cloud_record_id') || '',
+                url: `https://api.airtable.com/v0/app9cWP64Qbz0T1QT/tbluPfLWGE5oHVOqX`
+            };
+        }
 
-        function updateSyncStatus(status) {
-            const badge = document.getElementById('sync-badge');
-            badge.className = ''; 
-            
-            switch(status) {
-                case 'waiting':
-                    badge.innerText = "⏳ Đang chờ...";
-                    badge.classList.add('status-waiting');
-                    break;
-                case 'saving':
-                    badge.innerText = "☁️ Đang lưu...";
-                    badge.classList.add('status-saving');
-                    break;
-                case 'synced':
-                    badge.innerText = "✅ Đã đồng bộ";
-                    badge.classList.add('status-synced');
-                    setTimeout(() => { badge.style.display = 'none'; }, 3000); // Hide after 3s
-                    break;
-                case 'error':
-                    badge.innerText = "❌ Lỗi mạng!";
-                    badge.classList.add('status-error');
-                    break;
-                default:
-                    badge.style.display = 'none';
+        // --- STUDIO LOGIC ---
+        function handleStudioSave(type) {
+            const area = type === 'braindom' ? document.getElementById('brain-dump-area') : document.getElementById('book-ideas-area');
+            const content = area.value.trim();
+            if (!content) return;
+
+            const key = `zetmeo_${type}_list`;
+            let data = JSON.parse(localStorage.getItem(key) || "[]");
+
+            if (currentEditingId) {
+                data = data.map(i => i.id === currentEditingId ? {...i, content, date: new Date().toLocaleString()} : i);
+                currentEditingId = null;
+                document.getElementById(`${type}-btn`).innerText = "LƯU VÀO KHO";
+            } else {
+                data.unshift({ id: Date.now(), content, date: new Date().toLocaleString() });
+            }
+
+            localStorage.setItem(key, JSON.stringify(data));
+            area.value = "";
+            renderArchive(type);
+            showToast("Đã xong!");
+        }
+
+        function renderArchive(type) {
+            const data = JSON.parse(localStorage.getItem(`zetmeo_${type}_list`) || "[]");
+            document.getElementById(`${type}-archive`).innerHTML = data.map(i => `
+                <div class="archive-item-card">
+                    <div style="white-space:pre-wrap">${i.content}</div>
+                    <div class="archive-item-btns">
+                        <button class="mini-btn" onclick="editItem('${i.id}', '${type}')">✏️ Sửa</button>
+                        <button class="mini-btn" onclick="deleteItem('${i.id}', '${type}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editItem(id, type) {
+            const data = JSON.parse(localStorage.getItem(`zetmeo_${type}_list`) || "[]");
+            const item = data.find(i => i.id == id);
+            if (item) {
+                const area = type === 'braindom' ? document.getElementById('brain-dump-area') : document.getElementById('book-ideas-area');
+                area.value = item.content;
+                currentEditingId = parseInt(id);
+                document.getElementById(`${type}-btn`).innerText = "CẬP NHẬT 🚀";
+                area.focus();
             }
         }
 
-        function triggerAutoSave() {
-            updateSyncStatus('waiting');
-            if (autoSaveTimer) clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                syncUp(true); // Trigger Auto Sync
-            }, SAVE_DELAY);
+        function deleteItem(id, type) {
+            if(!confirm("Xóa?")) return;
+            const key = `zetmeo_${type}_list`;
+            let data = JSON.parse(localStorage.getItem(key) || "[]");
+            localStorage.setItem(key, JSON.stringify(data.filter(i => i.id != id)));
+            renderArchive(type);
         }
 
-        // --- END AUTO-SAVE SYSTEM ---
-
-        function initDailyQuote() {
-            const today = new Date(); const start = new Date(today.getFullYear(),0,0); const diff = today-start; const oneDay = 1000*60*60*24;
-            const dayOfYear = Math.floor(diff/oneDay); const quote = quotesDB[dayOfYear%quotesDB.length];
-            document.getElementById('quote-text').innerHTML = `<span style="display:block; font-size:0.9em; margin-bottom:8px; color:var(--main-color);">Anh Meo à,</span> "${quote.t}"`;
-            document.getElementById('quote-author').textContent = `— ${quote.a}`;
-            const myImages = ['5.jpg','6.jpg']; const randomImg = myImages[Math.floor(Math.random()*myImages.length)];
-            document.getElementById('daily-quote-card').style.backgroundImage = `url('images/${randomImg}')`;
+        // --- SETTINGS ---
+        function openModal() {
+            document.getElementById('set-airtable-pat').value = localStorage.getItem('zetmeo_pat') || '';
+            document.getElementById('set-record-id').value = localStorage.getItem('zetmeo_cloud_record_id') || '';
+            document.getElementById('input-data').value = localStorage.getItem('dashboardData') || '';
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('edit-modal').style.display = 'none'; }
+        
+        function saveSettings() {
+            localStorage.setItem('zetmeo_pat', document.getElementById('set-airtable-pat').value);
+            localStorage.setItem('zetmeo_cloud_record_id', document.getElementById('set-record-id').value);
+            localStorage.setItem('dashboardData', document.getElementById('input-data').value);
+            renderDashboard(document.getElementById('input-data').value);
+            closeModal();
+            showToast("Đã lưu cấu hình!");
         }
 
-        const defaultData = `!!! Lam đây! Auto-Save đã kích hoạt!
-# A. 🔥 URGENT
-- [A-01] Mua bút vẽ | Màu nước Winsor & Newton
-- [A-02] Tham khảo web | https://google.com
+        // --- SYNC ---
+        async function syncUp() {
+            const config = getAirtableConfig();
+            if (!config.pat || !config.recordId) return alert("Thiếu cấu hình Airtable trong Setting!");
+            
+            fetch(`${config.url}/${config.recordId}`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${config.pat}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fields: { "Data": JSON.stringify(localStorage) } })
+            }).then(r => r.ok ? showToast("☁️ Đã Up!") : alert("Lỗi Sync Up"));
+        }
 
-# B. 🌟 CORE
-- [B-01] Viết content
+        async function syncDown() {
+            const config = getAirtableConfig();
+            if (!config.pat || !config.recordId) return alert("Thiếu cấu hình Airtable trong Setting!");
 
-# C. 🧱 FOUNDATION
-- [C-01] Học tiếng Anh
-
-# D. 💤 KHO Ý TƯỞNG
-- [D-01] Sắp xếp lại tủ sách`;
+            fetch(`${config.url}/${config.recordId}`, {
+                headers: { 'Authorization': `Bearer ${config.pat}` }
+            }).then(r => r.json()).then(d => {
+                if (d.fields && d.fields.Data) {
+                    const l = JSON.parse(d.fields.Data);
+                    Object.keys(l).forEach(k => localStorage.setItem(k, l[k]));
+                    location.reload();
+                }
+            });
+        }
 
         function renderDashboard(text) {
-            const container = document.getElementById('dashboard-container'); container.innerHTML = '';
-            const lines = text.split('\n'); let currentBox, currentList; let currentTaskItem = null;
-
-            lines.forEach(line => {
-                let trimmedLine = line.trim(); if (!trimmedLine) return;
-                if (trimmedLine.startsWith('!!!')) { document.getElementById('lam-msg').textContent = trimmedLine.replace('!!!','').trim(); return; }
-                if (trimmedLine.startsWith('^')) { return; }
-
-                if (trimmedLine.startsWith('#')) {
-                    currentTaskItem = null;
-                    const title = trimmedLine.replace('#','').trim();
-                    const boxId = 'box-' + stringToHash(title);
-                    
-                    currentBox = document.createElement('div'); currentBox.className = 'box';
-                    currentBox.setAttribute('data-type', title.toUpperCase()); 
-                    
-                    const headerHTML = `
-                        <div class="box-header">
-                            <h2 class="box-title">${title}</h2>
-                            <div class="header-timers">
-                                <button class="timer-btn" onclick="startTimer(this, 1)">1'</button>
-                                <button class="timer-btn" onclick="startTimer(this, 15)">15'</button>
-                            </div>
-                        </div>
-                    `;
-                    const tabsHTML = `
-                        <div class="tab-nav">
-                            <button class="tab-btn active" onclick="switchBoxTab(this, '${boxId}', 'task')">Task</button>
-                            <button class="tab-btn" onclick="switchBoxTab(this, '${boxId}', 'note')">Note</button>
-                            <button class="tab-btn" onclick="switchBoxTab(this, '${boxId}', 'log')">Log</button>
-                        </div>
-                    `;
-                    const taskPaneHTML = `<div id="tab-task-${boxId}" class="tab-pane active"></div>`;
-                    const notePaneHTML = `
-                        <div id="tab-note-${boxId}" class="tab-pane">
-                            <div id="note-display-${boxId}" class="box-note-display"></div>
-                            <textarea id="note-editor-${boxId}" class="box-note-editor"></textarea>
-                            <div class="note-controls">
-                                <button id="btn-edit-${boxId}" class="btn-note-action btn-note-edit" onclick="editBoxNote('${boxId}')">Sửa</button>
-                                <button id="btn-save-${boxId}" class="btn-note-action btn-note-save" onclick="saveBoxNote('${boxId}')">Lưu</button>
-                                <button id="btn-cancel-${boxId}" class="btn-note-action btn-note-cancel" onclick="cancelBoxNote('${boxId}')">Đóng</button>
-                            </div>
-                        </div>
-                    `;
-                    const logPaneHTML = `
-                        <div id="tab-log-${boxId}" class="tab-pane">
-                            <div class="log-form">
-                                <div class="log-input-group"><span class="log-label">Mã Task:</span><input type="text" class="log-input" id="log-code-${boxId}" placeholder="VD: A-01"></div>
-                                <div class="log-input-group"><span class="log-label">Thời gian (Phút):</span><input type="number" class="log-input" id="log-time-${boxId}" placeholder="VD: 30"></div>
-                                <button class="btn-log-save" onclick="saveLogFromTab('${boxId}')">LƯU LOG</button>
-                            </div>
-                        </div>
-                    `;
-
-                    currentBox.innerHTML = headerHTML + tabsHTML + taskPaneHTML + notePaneHTML + logPaneHTML;
-                    container.appendChild(currentBox);
-                    currentList = document.createElement('ul'); currentList.className = 'task-list';
-                    currentBox.querySelector(`#tab-task-${boxId}`).appendChild(currentList);
-                    loadBoxNote(boxId);
-                } 
-                else if (trimmedLine.startsWith('-')) {
-                    if (currentList) {
-                        let level = 1; if (trimmedLine.startsWith('---')) level = 3; else if (trimmedLine.startsWith('--')) level = 2;
-                        let parts = trimmedLine.replace(/^-+/, '').split('|');
-                        let rawText = parts[0].trim();
-                        let displayHTML = rawText;
-                        let taskIdRaw = stringToHash(rawText);
-                        const idMatch = rawText.match(/^\[([A-Za-z0-9-]+)\]/);
-                        if (idMatch) {
-                            const fullTag = idMatch[0]; const restOfText = rawText.substring(fullTag.length).trim();
-                            displayHTML = `<span class="task-id-tag">${fullTag}</span> <span class="main-text">${restOfText}</span>`;
-                        }
-                        const taskId = 'task-' + taskIdRaw;
-                        const li = document.createElement('li');
-                        li.className = `task-item indent-${level}`;
-                        li.setAttribute('data-id', taskId);
-                        li.setAttribute('data-level', level); 
-                        li.innerHTML = `
-                            <span class="toggle-placeholder"><span class="spacer"></span></span>
-                            <input type="checkbox" id="${taskId}" onclick="checkTask(this)">
-                            <label for="${taskId}" class="task-label">${displayHTML}<div class="mini-progress-container"><div class="mini-progress-fill"></div></div></label>
-                        `;
-                        currentList.appendChild(li);
-                        if(localStorage.getItem(taskId) === "true") li.querySelector('input').checked = true;
-                    }
-                }
-            });
-            initFolding(container); calculateStats(); 
+            const container = document.getElementById('dashboard-container');
+            container.innerHTML = text.split('\n').map(line => {
+                if (line.startsWith('!!!')) { document.getElementById('lam-msg').innerText = line.replace('!!!',''); return ''; }
+                if (line.startsWith('#')) return `<h2 style="margin-top:20px">${line.replace('#','')}</h2>`;
+                if (line.startsWith('-')) return `<div style="margin-bottom:5px"> <input type="checkbox"> ${line.replace('-','')}</div>`;
+                return '';
+            }).join('');
         }
 
-        // --- BRAINDOM & WRITER LOGIC ---
-        function saveAndArchive(type) {
-            const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
-            const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
-            const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
+        function showToast(m) { const t=document.getElementById('toast'); t.innerText=m; t.className="show"; setTimeout(()=>t.className="", 2000); }
 
-            const content = document.getElementById(areaId).value.trim();
-            if(!content) { alert("Chưa có nội dung để lưu!"); return; }
-
-            localStorage.setItem(currentKey, content);
-            const now = new Date().toLocaleString();
-            const separator = `\n\n--- ${now} ---\n`;
-            const currentArchive = localStorage.getItem(archiveKey) || "";
-            const newArchive = currentArchive + separator + content;
-            localStorage.setItem(archiveKey, newArchive);
-
-            document.getElementById('toast').innerText = "✅ Đã lưu & thêm vào Kho!";
-            document.getElementById('toast').className = "show";
-            setTimeout(()=>document.getElementById('toast').className="", 3000);
-            
-            triggerAutoSave(); // Trigger Auto Save
-        }
-
-        function openStudioArchive(type) {
-            const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
-            const content = localStorage.getItem(archiveKey) || "(Chưa có nội dung lưu trữ)";
-            const title = type === 'braindom' ? '🧠 KHO BRAINDOM' : '📖 KHO WRITER';
-            
-            document.getElementById('studio-archive-title').innerText = title;
-            document.getElementById('studio-archive-content').innerText = content;
-            document.getElementById('studio-archive-modal').style.display = 'flex';
-        }
-
-        function copyStudioContent(type) {
-            const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
-            navigator.clipboard.writeText(document.getElementById(areaId).value);
-            alert("Đã copy nội dung hiện tại!");
-        }
-
-        function copyStudioArchiveText() {
-            navigator.clipboard.writeText(document.getElementById('studio-archive-content').innerText);
-            alert("Đã copy toàn bộ Kho lưu trữ!");
-        }
-
-        function clearStudio(type) {
-            if(confirm('Xóa hết nội dung đang soạn thảo? (Kho lưu trữ vẫn còn)')) {
-                const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
-                const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
-                document.getElementById(areaId).value = "";
-                localStorage.setItem(currentKey, "");
-                triggerAutoSave(); // Trigger Auto Save
-            }
-        }
-
-        // --- ARCHIVE LOGIC (TASK) ---
-        function getArchive() { return JSON.parse(localStorage.getItem('zetmeo_archive_master') || '[]'); }
-        function saveArchiveData(arr) { localStorage.setItem('zetmeo_archive_master', JSON.stringify(arr)); }
-
-        function archiveCompletedTasks() {
-            let currentData = document.getElementById('input-data').value;
-            const checkedBoxes = document.querySelectorAll('.task-item input[type="checkbox"]:checked');
-            if (checkedBoxes.length === 0) { alert("Không có task nào đã xong để lưu trữ!"); return; }
-            if (!confirm(`Bạn có chắc muốn lưu trữ ${checkedBoxes.length} task đã xong?`)) return;
-
-            let archiveArr = getArchive();
-            let newLines = [];
-            const lines = currentData.split('\n');
-            let removedCount = 0;
-
-            lines.forEach(line => {
-                let trimmed = line.trim();
-                let isTask = trimmed.startsWith('-');
-                let isChecked = false;
-                
-                if (isTask) {
-                    let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
-                    let hash = stringToHash(cleanLine);
-                    if (localStorage.getItem('task-' + hash) === "true") {
-                        isChecked = true;
-                    }
-                }
-
-                if (isChecked) {
-                    archiveArr.unshift({
-                        content: trimmed,
-                        date: new Date().toLocaleDateString(),
-                        timestamp: Date.now()
-                    });
-                    let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
-                    localStorage.removeItem('task-' + stringToHash(cleanLine));
-                    removedCount++;
-                } else {
-                    newLines.push(line);
-                }
-            });
-
-            saveArchiveData(archiveArr);
-            localStorage.setItem('dashboardData', newLines.join('\n'));
-            alert(`✅ Đã lưu trữ ${removedCount} task thành công!`);
-            triggerAutoSave(); // Force Auto Save
-            location.reload();
-        }
-
-        function openArchiveList() {
-            const arr = getArchive();
-            const container = document.getElementById('archive-list-container');
-            container.innerHTML = '';
-            
-            if (arr.length === 0) {
-                container.innerHTML = '<p style="color:#777; text-align:center">Chưa có dữ liệu lưu trữ.</p>';
-            } else {
-                arr.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'archive-item';
-                    div.innerHTML = `
-                        <div class="archive-content">
-                            <span class="archive-date">📅 ${item.date}</span>
-                            ${item.content.replace(/^-+/, '')}
-                        </div>
-                        <button class="btn-restore" onclick="restoreTask(${index})" title="Khôi phục">↩️</button>
-                    `;
-                    container.appendChild(div);
-                });
-            }
-            document.getElementById('edit-modal').style.display = 'none';
-            document.getElementById('archive-list-modal').style.display = 'flex';
-        }
-
-        function restoreTask(index) {
-            let archiveArr = getArchive();
-            let taskToRestore = archiveArr[index];
-            if (!taskToRestore) return;
-
-            if(!confirm("Khôi phục task này về màn hình chính?")) return;
-
-            archiveArr.splice(index, 1);
-            saveArchiveData(archiveArr);
-
-            let currentData = localStorage.getItem('dashboardData') || defaultData;
-            let boxCode = null;
-            let match = taskToRestore.content.match(/\[([A-Z])-?/); 
-            if (match) boxCode = match[1];
-
-            if (boxCode) {
-                let regex = new RegExp(`(#\\s*${boxCode}\\..*$)`, "m");
-                let matchPos = currentData.match(regex);
-                if (matchPos) {
-                    let insertIndex = matchPos.index + matchPos[0].length;
-                    currentData = currentData.slice(0, insertIndex) + "\n" + taskToRestore.content + currentData.slice(insertIndex);
-                } else { currentData += "\n" + taskToRestore.content; }
-            } else { currentData += "\n" + taskToRestore.content; }
-
-            localStorage.setItem('dashboardData', currentData);
-            alert("✅ Đã khôi phục!");
-            triggerAutoSave(); // Force Auto Save
-            location.reload();
-        }
-
-        // --- TAB LOGIC ---
-        function switchBoxTab(btn, boxId, tabName) {
-            const box = btn.closest('.box');
-            box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active');
-        }
-
-        // --- NOTE LOGIC ---
-        function loadBoxNote(boxId) {
-            const content = localStorage.getItem(`zetmeo_note_${boxId}`) || "(Chưa có ghi chú)";
-            const displayEl = document.getElementById(`note-display-${boxId}`);
-            if(displayEl) {
-                displayEl.innerText = content;
-                document.getElementById(`note-editor-${boxId}`).value = content === "(Chưa có ghi chú)" ? "" : content;
-            }
-        }
-        function editBoxNote(boxId) {
-            document.getElementById(`note-display-${boxId}`).style.display = 'none';
-            document.getElementById(`note-editor-${boxId}`).style.display = 'block';
-            document.getElementById(`btn-edit-${boxId}`).style.display = 'none';
-            document.getElementById(`btn-save-${boxId}`).style.display = 'inline-block';
-            document.getElementById(`btn-cancel-${boxId}`).style.display = 'inline-block';
-            document.getElementById(`note-editor-${boxId}`).focus();
-        }
-        function saveBoxNote(boxId) {
-            const content = document.getElementById(`note-editor-${boxId}`).value;
-            localStorage.setItem(`zetmeo_note_${boxId}`, content);
-            document.getElementById(`note-display-${boxId}`).innerText = content || "(Chưa có ghi chú)";
-            cancelBoxNote(boxId); 
-            triggerAutoSave(); // Trigger Auto Save
-        }
-        function cancelBoxNote(boxId) {
-            document.getElementById(`note-display-${boxId}`).style.display = 'block';
-            document.getElementById(`note-editor-${boxId}`).style.display = 'none';
-            document.getElementById(`btn-edit-${boxId}`).style.display = 'inline-block';
-            document.getElementById(`btn-save-${boxId}`).style.display = 'none';
-            document.getElementById(`btn-cancel-${boxId}`).style.display = 'none';
-        }
-
-        // --- LOG LOGIC ---
-        function saveLogFromTab(boxId) {
-            const code = document.getElementById(`log-code-${boxId}`).value.trim();
-            const min = parseInt(document.getElementById(`log-time-${boxId}`).value);
-            if (!code || isNaN(min) || min <= 0) { alert("Nhập thiếu Code hoặc Time!"); return; }
-            let foundId = null;
-            document.querySelectorAll('.task-item').forEach(item => {
-                if(item.innerText.includes(code)) foundId = item.getAttribute('data-id');
-            });
-            if(foundId) {
-                logTime(foundId, min);
-                document.getElementById(`log-time-${boxId}`).value = '';
-                alert(`✅ Đã log ${min}p cho ${code}`);
-                triggerAutoSave(); // Trigger Auto Save
-            } else { alert("❌ Không tìm thấy mã task này!"); }
-        }
-
-        // --- CORE FUNCTIONS ---
-        let activeInterval, audioCtx;
-        function playBeep() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'sine'; o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.5); g.gain.setValueAtTime(0.5, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); o.start(); o.stop(audioCtx.currentTime + 0.5); }
-        function startTimer(btn, minutes) {
-            if (activeInterval) clearInterval(activeInterval);
-            document.querySelectorAll('.timer-btn').forEach(b => { b.classList.remove('timer-running'); if(b.dataset.orgText) b.innerText = b.dataset.orgText; b.disabled = false; }); 
-            if(!btn.dataset.orgText) btn.dataset.orgText = btn.innerText; 
-            let seconds = minutes * 60; btn.classList.add('timer-running'); btn.disabled = true; 
-            function update() { 
-                let m = Math.floor(seconds / 60); let s = seconds % 60; btn.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; 
-                if (seconds < 0) { clearInterval(activeInterval); btn.innerText = "DONE"; playBeep(); setTimeout(playBeep, 600); setTimeout(() => { btn.classList.remove('timer-running'); btn.innerText = btn.dataset.orgText; btn.disabled = false; }, 3000); } seconds--; 
-            } update(); activeInterval = setInterval(update, 1000); 
-        }
-        function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'classic' ? '' : 'classic'); localStorage.setItem('theme', document.body.getAttribute('data-theme')); }
-        
-        async function getRecordID() {
-            let recordId = localStorage.getItem('zetmeo_cloud_record_id'); if (recordId) return recordId;
-            try { const response = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const data = await response.json();
-                if (data.records && data.records.length > 0) { recordId = data.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } 
-                else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; }
-            } catch (error) { return null; }
-        }
-        
-        // MODIFIED SYNC UP FOR AUTO-SAVE
-        async function syncUp(isAuto = false) { 
-            if(!isAuto && !confirm("Upload thủ công?")) return; 
-            
-            // Cancel auto-timer if manual
-            if(!isAuto && autoSaveTimer) clearTimeout(autoSaveTimer);
-
-            // Update UI to Saving
-            if(isAuto) updateSyncStatus('saving');
-            const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; 
-            if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>";
-            
-            const rid = await getRecordID(); if(!rid) { if(isAuto) updateSyncStatus('error'); return; }
-            
-            fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})})
-            .then(r=> {
-                if(r.ok) {
-                    if(!isAuto) alert("✅ OK");
-                    if(isAuto) updateSyncStatus('synced');
-                } else {
-                    if(!isAuto) alert("Lỗi");
-                    if(isAuto) updateSyncStatus('error');
-                }
-            })
-            .catch(() => { if(isAuto) updateSyncStatus('error'); })
-            .finally(()=> { if(!isAuto) btn.innerHTML=oldText; });
-        }
-
-        async function syncDown(isAuto = false) { 
-            if(!isAuto && !confirm("Download?")) return; 
-            const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; 
-            if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; 
-            const rid = await getRecordID(); if(!rid) return; 
-            fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ 
-                if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } 
-            }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); 
-        }
-        
-        function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
-        function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
-        function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
-        function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
-        function closeModal(){ document.getElementById('edit-modal').style.display='none'; }
-        function saveData(){ localStorage.setItem('dashboardData', document.getElementById('input-data').value); renderDashboard(document.getElementById('input-data').value); closeModal(); triggerAutoSave(); }
-        function toggleCompare() { const btn = document.getElementById('btn-compare'); const colOld = document.getElementById('col-old'); const inputArea = document.getElementById('input-data'); const diffView = document.getElementById('diff-view'); const historyPanel = document.getElementById('history-panel'); if (inputArea.style.display !== 'none') { btn.innerText = "👁️ EDIT"; btn.style.background = "#fff"; colOld.style.display = 'flex'; inputArea.style.display = 'none'; diffView.style.display = 'block'; historyPanel.style.display = 'none'; diffView.innerHTML = generateDiffHtml(document.getElementById('old-data').value, inputArea.value); } else { btn.innerText = "So Sánh"; btn.style.background = "var(--sub-3)"; colOld.style.display = 'none'; inputArea.style.display = 'block'; diffView.style.display = 'none'; historyPanel.style.display = 'flex'; } }
-        function generateDiffHtml(oldText, newText) { const oldLines = oldText.split('\n').map(l => l.trim()).filter(l => l); const newLines = newText.split('\n').map(l => l.trim()).filter(l => l); let html = ''; newLines.forEach(line => { if (oldLines.includes(line)) html += `<div class="diff-line diff-same">${line}</div>`; else html += `<div class="diff-line diff-added">+ ${line}</div>`; }); let removedHtml = ''; oldLines.forEach(line => { if (!newLines.includes(line)) removedHtml += `<div class="diff-line diff-removed">- ${line}</div>`; }); return html + (removedHtml ? `<div style="margin-top:10px; border-top:1px dashed #555; padding-top:5px; font-size:0.8em; color:#888">ĐÃ XÓA:</div>` + removedHtml : ''); }
-        
-        function checkTask(cb) { 
-            localStorage.setItem(cb.id, cb.checked); 
-            calculateStats(); 
-            triggerAutoSave(); // Trigger Auto Save on Check
-        }
-        function calculateStats() {
-            const statsContainer = document.getElementById('stats-content'); statsContainer.innerHTML = ''; 
-            const boxes = document.querySelectorAll('.box'); updateMiniProgressBars();
-            const totalBoxes = boxes.length; if (totalBoxes === 0) return;
-            const weightPerBox = 100 / totalBoxes; let totalGlobalProgress = 0;
-            boxes.forEach(box => {
-                const title = box.getAttribute('data-type'); const checkboxes = box.querySelectorAll('input[type="checkbox"]');
-                const totalTasks = checkboxes.length; const checkedTasks = box.querySelectorAll('input[type="checkbox"]:checked').length;
-                let localPercent = totalTasks > 0 ? (checkedTasks / totalTasks) * 100 : 0;
-                const globalContribution = (localPercent / 100) * weightPerBox; totalGlobalProgress += globalContribution;
-                let barColorClass = 'bar-core'; if (title.includes('URGENT')) barColorClass = 'bar-urgent'; else if (title.includes('FOUNDATION')) barColorClass = 'bar-foundation';
-                const row = document.createElement('div'); row.className = 'stat-row';
-                row.innerHTML = `<div class="stat-label"><span>${title} <span style="color:#777; font-size:0.85em">(${weightPerBox.toFixed(0)}%)</span></span><span>${Math.round(localPercent)}%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill ${barColorClass}" style="width: ${localPercent}%"></div></div>`;
-                statsContainer.appendChild(row);
-            });
-            const globalRow = document.createElement('div'); globalRow.className = 'stat-row'; globalRow.style.marginTop = "15px"; globalRow.style.paddingTop = "15px"; globalRow.style.borderTop = "1px solid #333";
-            globalRow.innerHTML = `<div class="stat-label"><span style="color: var(--sub-3); font-weight:bold">🚀 TIẾN ĐỘ NĂM 2026</span><span style="color: var(--sub-3); font-weight:bold">${totalGlobalProgress.toFixed(1)}%</span></div><div class="stat-bar-bg" style="height:12px; border: 1px solid #555"><div class="stat-bar-fill bar-total" style="width: ${totalGlobalProgress}%"></div></div>`;
-            statsContainer.insertBefore(globalRow, statsContainer.firstChild);
-        }
-        function updateMiniProgressBars() {
-            const taskLists = document.querySelectorAll('.task-list');
-            taskLists.forEach(list => {
-                const items = Array.from(list.children);
-                items.forEach((item, index) => {
-                    const currentLevel = parseInt(item.getAttribute('data-level')||1);
-                    let childCount = 0; let childChecked = 0; let hasChildren = false;
-                    for (let i = index + 1; i < items.length; i++) {
-                        const child = items[i]; const childLevel = parseInt(child.getAttribute('data-level')||1);
-                        if (childLevel <= currentLevel) break;
-                        hasChildren = true; childCount++;
-                        if (child.querySelector('input').checked) childChecked++;
-                    }
-                    if (hasChildren) {
-                        item.classList.add('has-children');
-                        const percent = Math.round((childChecked / childCount) * 100);
-                        const fill = item.querySelector('.mini-progress-fill');
-                        if (fill) fill.style.width = percent + '%';
-                    } else { item.classList.remove('has-children'); }
-                });
-            });
-        }
-        function initFolding(container) {
-            const lists = container.querySelectorAll('.task-list');
-            lists.forEach(list => {
-                const items = Array.from(list.children);
-                items.forEach((item, index) => {
-                    const currentLevel = parseInt(item.getAttribute('data-level')||1);
-                    const nextItem = items[index + 1]; const nextLevel = nextItem ? parseInt(nextItem.getAttribute('data-level')||1) : 0;
-                    const placeholder = item.querySelector('.toggle-placeholder');
-                    if (nextItem && nextLevel > currentLevel) {
-                        placeholder.innerHTML = '▶'; placeholder.className = 'toggle-btn';
-                        placeholder.onclick = function(e) { 
-                            e.stopPropagation(); 
-                            toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); 
-                        };
-                        const isExpanded = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true';
-                        if (isExpanded) { placeholder.classList.add('rotated'); placeholder.innerHTML = '▼'; }
-                        if (!isExpanded) hideChildren(items, index, currentLevel);
-                    } else { placeholder.className = 'spacer'; }
-                });
-            });
-        }
-        function toggleChildren(allItems, parentIndex, parentLevel, btn, parentId) {
-            const isCollapsing = btn.classList.contains('rotated');
-            if (isCollapsing) { btn.classList.remove('rotated'); btn.innerHTML = '▶'; localStorage.setItem('fold-' + parentId, 'false'); hideChildren(allItems, parentIndex, parentLevel); } 
-            else { btn.classList.add('rotated'); btn.innerHTML = '▼'; localStorage.setItem('fold-' + parentId, 'true'); showChildren(allItems, parentIndex, parentLevel); }
-        }
-        function hideChildren(allItems, parentIndex, parentLevel) { for (let i = parentIndex + 1; i < allItems.length; i++) { const item = allItems[i]; if (parseInt(item.getAttribute('data-level')||1) <= parentLevel) break; item.classList.add('hidden-task'); } }
-        function showChildren(allItems, parentIndex, parentLevel) {
-            for (let i = parentIndex + 1; i < allItems.length; i++) {
-                const item = allItems[i]; const level = parseInt(item.getAttribute('data-level')||1); if (level <= parentLevel) break; item.classList.remove('hidden-task');
-                const toggleBtn = item.querySelector('.toggle-btn');
-                if (toggleBtn && !toggleBtn.classList.contains('rotated')) { let subParentLevel = level; let j = i + 1; while(j < allItems.length) { if(parseInt(allItems[j].getAttribute('data-level')||1) <= subParentLevel) break; j++; } i = j - 1; }
-            }
-        }
-        function getLogs() { return JSON.parse(localStorage.getItem('zetmeo_time_logs') || '{}'); }
-        function logTime(id, min) { let l=getLogs(); if(!l[id]) l[id]=[]; l[id].push({date:new Date().toISOString(), min:min}); localStorage.setItem('zetmeo_time_logs',JSON.stringify(l)); document.getElementById('toast').innerText=`Đã ghi ${min}p!`; document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",3000); }
-        function stringToHash(s) { let h=0; for(let i=0;i<s.length;i++) h=Math.abs(((h<<5)-h)+s.charCodeAt(i)); return h; }
-
-        window.onload = function() { 
-            const data = localStorage.getItem('dashboardData') || defaultData; 
-            document.getElementById('old-data').value = data;
-            renderDashboard(data);
-            initDailyQuote(); 
-            if (localStorage.getItem('theme') === 'classic') document.body.setAttribute('data-theme', 'classic');
-            initAutoBackupScheduler();
-            document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || '';
-            document.getElementById('book-ideas-area').value = localStorage.getItem('zetmeo_writer_content') || '';
-            
-            // Auto-save triggers
-            document.getElementById('brain-dump-area').addEventListener('input', () => { 
-                localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); 
-                triggerAutoSave(); 
-            });
-            document.getElementById('book-ideas-area').addEventListener('input', () => { 
-                localStorage.setItem('zetmeo_writer_content', document.getElementById('book-ideas-area').value); 
-                triggerAutoSave(); 
-            });
-        }
+        window.onload = () => {
+            renderDashboard(localStorage.getItem('dashboardData') || "# 🚀 DASHBOARD MỚI");
+            renderArchive('braindom');
+            renderArchive('writer');
+        };
     </script>
 </body>
 </html>
