@@ -201,6 +201,20 @@
         @keyframes fadein { from {bottom: 60px; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 60px; opacity: 0;} }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); } 70% { box-shadow: 0 0 0 5px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
+        
+        /* FOOTER VERSION STYLE */
+        .footer-version {
+            text-align: center;
+            font-size: 0.7em;
+            color: #555;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 40px;
+            margin-bottom: 10px; /* Cách nav bar một chút */
+            opacity: 0.6;
+            user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -250,7 +264,10 @@
             <button class="studio-btn btn-studio-delete" onclick="clearStudio('writer')">XÓA</button>
         </div>
     </div>
-
+    
+<!-- CHÈN DÒNG NÀY VÀO -->
+    <div class="footer-version">zetmeoOS &bull; V35.9 &bull; 2026</div>
+    
     <div id="toast">🎉 Xong thêm 1 việc!</div>
     
     <div class="bottom-nav">
