@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V35.7 (DnD & New Task)</title>
+    <title>zetmeoOS - V35.8 (Smart Edit & DnD Fix)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,53 +21,31 @@
             --text-main: #fcfcfc; --text-dim: #b0b0b0;
             --transition-speed: 0.3s;
             --font-main: 'Quicksand', sans-serif;
-
-            /* THEME COLORS */
             --main-color: #FF90BC; --sub-1: #FFC0D9; --sub-2: #F9F9E0; --sub-3: #8ACDD7;
             --check-bg: #ABE7B2; --check-tick: #444;
-            
-            /* BOX COLORS */
             --col-urgent: #FF90BC; --col-core: #8ACDD7; --col-found: #FFC0D9; --col-kho: #95a5a6;
-
             --diff-add-bg: rgba(46, 160, 67, 0.15); --diff-add-text: #7ee787;
             --diff-rem-bg: rgba(248, 81, 73, 0.15); --diff-rem-text: #ff7b72;
         }
-
         [data-theme="classic"] {
             --main-color: #ffadad; --sub-1: #e0bbe4; --sub-2: #ffdac1; --sub-3: #a0c4ff;
             --check-bg: #4cd137; --check-tick: #fff;
             --col-urgent: #ff6b6b; --col-core: #48dbfb; --col-found: #feca57; --col-kho: #b2bec3;
         }
-
-        body {
-            background-color: var(--bg-body); color: var(--text-main);
-            font-family: var(--font-main); padding: 15px; max-width: 900px; margin: 0 auto; 
-            line-height: 1.5; padding-bottom: 120px; transition: all var(--transition-speed);
-            -webkit-tap-highlight-color: transparent; font-weight: 500;
-        }
+        body { background-color: var(--bg-body); color: var(--text-main); font-family: var(--font-main); padding: 15px; max-width: 900px; margin: 0 auto; line-height: 1.5; padding-bottom: 120px; transition: all var(--transition-speed); -webkit-tap-highlight-color: transparent; font-weight: 500; }
         button, input, textarea, select { font-family: var(--font-main); }
 
-        /* SYNC STATUS BADGE */
-        #sync-badge {
-            position: fixed; top: 15px; right: 15px; z-index: 9999;
-            padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700;
-            display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: all 0.3s;
-        }
+        /* SYNC BADGE */
+        #sync-badge { position: fixed; top: 15px; right: 15px; z-index: 9999; padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: all 0.3s; }
         .status-waiting { background: #f1c40f; color: #222; display: flex !important; animation: pulse-yellow 2s infinite; }
         .status-saving { background: #3498db; color: #fff; display: flex !important; }
         .status-synced { background: #2ecc71; color: #fff; display: flex !important; }
         .status-error { background: #e74c3c; color: #fff; display: flex !important; }
-
         @keyframes pulse-yellow { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         /* HEADER */
         .header-section { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; margin-bottom: 20px; }
-        .quote-card {
-            background-color: #222; border-radius: 12px; border: 2px solid var(--main-color);
-            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
-            background-size: cover; background-position: center; transition: border-color var(--transition-speed);
-        }
+        .quote-card { background-color: #222; border-radius: 12px; border: 2px solid var(--main-color); position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; background-size: cover; background-position: center; transition: border-color var(--transition-speed); }
         .quote-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.3)); z-index: 1; }
         .quote-content { position: relative; z-index: 2; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
         .quote-text { font-size: 1.1em; font-weight: 700; font-style: italic; line-height: 1.4; margin-bottom: 10px; }
@@ -82,37 +60,22 @@
         .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
         .bar-urgent { background-color: var(--col-urgent); } .bar-core { background-color: var(--col-core); } .bar-foundation { background-color: var(--col-found); } .bar-total { background: linear-gradient(90deg, var(--col-urgent), var(--col-core)); }
 
-        .lam-reminder-bar {
-            background-color: var(--main-color); color: #4a2c2a; padding: 12px 20px;
-            border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); font-weight: 700;
-            display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 30px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 1em;
-        }
+        .lam-reminder-bar { background-color: var(--main-color); color: #4a2c2a; padding: 12px 20px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); font-weight: 700; display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 1em; }
         .lam-icon { margin-right: 10px; font-size: 1.5em; animation: bounce 2s infinite; }
         .lam-label { margin-right: 10px; text-transform: uppercase; font-size: 0.75em; letter-spacing: 1px; background: rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 6px; }
 
         /* BOX */
         .box { border: 1px solid #444; background-color: var(--bg-box); padding: 0; border-radius: 10px; margin-bottom: 25px; overflow: hidden; position: relative; }
-        .box[data-type*="URGENT"] { --box-color: var(--col-urgent); } 
-        .box[data-type*="CORE"] { --box-color: var(--col-core); } 
-        .box[data-type*="FOUNDATION"] { --box-color: var(--col-found); } 
-        .box[data-type*="KHO"] { --box-color: var(--col-kho); }
-
+        .box[data-type*="URGENT"] { --box-color: var(--col-urgent); } .box[data-type*="CORE"] { --box-color: var(--col-core); } .box[data-type*="FOUNDATION"] { --box-color: var(--col-found); } .box[data-type*="KHO"] { --box-color: var(--col-kho); }
         .box-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #444; background: linear-gradient(to right, rgba(255,255,255,0.03), transparent); }
         .box-title { margin: 0; color: var(--box-color); font-size: 1.4em; text-transform: uppercase; font-weight: 700; }
         .header-timers { display: flex; gap: 8px; align-items: center; }
-        
         .timer-btn { background: transparent; border: 1px solid var(--box-color); color: var(--box-color); padding: 4px 10px; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 0.8em; min-width: 35px; transition: all 0.2s; }
         .timer-btn:active { background: var(--box-color); color: #333; }
         .timer-running { background-color: #fff !important; color: #d63031 !important; border-color: #d63031 !important; animation: pulse 1s infinite; }
 
-        /* NEW TASK BUTTON */
-        .btn-new-task {
-            background-color: var(--box-color); color: #222; border: none;
-            padding: 4px 10px; border-radius: 4px; font-weight: 700;
-            font-size: 0.8em; cursor: pointer; margin-right: 8px;
-            display: flex; align-items: center; gap: 4px; transition: transform 0.2s;
-        }
+        /* NEW TASK BUTTON (EDITED V35.8) */
+        .btn-new-task { background-color: var(--box-color); color: #222; border: none; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 1em; cursor: pointer; margin-right: 8px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; height: 30px; }
         .btn-new-task:active { transform: scale(0.95); opacity: 0.9; }
 
         /* TABS */
@@ -124,31 +87,17 @@
 
         /* TASK LIST & DnD */
         .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
-        .task-item { 
-            margin-bottom: 8px; display: flex; align-items: flex-start; 
-            padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; 
-            background-color: rgba(255,255,255,0.02); 
-            transition: border 0.1s, transform 0.1s;
-        }
+        .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); transition: border 0.1s, transform 0.1s; }
         .task-item:hover { background-color: rgba(255,255,255,0.05); }
         .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 20px; border-left: 2px solid #555; } .indent-3 { margin-left: 40px; border-left: 2px solid #666; }
         
-        /* Drag & Drop Styles */
         .task-item[draggable="true"] { cursor: grab; }
         .task-item.dragging { opacity: 0.5; border: 1px dashed var(--main-color); transform: scale(0.98); }
         .task-item.drag-over-top { border-top: 3px solid var(--main-color); }
         .task-item.drag-over-bottom { border-bottom: 3px solid var(--main-color); }
-        .task-item.drag-over-nest { 
-            background: rgba(255,255,255,0.1); 
-            border: 2px dashed var(--box-color); 
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-        }
+        .task-item.drag-over-nest { background: rgba(255,255,255,0.1); border: 2px dashed var(--box-color); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
         
-        .toggle-btn { 
-            cursor: pointer; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; 
-            margin-right: 2px; color: #fff; font-size: 16px; user-select: none; background: rgba(255,255,255,0.1); 
-            border-radius: 4px; z-index: 10; position: relative; 
-        }
+        .toggle-btn { cursor: pointer; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; margin-right: 2px; color: #fff; font-size: 16px; user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px; z-index: 10; position: relative; }
         .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.2); } 
         .spacer { width: 44px; margin-right: 2px; } 
         .hidden-task { display: none !important; }
@@ -169,46 +118,33 @@
         .btn-quick-save { background: var(--check-bg); color: #333; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; margin-left: 5px; cursor: pointer; font-size: 0.8em; vertical-align: middle; }
         .btn-quick-save:hover { opacity: 0.9; }
 
-        /* TAB NOTE */
+        /* STUDIO & OTHERS */
         .box-note-display { white-space: pre-wrap; color: #ddd; font-size: 0.95em; line-height: 1.6; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px; margin-bottom: 15px; border: 1px dashed #444; }
         .box-note-editor { width: 100%; height: 150px; background: #222; border: 1px solid #555; color: #eee; padding: 10px; border-radius: 6px; box-sizing: border-box; display: none; line-height: 1.5; margin-bottom: 10px; }
         .note-controls { display: flex; gap: 10px; }
         .btn-note-action { padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; flex: 1; font-size: 0.9em; }
-        .btn-note-edit { background: var(--box-color); color: #333; }
-        .btn-note-save { background: var(--box-color); color: #333; display: none; }
-        .btn-note-cancel { background: #444; color: #eee; display: none; }
-
-        /* TAB LOG */
+        .btn-note-edit { background: var(--box-color); color: #333; } .btn-note-save { background: var(--box-color); color: #333; display: none; } .btn-note-cancel { background: #444; color: #eee; display: none; }
         .log-form { display: flex; flex-direction: column; gap: 15px; padding-top: 5px;}
         .log-input-group { display: flex; flex-direction: column; gap: 5px; }
         .log-label { font-size: 0.8em; color: #888; font-weight: 700; text-transform: uppercase; }
-        .log-input { background: #222; border: 1px solid #555; color: #fff; padding: 12px; border-radius: 6px; font-size: 1.1em; }
-        .log-input:focus { outline: 1px solid var(--box-color); }
+        .log-input { background: #222; border: 1px solid #555; color: #fff; padding: 12px; border-radius: 6px; font-size: 1.1em; } .log-input:focus { outline: 1px solid var(--box-color); }
         .btn-log-save { background: var(--box-color); color: #333; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; font-size: 0.9em; cursor: pointer; margin-top: 5px; }
 
-        /* STUDIOS */
         .studio-box { margin-top: 30px; margin-bottom: 20px; border: 2px solid var(--text-dim); border-radius: 12px; padding: 15px; background-color: rgba(0,0,0,0.2); display: flex; flex-direction: column; }
         .studio-header { font-weight: 700; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-size: 1.4em; }
         .studio-controls { display: flex; gap: 10px; margin-top: 10px; }
         .studio-btn { flex: 1; background: var(--text-dim); color: #222; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap; font-size: 0.9em; }
         .btn-studio-delete { background-color: #444 !important; color: #888 !important; }
-        .studio-textarea { width: 100%; min-height: 200px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: var(--font-main); padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; }
-        .studio-textarea:focus { outline: 1px solid var(--text-dim); }
-        
+        .studio-textarea { width: 100%; min-height: 200px; background: rgba(0,0,0,0.2); border: 1px solid #444; color: #eee; font-family: var(--font-main); padding: 15px; border-radius: 6px; resize: vertical; line-height: 1.6; font-size: 16px; box-sizing: border-box; } .studio-textarea:focus { outline: 1px solid var(--text-dim); }
         #braindom-box { border-color: var(--sub-2); } #braindom-box .studio-header { color: var(--sub-2); } #braindom-box .studio-btn { background-color: var(--sub-2); }
         #writer-box { border-color: var(--sub-1); } #writer-box .studio-header { color: var(--sub-1); } #writer-box .studio-btn { background-color: var(--sub-1); }
 
-        /* BOTTOM DOCK */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #444; z-index: 1000; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -4px 15px rgba(0,0,0,0.3); }
-        .nav-item { background: transparent; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .nav-item:active { color: var(--main-color); transform: scale(0.9); }
+        .nav-item { background: transparent; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 2px; } .nav-item:active { color: var(--main-color); transform: scale(0.9); }
         .nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; }
-
-        .scroll-widget { position: fixed; bottom: 75px; right: 15px; z-index: 990; display: flex; flex-direction: column; gap: 10px; opacity: 0.3; transition: opacity 0.3s; }
-        .scroll-widget:active, .scroll-widget:hover { opacity: 1; }
+        .scroll-widget { position: fixed; bottom: 75px; right: 15px; z-index: 990; display: flex; flex-direction: column; gap: 10px; opacity: 0.3; transition: opacity 0.3s; } .scroll-widget:active, .scroll-widget:hover { opacity: 1; }
         .scroll-btn { width: 45px; height: 45px; border-radius: 50%; background: rgba(50, 50, 50, 0.9); backdrop-filter: blur(5px); border: 1px solid #666; color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* MODAL */
         #edit-modal, #archive-modal, #archive-list-modal, #studio-archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background-color: var(--bg-box); padding: 15px; border-radius: 10px; width: 95%; max-width: 1100px; display: flex; flex-direction: column; height: 90vh; }
         .modal-body { display: flex; flex: 1; gap: 15px; overflow: hidden; position: relative; }
@@ -217,32 +153,22 @@
         .editor-col { flex: 1; display: flex; flex-direction: column; }
         .editor-label { font-weight: 700; color: var(--sub-2); margin-bottom: 5px; display: block;}
         textarea { background-color: #111; color: #eee; border: 1px solid #555; padding: 10px; flex: 1; resize: none; margin-bottom: 10px; font-size: 16px; line-height: 1.6; box-sizing: border-box; }
-        
         .data-center-row { background: #222; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; margin-bottom: 10px; align-items: center; justify-content: center; }
         .btn-data { background-color: var(--main-color); color: #4a2c2a; border: none; font-weight: 700; padding: 8px 12px; font-size: 0.8em; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
         .modal-actions { margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .btn-save { background-color: var(--check-bg); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
         .btn-close { background-color: #444; border: 1px solid #666; color: #eee; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; width: 100%; font-size: 0.9em;}
         .btn-compare { background-color: var(--sub-3); border: none; padding: 12px 0; cursor: pointer; font-weight: 700; border-radius: 6px; color: #333; width: 100%; font-size: 0.9em;}
-        
-        /* ARCHIVE LIST STYLES */
         #archive-list-container { overflow-y: auto; flex: 1; background: #1a1a1a; border: 1px solid #444; padding: 10px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; color: #ddd; }
         .studio-archive-textarea { flex: 1; background: #1a1a1a; color: #ccc; border: 1px solid #555; padding: 15px; overflow-y: auto; margin-bottom: 10px; font-family: monospace; resize: none; line-height: 1.5; font-size: 15px; }
-        .studio-archive-textarea:read-only { background: #111; cursor: default; }
-        .studio-archive-textarea:focus { outline: 1px solid var(--sub-3); background: #000; color: #fff; }
-        
+        .studio-archive-textarea:read-only { background: #111; cursor: default; } .studio-archive-textarea:focus { outline: 1px solid var(--sub-3); background: #000; color: #fff; }
         .archive-toolbar { display: flex; gap: 10px; justify-content: flex-end; }
         .btn-arc { padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; font-size: 0.9em; flex: 1; color: #333; }
-        .btn-arc-copy { background: var(--sub-3); }
-        .btn-arc-edit { background: var(--sub-2); }
-        .btn-arc-save { background: var(--check-bg); display: none; }
-        .btn-arc-close { background: #444; color: #eee; border: 1px solid #555; }
-
+        .btn-arc-copy { background: var(--sub-3); } .btn-arc-edit { background: var(--sub-2); } .btn-arc-save { background: var(--check-bg); display: none; } .btn-arc-close { background: #444; color: #eee; border: 1px solid #555; }
         .archive-item { background: #2d2d2d; border-bottom: 1px solid #444; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         .archive-content { color: #aaa; font-size: 0.9em; flex: 1; margin-right: 10px; }
         .archive-date { font-size: 0.7em; color: #666; display: block; margin-bottom: 2px; }
         .btn-restore { background: var(--sub-3); border: none; color: #222; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
         #toast { visibility: hidden; min-width: 250px; background-color: var(--check-bg); color: #333; font-weight: 700; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         #restore-input { display: none; }
@@ -251,7 +177,6 @@
         .diff-added { background-color: var(--diff-add-bg); color: var(--diff-add-text); border-left: 3px solid var(--check-bg); }
         .diff-removed { background-color: var(--diff-rem-bg); color: var(--diff-rem-text); border-left: 3px solid var(--main-color); text-decoration: line-through; opacity: 0.7; }
         .diff-same { color: #666; }
-
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadein { from {bottom: 60px; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 60px; opacity: 0;} }
@@ -345,12 +270,10 @@
                     <div id="history-list" class="history-list"></div>
                 </div>
             </div>
-            
             <div class="data-center-row" style="background:#2d2d2d; border-color:var(--col-urgent);">
                 <button class="btn-data" onclick="archiveCompletedTasks()" style="background:var(--col-urgent); color:#333;">🧹 DỌN DẸP (ARCHIVE)</button>
                 <button class="btn-data" onclick="openArchiveList()" style="background:var(--col-core); color:#333;">🏛️ KHO LƯU TRỮ</button>
             </div>
-
             <div class="data-center-row">
                 <button class="btn-data" onclick="backupFull(true)">📤 BACKUP</button>
                 <button class="btn-data" onclick="document.getElementById('restore-input').click()">📥 RESTORE</button>
@@ -388,36 +311,17 @@
     </div>
 
     <script>
-        // CONFIG
-        const AIRTABLE = {
-            PAT: 'patE1cRnlN0yvjW1y' + '.' + 'c084f80cf32df8ee63f63f22477ca64fb60ef67cfd61917776460ae282722b36',
-            BASE_ID: 'app9cWP64Qbz0T1QT',
-            TABLE_ID: 'tbluPfLWGE5oHVOqX',
-            API_URL: `https://api.airtable.com/v0/app9cWP64Qbz0T1QT/tbluPfLWGE5oHVOqX`
-        };
+        const AIRTABLE = { PAT: 'patE1cRnlN0yvjW1y.c084f80cf32df8ee63f63f22477ca64fb60ef67cfd61917776460ae282722b36', BASE_ID: 'app9cWP64Qbz0T1QT', TABLE_ID: 'tbluPfLWGE5oHVOqX', API_URL: `https://api.airtable.com/v0/app9cWP64Qbz0T1QT/tbluPfLWGE5oHVOqX` };
         const quotesDB = [{t:"Chúng ta đau khổ trong tưởng tượng nhiều hơn là trong thực tế.",a:"Seneca"},{t:"Kỷ luật là làm những điều bạn ghét như thể bạn yêu thích nó.",a:"Mike Tyson"},{t:"Cách tốt nhất để dự đoán tương lai là tạo ra nó.",a:"Peter Drucker"},{t:"Tập trung là nghệ thuật biết nói KHÔNG.",a:"Steve Jobs"},{t:"Không có áp lực, không có kim cương.",a:"Thomas Carlyle"}];
 
-        // --- AUTO-SAVE SYSTEM (V35 CORE) ---
+        // --- GLOBAL STATE FOR SMART EDIT ---
+        window.pendingAutoEditHash = null;
+
+        // --- AUTO-SAVE SYSTEM ---
         let autoSaveTimer;
         const SAVE_DELAY = 5000;
-
-        function updateSyncStatus(status) {
-            const badge = document.getElementById('sync-badge');
-            badge.className = ''; 
-            switch(status) {
-                case 'waiting': badge.innerText = "⏳ Đang chờ..."; badge.classList.add('status-waiting'); break;
-                case 'saving': badge.innerText = "☁️ Đang lưu..."; badge.classList.add('status-saving'); break;
-                case 'synced': badge.innerText = "✅ Đã đồng bộ"; badge.classList.add('status-synced'); setTimeout(() => { badge.style.display = 'none'; }, 3000); break;
-                case 'error': badge.innerText = "❌ Lỗi mạng!"; badge.classList.add('status-error'); break;
-                default: badge.style.display = 'none';
-            }
-        }
-
-        function triggerAutoSave() {
-            updateSyncStatus('waiting');
-            if (autoSaveTimer) clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => { syncUp(true); }, SAVE_DELAY);
-        }
+        function updateSyncStatus(status) { const badge = document.getElementById('sync-badge'); badge.className = ''; switch(status) { case 'waiting': badge.innerText = "⏳ Đang chờ..."; badge.classList.add('status-waiting'); break; case 'saving': badge.innerText = "☁️ Đang lưu..."; badge.classList.add('status-saving'); break; case 'synced': badge.innerText = "✅ Đã đồng bộ"; badge.classList.add('status-synced'); setTimeout(() => { badge.style.display = 'none'; }, 3000); break; case 'error': badge.innerText = "❌ Lỗi mạng!"; badge.classList.add('status-error'); break; default: badge.style.display = 'none'; } }
+        function triggerAutoSave() { updateSyncStatus('waiting'); if (autoSaveTimer) clearTimeout(autoSaveTimer); autoSaveTimer = setTimeout(() => { syncUp(true); }, SAVE_DELAY); }
 
         function initDailyQuote() {
             const today = new Date(); const start = new Date(today.getFullYear(),0,0); const diff = today-start; const oneDay = 1000*60*60*24;
@@ -442,10 +346,11 @@
 # D. 💤 KHO Ý TƯỞNG
 - [D-01] Sắp xếp lại tủ sách`;
 
-        // --- RENDER & NEW FEATURES (V35.7) ---
+        // --- RENDER LOGIC ---
         function renderDashboard(text) {
             const container = document.getElementById('dashboard-container'); container.innerHTML = '';
             const lines = text.split('\n'); let currentBox, currentList; let currentTaskItem = null;
+            let autoEditElement = null; // To store reference for quick edit
 
             lines.forEach((line, lineIndex) => {
                 let trimmedLine = line.trim(); if (!trimmedLine) return;
@@ -453,10 +358,8 @@
                 if (trimmedLine.startsWith('^')) { return; }
 
                 if (trimmedLine.startsWith('#')) {
-                    currentTaskItem = null;
                     const title = trimmedLine.replace('#','').trim();
                     const boxId = 'box-' + stringToHash(title);
-                    const cleanTitle = title.replace(/^.\.\s*/, '').split(' ')[0]; // Extract URGENT, CORE...
                     
                     currentBox = document.createElement('div'); currentBox.className = 'box';
                     currentBox.setAttribute('data-type', title.toUpperCase()); 
@@ -465,7 +368,7 @@
                         <div class="box-header">
                             <h2 class="box-title">${title}</h2>
                             <div class="header-timers">
-                                <button class="btn-new-task" onclick="addNewTask('${title.replace(/'/g, "\\'")}')"><span>+</span> New Task</button>
+                                <button class="btn-new-task" onclick="addNewTask('${title.replace(/'/g, "\\'")}')"><span>+</span></button>
                                 <button class="timer-btn" onclick="startTimer(this, 1)">1'</button>
                                 <button class="timer-btn" onclick="startTimer(this, 15)">15'</button>
                             </div>
@@ -517,9 +420,7 @@
                         li.className = `task-item indent-${level}`;
                         li.setAttribute('data-id', taskId);
                         li.setAttribute('data-level', level); 
-                        li.setAttribute('draggable', 'true'); // Enable DnD
-                        
-                        // Pass unique ID to find original text line
+                        li.setAttribute('draggable', 'true'); 
                         li.setAttribute('data-content-hash', taskIdRaw); 
 
                         li.innerHTML = `
@@ -528,7 +429,6 @@
                             <label for="${taskId}" class="task-label" title="Double click để sửa nhanh" ondblclick="enableQuickEdit(this, '${safeText}')">${displayHTML}<div class="mini-progress-container"><div class="mini-progress-fill"></div></div></label>
                         `;
                         
-                        // Add DnD Event Listeners
                         li.addEventListener('dragstart', handleDragStart);
                         li.addEventListener('dragover', handleDragOver);
                         li.addEventListener('dragleave', handleDragLeave);
@@ -537,10 +437,22 @@
 
                         currentList.appendChild(li);
                         if(localStorage.getItem(taskId) === "true") li.querySelector('input').checked = true;
+
+                        // Check for auto-edit
+                        if (taskIdRaw == window.pendingAutoEditHash) {
+                            autoEditElement = li.querySelector('.task-label');
+                        }
                     }
                 }
             });
             initFolding(container); calculateStats(); 
+
+            // Trigger Auto Edit if pending
+            if (autoEditElement) {
+                const textToEdit = autoEditElement.innerText; // or retrieve strictly
+                enableQuickEdit(autoEditElement, textToEdit, true); // True = Select All
+                window.pendingAutoEditHash = null; // Clear
+            }
         }
 
         // --- NEW TASK FEATURE ---
@@ -550,30 +462,27 @@
             let insertIndex = -1;
             let foundBox = false;
 
-            // Find the position to insert: Before the next '#' or end of file
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (line.startsWith('#')) {
                     const currentTitle = line.replace('#','').trim();
-                    if (currentTitle === boxTitle) {
-                        foundBox = true;
-                    } else if (foundBox) {
-                        // Found the NEXT box, insert before this
-                        insertIndex = i;
-                        break;
-                    }
+                    if (currentTitle === boxTitle) { foundBox = true; } 
+                    else if (foundBox) { insertIndex = i; break; }
                 }
             }
-
-            if (foundBox && insertIndex === -1) insertIndex = lines.length; // End of file
+            if (foundBox && insertIndex === -1) insertIndex = lines.length;
 
             if (foundBox) {
-                // Determine prefix based on Box (A, B, C...)
                 let prefix = "[New]";
                 if(boxTitle.includes("URGENT")) prefix = "[A-xx]";
                 else if(boxTitle.includes("CORE")) prefix = "[B-xx]";
                 
-                const newTaskLine = `- ${prefix} Task mới`;
+                const taskContent = `${prefix} Task mới`;
+                const newTaskLine = `- ${taskContent}`;
+                
+                // Set pending hash to trigger edit on render
+                window.pendingAutoEditHash = stringToHash(taskContent);
+                
                 lines.splice(insertIndex, 0, newTaskLine);
                 const newData = lines.join('\n');
                 
@@ -583,7 +492,7 @@
             }
         }
 
-        // --- DRAG & DROP LOGIC ---
+        // --- DRAG & DROP LOGIC (FIXED) ---
         let dragSrcEl = null;
         let dragSrcHash = null;
 
@@ -594,42 +503,18 @@
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', dragSrcHash);
         }
-
         function handleDragOver(e) {
             if (e.preventDefault) e.preventDefault();
             if (this === dragSrcEl) return false;
-
-            const rect = this.getBoundingClientRect();
-            const relY = e.clientY - rect.top;
-            const height = rect.height;
-            
-            // Remove existing classes
+            const rect = this.getBoundingClientRect(); const relY = e.clientY - rect.top; const height = rect.height;
             this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest');
-
-            // Logic: Top 25% = Insert Before, Bottom 25% = Insert After, Middle 50% = Nest (Make Child)
-            if (relY < height * 0.25) {
-                this.classList.add('drag-over-top');
-            } else if (relY > height * 0.75) {
-                this.classList.add('drag-over-bottom');
-            } else {
-                // If current item is collapsed/folded, highlight differently?
-                // The prompt says "if task list collape -> light up". 
-                // We'll treat middle zone as "Nest" action
-                this.classList.add('drag-over-nest');
-            }
+            if (relY < height * 0.25) { this.classList.add('drag-over-top'); } 
+            else if (relY > height * 0.75) { this.classList.add('drag-over-bottom'); } 
+            else { this.classList.add('drag-over-nest'); }
             return false;
         }
-
-        function handleDragLeave(e) {
-            this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest');
-        }
-
-        function handleDragEnd(e) {
-            this.classList.remove('dragging');
-            document.querySelectorAll('.task-item').forEach(item => {
-                item.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest');
-            });
-        }
+        function handleDragLeave(e) { this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest'); }
+        function handleDragEnd(e) { this.classList.remove('dragging'); document.querySelectorAll('.task-item').forEach(item => { item.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest'); }); }
 
         function handleDrop(e) {
             if (e.stopPropagation) e.stopPropagation();
@@ -638,14 +523,9 @@
             const targetHash = this.getAttribute('data-content-hash');
             const data = localStorage.getItem('dashboardData').split('\n');
             
-            // Find Line Indices based on Hash
-            // Note: Hash collision is rare but possible. We assume content is unique enough or first match.
-            // A safer way is ensuring uniqueness, but for this text-based system, we scan.
-            
             let srcIndex = -1, targetIndex = -1;
             let srcLevel = 1, targetLevel = 1;
 
-            // Helper to clean line and hash
             function getHash(line) {
                 if(!line.trim().startsWith('-')) return null;
                 const raw = line.trim().replace(/^-+/, '').split('|')[0].trim();
@@ -660,51 +540,44 @@
 
             if(srcIndex === -1 || targetIndex === -1) return false;
 
-            // Get source block (task + its children)
             let srcBlock = [data[srcIndex]];
             let count = 1;
             for(let i = srcIndex + 1; i < data.length; i++) {
-                const l = data[i].trim();
-                if(!l.startsWith('-')) break;
+                const l = data[i].trim(); if(!l.startsWith('-')) break;
                 const lvl = (l.match(/^-+/) || ['-'])[0].length;
                 if(lvl <= srcLevel) break;
-                srcBlock.push(data[i]);
-                count++;
+                srcBlock.push(data[i]); count++;
             }
-
-            // Remove source block from array
             data.splice(srcIndex, count);
-            
-            // Adjust targetIndex if removal affected it
             if(srcIndex < targetIndex) targetIndex -= count;
 
-            // Determine Action based on drop zone
-            let action = 'after'; // default
+            let action = 'after'; 
             if (this.classList.contains('drag-over-top')) action = 'before';
             else if (this.classList.contains('drag-over-nest')) action = 'nest';
 
-            // Insert
-            if (action === 'before') {
-                data.splice(targetIndex, 0, ...srcBlock);
-            } else if (action === 'after') {
-                data.splice(targetIndex + 1, 0, ...srcBlock);
-            } else if (action === 'nest') {
-                // Change Indentation of Source Block
-                // Target is parent, so Source Level becomes Target Level + 1
-                const newBaseLevel = targetLevel + 1;
-                const dashDiff = newBaseLevel - srcLevel; // can be negative if moving out
+            // BUG FIX INDENTATION: Calculate difference relative to target
+            let newBaseLevel = targetLevel;
+            if (action === 'nest') newBaseLevel = targetLevel + 1;
+            
+            // If dropping before/after, we want to match the target's level
+            // If dragging a nested item to a root item, we reduce indentation
+            const dashDiff = newBaseLevel - srcLevel;
 
-                const newBlock = srcBlock.map(line => {
-                    let currentDashes = (line.match(/^-+/) || [''])[0];
-                    let content = line.substring(currentDashes.length);
-                    
-                    let newDashes = '-'.repeat(Math.max(1, currentDashes.length + dashDiff));
-                    return newDashes + content;
-                });
-                
-                data.splice(targetIndex + 1, 0, ...newBlock);
-                
-                // Expand the target if folded
+            const adjustedBlock = srcBlock.map(line => {
+                let currentDashes = (line.match(/^-+/) || [''])[0];
+                let content = line.substring(currentDashes.length);
+                // Ensure at least one dash
+                let newDashCount = Math.max(1, currentDashes.length + dashDiff);
+                let newDashes = '-'.repeat(newDashCount);
+                return newDashes + content;
+            });
+
+            if (action === 'before') {
+                data.splice(targetIndex, 0, ...adjustedBlock);
+            } else if (action === 'after') {
+                data.splice(targetIndex + 1, 0, ...adjustedBlock);
+            } else if (action === 'nest') {
+                data.splice(targetIndex + 1, 0, ...adjustedBlock);
                 localStorage.setItem('fold-task-'+targetHash, 'true');
             }
 
@@ -715,13 +588,28 @@
             return false;
         }
 
-        // --- QUICK EDIT LOGIC ---
-        function enableQuickEdit(labelEl, oldText) {
+        // --- QUICK EDIT LOGIC (SMART EDIT) ---
+        function enableQuickEdit(labelEl, oldText, selectAll = false) {
             if(labelEl.querySelector('input')) return; 
+            
             labelEl.onclick = function(e) { e.preventDefault(); };
-            labelEl.innerHTML = `<input type="text" class="quick-edit-input" value="${oldText}" onkeydown="handleQuickEditKey(event, this, '${oldText}')"><button class="btn-quick-save" onclick="saveQuickEdit(this, '${oldText}')">LƯU</button>`;
-            const input = labelEl.querySelector('input'); input.focus();
+            labelEl.innerHTML = `
+                <input type="text" class="quick-edit-input" value="${oldText}" onkeydown="handleQuickEditKey(event, this, '${oldText}')">
+                <button class="btn-quick-save" onclick="saveQuickEdit(this, '${oldText}')">LƯU</button>
+            `;
+            const input = labelEl.querySelector('input');
+            input.focus();
+            
+            if (selectAll) {
+                // For New Task: Select all text
+                input.select();
+            } else {
+                // For Double Click: Cursor to end
+                const len = input.value.length;
+                input.setSelectionRange(len, len);
+            }
         }
+
         function handleQuickEditKey(e, input, oldText) { if (e.key === "Enter") { saveQuickEdit(input.nextElementSibling, oldText); } else if (e.key === "Escape") { renderDashboard(localStorage.getItem('dashboardData')); } }
         function saveQuickEdit(btn, oldRawText) {
             const input = btn.previousElementSibling; const newText = input.value.trim();
@@ -750,224 +638,104 @@
             const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
             const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
             const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
-
-            const content = document.getElementById(areaId).value.trim();
-            if(!content) { alert("Chưa có nội dung để lưu!"); return; }
-
+            const content = document.getElementById(areaId).value.trim(); if(!content) { alert("Chưa có nội dung!"); return; }
             localStorage.setItem(currentKey, content);
-            const now = new Date().toLocaleString();
-            const separator = `\n\n--- ${now} ---\n`;
+            const now = new Date().toLocaleString(); const separator = `\n\n--- ${now} ---\n`;
             const currentArchive = localStorage.getItem(archiveKey) || "";
-            const newArchive = separator + content + currentArchive; 
-            localStorage.setItem(archiveKey, newArchive);
-
-            document.getElementById('toast').innerText = "✅ Đã lưu & thêm vào Kho!";
-            document.getElementById('toast').className = "show";
-            setTimeout(()=>document.getElementById('toast').className="", 3000);
-            
-            triggerAutoSave();
+            localStorage.setItem(archiveKey, separator + content + currentArchive);
+            document.getElementById('toast').innerText = "✅ Đã lưu & thêm vào Kho!"; document.getElementById('toast').className = "show"; setTimeout(()=>document.getElementById('toast').className="", 3000); triggerAutoSave();
         }
 
         // --- STUDIO ARCHIVE EDITOR ---
         let currentStudioMode = '';
         function openStudioArchive(type) {
-            currentStudioMode = type;
-            const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
-            const content = localStorage.getItem(archiveKey) || "";
-            const title = type === 'braindom' ? '🧠 KHO BRAINDOM' : '📖 KHO WRITER';
-            document.getElementById('studio-archive-title').innerText = title;
-            const textArea = document.getElementById('studio-archive-content');
-            textArea.value = content;
-            textArea.readOnly = true;
-            document.getElementById('btn-arc-edit').style.display = 'inline-block';
-            document.getElementById('btn-arc-save').style.display = 'none';
-            document.getElementById('studio-archive-modal').style.display = 'flex';
+            currentStudioMode = type; const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
+            document.getElementById('studio-archive-title').innerText = type === 'braindom' ? '🧠 KHO BRAINDOM' : '📖 KHO WRITER';
+            const textArea = document.getElementById('studio-archive-content'); textArea.value = localStorage.getItem(archiveKey) || ""; textArea.readOnly = true;
+            document.getElementById('btn-arc-edit').style.display = 'inline-block'; document.getElementById('btn-arc-save').style.display = 'none'; document.getElementById('studio-archive-modal').style.display = 'flex';
         }
-
-        function startEditArchive() {
-            const textArea = document.getElementById('studio-archive-content');
-            textArea.readOnly = false; textArea.focus();
-            document.getElementById('btn-arc-edit').style.display = 'none';
-            document.getElementById('btn-arc-save').style.display = 'inline-block';
-        }
-
-        function saveEditArchive() {
-            if(!currentStudioMode) return;
-            const textArea = document.getElementById('studio-archive-content');
-            const archiveKey = currentStudioMode === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
-            localStorage.setItem(archiveKey, textArea.value);
-            textArea.readOnly = true;
-            document.getElementById('btn-arc-edit').style.display = 'inline-block';
-            document.getElementById('btn-arc-save').style.display = 'none';
-            alert("✅ Đã cập nhật Kho!");
-            triggerAutoSave();
-        }
-
-        function copyStudioContent(type) {
-            const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
-            navigator.clipboard.writeText(document.getElementById(areaId).value);
-            alert("Đã copy nội dung hiện tại!");
-        }
-
-        function copyStudioArchiveText() {
-            navigator.clipboard.writeText(document.getElementById('studio-archive-content').value);
-            alert("Đã copy toàn bộ Kho lưu trữ!");
-        }
-
-        function clearStudio(type) {
-            if(confirm('Xóa hết nội dung đang soạn thảo? (Kho lưu trữ vẫn còn)')) {
-                const areaId = type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area';
-                const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
-                document.getElementById(areaId).value = "";
-                localStorage.setItem(currentKey, "");
-                triggerAutoSave();
-            }
-        }
+        function startEditArchive() { const t = document.getElementById('studio-archive-content'); t.readOnly = false; t.focus(); document.getElementById('btn-arc-edit').style.display = 'none'; document.getElementById('btn-arc-save').style.display = 'inline-block'; }
+        function saveEditArchive() { if(!currentStudioMode) return; const t = document.getElementById('studio-archive-content'); localStorage.setItem(currentStudioMode==='braindom'?'zetmeo_braindump_archive':'zetmeo_writer_archive', t.value); t.readOnly = true; document.getElementById('btn-arc-edit').style.display = 'inline-block'; document.getElementById('btn-arc-save').style.display = 'none'; alert("✅ Đã cập nhật!"); triggerAutoSave(); }
+        function copyStudioContent(type) { navigator.clipboard.writeText(document.getElementById(type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area').value); alert("Đã copy!"); }
+        function copyStudioArchiveText() { navigator.clipboard.writeText(document.getElementById('studio-archive-content').value); alert("Đã copy toàn bộ!"); }
+        function clearStudio(type) { if(confirm('Xóa hết nội dung?')) { document.getElementById(type === 'braindom' ? 'brain-dump-area' : 'book-ideas-area').value = ""; localStorage.setItem(type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content', ""); triggerAutoSave(); } }
 
         // --- ARCHIVE LOGIC (TASK) ---
         function getArchive() { return JSON.parse(localStorage.getItem('zetmeo_archive_master') || '[]'); }
         function saveArchiveData(arr) { localStorage.setItem('zetmeo_archive_master', JSON.stringify(arr)); }
-
         function archiveCompletedTasks() {
             let currentData = document.getElementById('input-data').value;
             const checkedBoxes = document.querySelectorAll('.task-item input[type="checkbox"]:checked');
-            if (checkedBoxes.length === 0) { alert("Không có task nào đã xong để lưu trữ!"); return; }
-            if (!confirm(`Bạn có chắc muốn lưu trữ ${checkedBoxes.length} task đã xong?`)) return;
-
-            let archiveArr = getArchive();
-            let newLines = [];
-            const lines = currentData.split('\n');
-            let removedCount = 0;
-
+            if (checkedBoxes.length === 0) { alert("Không có task xong!"); return; } if (!confirm(`Lưu trữ ${checkedBoxes.length} task?`)) return;
+            let archiveArr = getArchive(); let newLines = []; const lines = currentData.split('\n'); let removedCount = 0;
             lines.forEach(line => {
-                let trimmed = line.trim();
-                let isTask = trimmed.startsWith('-');
-                let isChecked = false;
-                if (isTask) {
-                    let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
-                    let hash = stringToHash(cleanLine);
-                    if (localStorage.getItem('task-' + hash) === "true") { isChecked = true; }
-                }
-                if (isChecked) {
-                    archiveArr.unshift({ content: trimmed, date: new Date().toLocaleDateString(), timestamp: Date.now() });
-                    let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
-                    localStorage.removeItem('task-' + stringToHash(cleanLine));
-                    removedCount++;
-                } else { newLines.push(line); }
+                let trimmed = line.trim(); let isTask = trimmed.startsWith('-'); let isChecked = false;
+                if (isTask) { let h = stringToHash(trimmed.replace(/^-+\s*/, '').split('|')[0].trim()); if (localStorage.getItem('task-' + h) === "true") isChecked = true; }
+                if (isChecked) { archiveArr.unshift({ content: trimmed, date: new Date().toLocaleDateString(), timestamp: Date.now() }); let h = stringToHash(trimmed.replace(/^-+\s*/, '').split('|')[0].trim()); localStorage.removeItem('task-' + h); removedCount++; } else { newLines.push(line); }
             });
-
-            saveArchiveData(archiveArr);
-            localStorage.setItem('dashboardData', newLines.join('\n'));
-            alert(`✅ Đã lưu trữ ${removedCount} task thành công!`);
-            triggerAutoSave(); location.reload();
+            saveArchiveData(archiveArr); localStorage.setItem('dashboardData', newLines.join('\n')); alert(`✅ Đã lưu ${removedCount} task!`); triggerAutoSave(); location.reload();
         }
-
         function openArchiveList() {
-            const arr = getArchive();
-            const container = document.getElementById('archive-list-container');
-            container.innerHTML = '';
-            if (arr.length === 0) { container.innerHTML = '<p style="color:#777; text-align:center">Chưa có dữ liệu lưu trữ.</p>'; } 
-            else {
-                arr.forEach((item, index) => {
-                    const div = document.createElement('div'); div.className = 'archive-item';
-                    div.innerHTML = `<div class="archive-content"><span class="archive-date">📅 ${item.date}</span>${item.content.replace(/^-+/, '')}</div><button class="btn-restore" onclick="restoreTask(${index})" title="Khôi phục">↩️</button>`;
-                    container.appendChild(div);
-                });
-            }
+            const arr = getArchive(); const container = document.getElementById('archive-list-container'); container.innerHTML = '';
+            if (arr.length === 0) container.innerHTML = '<p style="color:#777; text-align:center">Trống.</p>';
+            else arr.forEach((item, i) => { const div = document.createElement('div'); div.className = 'archive-item'; div.innerHTML = `<div class="archive-content"><span class="archive-date">📅 ${item.date}</span>${item.content.replace(/^-+/, '')}</div><button class="btn-restore" onclick="restoreTask(${i})">↩️</button>`; container.appendChild(div); });
             document.getElementById('edit-modal').style.display = 'none'; document.getElementById('archive-list-modal').style.display = 'flex';
         }
-
-        function restoreTask(index) {
-            let archiveArr = getArchive(); let taskToRestore = archiveArr[index]; if (!taskToRestore) return;
-            if(!confirm("Khôi phục task này về màn hình chính?")) return;
-            archiveArr.splice(index, 1); saveArchiveData(archiveArr);
-            let currentData = localStorage.getItem('dashboardData') || defaultData;
-            let boxCode = null; let match = taskToRestore.content.match(/\[([A-Z])-?/); 
-            if (match) boxCode = match[1];
-            if (boxCode) {
-                let regex = new RegExp(`(#\\s*${boxCode}\\..*$)`, "m"); let matchPos = currentData.match(regex);
-                if (matchPos) { let insertIndex = matchPos.index + matchPos[0].length; currentData = currentData.slice(0, insertIndex) + "\n" + taskToRestore.content + currentData.slice(insertIndex); } 
-                else { currentData += "\n" + taskToRestore.content; }
-            } else { currentData += "\n" + taskToRestore.content; }
-            localStorage.setItem('dashboardData', currentData); alert("✅ Đã khôi phục!"); triggerAutoSave(); location.reload();
+        function restoreTask(i) {
+            let arr = getArchive(); let t = arr[i]; if (!t) return; if(!confirm("Khôi phục?")) return; arr.splice(i, 1); saveArchiveData(arr);
+            let d = localStorage.getItem('dashboardData') || defaultData; let code = (t.content.match(/\[([A-Z])-?/) || [])[1];
+            if (code) { let m = d.match(new RegExp(`(#\\s*${code}\\..*$)`, "m")); if (m) { let idx = m.index + m[0].length; d = d.slice(0, idx) + "\n" + t.content + d.slice(idx); } else d += "\n" + t.content; } else d += "\n" + t.content;
+            localStorage.setItem('dashboardData', d); alert("✅ Xong!"); triggerAutoSave(); location.reload();
         }
 
-        // --- TAB & NOTE & LOG LOGIC ---
-        function switchBoxTab(btn, boxId, tabName) {
-            const box = btn.closest('.box'); box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active'); document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active');
-        }
-        function loadBoxNote(boxId) { const content = localStorage.getItem(`zetmeo_note_${boxId}`) || "(Chưa có ghi chú)"; const displayEl = document.getElementById(`note-display-${boxId}`); if(displayEl) { displayEl.innerText = content; document.getElementById(`note-editor-${boxId}`).value = content === "(Chưa có ghi chú)" ? "" : content; } }
+        // --- MISC ---
+        function switchBoxTab(btn, boxId, tabName) { const box = btn.closest('.box'); box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); btn.classList.add('active'); document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active'); }
+        function loadBoxNote(boxId) { const c = localStorage.getItem(`zetmeo_note_${boxId}`) || "(Chưa có ghi chú)"; const d = document.getElementById(`note-display-${boxId}`); if(d) { d.innerText = c; document.getElementById(`note-editor-${boxId}`).value = c === "(Chưa có ghi chú)" ? "" : c; } }
         function editBoxNote(boxId) { document.getElementById(`note-display-${boxId}`).style.display = 'none'; document.getElementById(`note-editor-${boxId}`).style.display = 'block'; document.getElementById(`btn-edit-${boxId}`).style.display = 'none'; document.getElementById(`btn-save-${boxId}`).style.display = 'inline-block'; document.getElementById(`btn-cancel-${boxId}`).style.display = 'inline-block'; document.getElementById(`note-editor-${boxId}`).focus(); }
-        function saveBoxNote(boxId) { const content = document.getElementById(`note-editor-${boxId}`).value; localStorage.setItem(`zetmeo_note_${boxId}`, content); document.getElementById(`note-display-${boxId}`).innerText = content || "(Chưa có ghi chú)"; cancelBoxNote(boxId); triggerAutoSave(); }
+        function saveBoxNote(boxId) { const c = document.getElementById(`note-editor-${boxId}`).value; localStorage.setItem(`zetmeo_note_${boxId}`, c); document.getElementById(`note-display-${boxId}`).innerText = c || "(Chưa có ghi chú)"; cancelBoxNote(boxId); triggerAutoSave(); }
         function cancelBoxNote(boxId) { document.getElementById(`note-display-${boxId}`).style.display = 'block'; document.getElementById(`note-editor-${boxId}`).style.display = 'none'; document.getElementById(`btn-edit-${boxId}`).style.display = 'inline-block'; document.getElementById(`btn-save-${boxId}`).style.display = 'none'; document.getElementById(`btn-cancel-${boxId}`).style.display = 'none'; }
-        function saveLogFromTab(boxId) { const code = document.getElementById(`log-code-${boxId}`).value.trim(); const min = parseInt(document.getElementById(`log-time-${boxId}`).value); if (!code || isNaN(min) || min <= 0) { alert("Nhập thiếu Code hoặc Time!"); return; } let foundId = null; document.querySelectorAll('.task-item').forEach(item => { if(item.innerText.includes(code)) foundId = item.getAttribute('data-id'); }); if(foundId) { logTime(foundId, min); document.getElementById(`log-time-${boxId}`).value = ''; alert(`✅ Đã log ${min}p cho ${code}`); triggerAutoSave(); } else { alert("❌ Không tìm thấy mã task này!"); } }
+        function saveLogFromTab(boxId) { const c = document.getElementById(`log-code-${boxId}`).value.trim(); const m = parseInt(document.getElementById(`log-time-${boxId}`).value); if (!c || isNaN(m) || m <= 0) { alert("Thiếu Code/Time!"); return; } let fid = null; document.querySelectorAll('.task-item').forEach(i => { if(i.innerText.includes(c)) fid = i.getAttribute('data-id'); }); if(fid) { logTime(fid, m); document.getElementById(`log-time-${boxId}`).value = ''; alert(`✅ Log ${m}p cho ${c}`); triggerAutoSave(); } else alert("❌ Sai mã task!"); }
 
-        // --- CORE FUNCTIONS ---
         let activeInterval, audioCtx;
         function playBeep() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'sine'; o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.5); g.gain.setValueAtTime(0.5, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); o.start(); o.stop(audioCtx.currentTime + 0.5); }
-        function startTimer(btn, minutes) { if (activeInterval) clearInterval(activeInterval); document.querySelectorAll('.timer-btn').forEach(b => { b.classList.remove('timer-running'); if(b.dataset.orgText) b.innerText = b.dataset.orgText; b.disabled = false; }); if(!btn.dataset.orgText) btn.dataset.orgText = btn.innerText; let seconds = minutes * 60; btn.classList.add('timer-running'); btn.disabled = true; function update() { let m = Math.floor(seconds / 60); let s = seconds % 60; btn.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; if (seconds < 0) { clearInterval(activeInterval); btn.innerText = "DONE"; playBeep(); setTimeout(playBeep, 600); setTimeout(() => { btn.classList.remove('timer-running'); btn.innerText = btn.dataset.orgText; btn.disabled = false; }, 3000); } seconds--; } update(); activeInterval = setInterval(update, 1000); }
+        function startTimer(btn, minutes) { if (activeInterval) clearInterval(activeInterval); document.querySelectorAll('.timer-btn').forEach(b => { b.classList.remove('timer-running'); if(b.dataset.orgText) b.innerText = b.dataset.orgText; b.disabled = false; }); if(!btn.dataset.orgText) btn.dataset.orgText = btn.innerText; let s = minutes * 60; btn.classList.add('timer-running'); btn.disabled = true; function update() { let m = Math.floor(s / 60); let sec = s % 60; btn.innerText = `${m}:${sec < 10 ? '0' : ''}${sec}`; if (s < 0) { clearInterval(activeInterval); btn.innerText = "DONE"; playBeep(); setTimeout(playBeep, 600); setTimeout(() => { btn.classList.remove('timer-running'); btn.innerText = btn.dataset.orgText; btn.disabled = false; }, 3000); } s--; } update(); activeInterval = setInterval(update, 1000); }
         function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'classic' ? '' : 'classic'); localStorage.setItem('theme', document.body.getAttribute('data-theme')); }
         
-        async function getRecordID() { let recordId = localStorage.getItem('zetmeo_cloud_record_id'); if (recordId) return recordId; try { const response = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const data = await response.json(); if (data.records && data.records.length > 0) { recordId = data.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } } catch (error) { return null; } }
-        async function syncUp(isAuto = false) { if(!isAuto && !confirm("Upload thủ công?")) return; if(!isAuto && autoSaveTimer) clearTimeout(autoSaveTimer); if(isAuto) updateSyncStatus('saving'); const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) { if(isAuto) updateSyncStatus('error'); return; } fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})}).then(r=> { if(r.ok) { if(!isAuto) alert("✅ OK"); if(isAuto) updateSyncStatus('synced'); } else { if(!isAuto) alert("Lỗi"); if(isAuto) updateSyncStatus('error'); } }).catch(() => { if(isAuto) updateSyncStatus('error'); }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); }
+        async function getRecordID() { let rid = localStorage.getItem('zetmeo_cloud_record_id'); if (rid) return rid; try { const r = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const d = await r.json(); if (d.records && d.records.length > 0) { rid = d.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', rid); return rid; } else { const cr = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const cd = await cr.json(); rid = cd.id; localStorage.setItem('zetmeo_cloud_record_id', rid); return rid; } } catch (e) { return null; } }
+        async function syncUp(isAuto = false) { if(!isAuto && !confirm("Upload?")) return; if(!isAuto && autoSaveTimer) clearTimeout(autoSaveTimer); if(isAuto) updateSyncStatus('saving'); const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) { if(isAuto) updateSyncStatus('error'); return; } fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})}).then(r=> { if(r.ok) { if(!isAuto) alert("✅ OK"); if(isAuto) updateSyncStatus('synced'); } else { if(!isAuto) alert("Lỗi"); if(isAuto) updateSyncStatus('error'); } }).catch(() => { if(isAuto) updateSyncStatus('error'); }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); }
         async function syncDown(isAuto = false) { if(!isAuto && !confirm("Download?")) return; const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); }
         
-        function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
-        function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
-        function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        function backupFull(isManual=false) { const b = JSON.stringify(localStorage); const l = document.createElement("a"); l.href = URL.createObjectURL(new Blob([b], { type: 'application/json' })); l.download = `ZetmeoOS_${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(l); l.click(); document.body.removeChild(l); if (isManual) alert("✅ Đã lưu!"); }
+        function restoreData(i) { const f = i.files[0]; if (!f) return; if(!confirm("Ghi đè?")) return; const r = new FileReader(); r.onload = function(e) { try { const d = JSON.parse(e.target.result); localStorage.clear(); Object.keys(d).forEach(k => localStorage.setItem(k, d[k])); alert("✅ Xong!"); location.reload(); } catch (e) { alert("❌ Lỗi!"); } }; r.readAsText(f); }
+        function exportCSV() { let l = JSON.parse(localStorage.getItem('zetmeo_time_logs') || '{}'); let c = "Cat,ID,Name,Date,Min\n"; const m = {}; document.querySelectorAll('.box').forEach(b => { const cat = b.getAttribute('data-type'); b.querySelectorAll('.task-item').forEach(i => { m[i.getAttribute('data-id')] = { n: i.querySelector('.task-label').innerText, c: cat }; }); }); for (const [k, v] of Object.entries(l)) { const d = m[k] || { n: "Deleted", c: "?" }; v.forEach(x => c += `"${d.c}",${k},"${d.n}",${new Date(x.date).toLocaleString()},${x.min}\n`); } const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([c], { type: 'text/csv' })); a.download = "TimeLog.csv"; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
         function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
         function closeModal(){ document.getElementById('edit-modal').style.display='none'; }
         function saveData(){ localStorage.setItem('dashboardData', document.getElementById('input-data').value); renderDashboard(document.getElementById('input-data').value); closeModal(); triggerAutoSave(); }
-        function toggleCompare() { const btn = document.getElementById('btn-compare'); const colOld = document.getElementById('col-old'); const inputArea = document.getElementById('input-data'); const diffView = document.getElementById('diff-view'); const historyPanel = document.getElementById('history-panel'); if (inputArea.style.display !== 'none') { btn.innerText = "👁️ EDIT"; btn.style.background = "#fff"; colOld.style.display = 'flex'; inputArea.style.display = 'none'; diffView.style.display = 'block'; historyPanel.style.display = 'none'; diffView.innerHTML = generateDiffHtml(document.getElementById('old-data').value, inputArea.value); } else { btn.innerText = "So Sánh"; btn.style.background = "var(--sub-3)"; colOld.style.display = 'none'; inputArea.style.display = 'block'; diffView.style.display = 'none'; historyPanel.style.display = 'flex'; } }
-        function generateDiffHtml(oldText, newText) { const oldLines = oldText.split('\n').map(l => l.trim()).filter(l => l); const newLines = newText.split('\n').map(l => l.trim()).filter(l => l); let html = ''; newLines.forEach(line => { if (oldLines.includes(line)) html += `<div class="diff-line diff-same">${line}</div>`; else html += `<div class="diff-line diff-added">+ ${line}</div>`; }); let removedHtml = ''; oldLines.forEach(line => { if (!newLines.includes(line)) removedHtml += `<div class="diff-line diff-removed">- ${line}</div>`; }); return html + (removedHtml ? `<div style="margin-top:10px; border-top:1px dashed #555; padding-top:5px; font-size:0.8em; color:#888">ĐÃ XÓA:</div>` + removedHtml : ''); }
+        function toggleCompare() { const b = document.getElementById('btn-compare'); const o = document.getElementById('col-old'); const i = document.getElementById('input-data'); const d = document.getElementById('diff-view'); const h = document.getElementById('history-panel'); if (i.style.display !== 'none') { b.innerText = "👁️ EDIT"; b.style.background = "#fff"; o.style.display = 'flex'; i.style.display = 'none'; d.style.display = 'block'; h.style.display = 'none'; d.innerHTML = generateDiffHtml(document.getElementById('old-data').value, i.value); } else { b.innerText = "So Sánh"; b.style.background = "var(--sub-3)"; o.style.display = 'none'; i.style.display = 'block'; d.style.display = 'none'; h.style.display = 'flex'; } }
+        function generateDiffHtml(o, n) { const ol = o.split('\n').map(l => l.trim()).filter(l => l); const nl = n.split('\n').map(l => l.trim()).filter(l => l); let h = ''; nl.forEach(l => { if (ol.includes(l)) h += `<div class="diff-line diff-same">${l}</div>`; else h += `<div class="diff-line diff-added">+ ${l}</div>`; }); let rh = ''; ol.forEach(l => { if (!nl.includes(l)) rh += `<div class="diff-line diff-removed">- ${l}</div>`; }); return h + (rh ? `<div style="margin-top:10px; border-top:1px dashed #555; pt:5px; color:#888">ĐÃ XÓA:</div>` + rh : ''); }
         
         function checkTask(cb) { localStorage.setItem(cb.id, cb.checked); calculateStats(); triggerAutoSave(); }
         function calculateStats() {
-            const statsContainer = document.getElementById('stats-content'); statsContainer.innerHTML = ''; 
-            const boxes = document.querySelectorAll('.box'); updateMiniProgressBars();
-            const totalBoxes = boxes.length; if (totalBoxes === 0) return;
-            const weightPerBox = 100 / totalBoxes; let totalGlobalProgress = 0;
-            boxes.forEach(box => {
-                const title = box.getAttribute('data-type'); const checkboxes = box.querySelectorAll('input[type="checkbox"]');
-                const totalTasks = checkboxes.length; const checkedTasks = box.querySelectorAll('input[type="checkbox"]:checked').length;
-                let localPercent = totalTasks > 0 ? (checkedTasks / totalTasks) * 100 : 0;
-                const globalContribution = (localPercent / 100) * weightPerBox; totalGlobalProgress += globalContribution;
-                let barColorClass = 'bar-core'; if (title.includes('URGENT')) barColorClass = 'bar-urgent'; else if (title.includes('FOUNDATION')) barColorClass = 'bar-foundation';
-                const row = document.createElement('div'); row.className = 'stat-row';
-                row.innerHTML = `<div class="stat-label"><span>${title} <span style="color:#777; font-size:0.85em">(${weightPerBox.toFixed(0)}%)</span></span><span>${Math.round(localPercent)}%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill ${barColorClass}" style="width: ${localPercent}%"></div></div>`;
-                statsContainer.appendChild(row);
-            });
-            const globalRow = document.createElement('div'); globalRow.className = 'stat-row'; globalRow.style.marginTop = "15px"; globalRow.style.paddingTop = "15px"; globalRow.style.borderTop = "1px solid #333";
-            globalRow.innerHTML = `<div class="stat-label"><span style="color: var(--sub-3); font-weight:bold">🚀 TIẾN ĐỘ NĂM 2026</span><span style="color: var(--sub-3); font-weight:bold">${totalGlobalProgress.toFixed(1)}%</span></div><div class="stat-bar-bg" style="height:12px; border: 1px solid #555"><div class="stat-bar-fill bar-total" style="width: ${totalGlobalProgress}%"></div></div>`;
-            statsContainer.insertBefore(globalRow, statsContainer.firstChild);
+            const c = document.getElementById('stats-content'); c.innerHTML = ''; const boxes = document.querySelectorAll('.box'); updateMiniProgressBars();
+            const t = boxes.length; if (t === 0) return; const w = 100 / t; let tg = 0;
+            boxes.forEach(b => { const title = b.getAttribute('data-type'); const chk = b.querySelectorAll('input[type="checkbox"]'); const tt = chk.length; const tc = b.querySelectorAll('input[type="checkbox"]:checked').length; let lp = tt > 0 ? (tc / tt) * 100 : 0; tg += (lp / 100) * w; let cl = 'bar-core'; if (title.includes('URGENT')) cl = 'bar-urgent'; else if (title.includes('FOUNDATION')) cl = 'bar-foundation'; const r = document.createElement('div'); r.className = 'stat-row'; r.innerHTML = `<div class="stat-label"><span>${title} <span style="color:#777; font-size:0.85em">(${w.toFixed(0)}%)</span></span><span>${Math.round(lp)}%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill ${cl}" style="width: ${lp}%"></div></div>`; c.appendChild(r); });
+            const gr = document.createElement('div'); gr.className = 'stat-row'; gr.style.marginTop = "15px"; gr.style.paddingTop = "15px"; gr.style.borderTop = "1px solid #333"; gr.innerHTML = `<div class="stat-label"><span style="color: var(--sub-3); font-weight:bold">🚀 TIẾN ĐỘ 2026</span><span style="color: var(--sub-3); font-weight:bold">${tg.toFixed(1)}%</span></div><div class="stat-bar-bg" style="height:12px; border: 1px solid #555"><div class="stat-bar-fill bar-total" style="width: ${tg}%"></div></div>`; c.insertBefore(gr, c.firstChild);
         }
-        function updateMiniProgressBars() { const taskLists = document.querySelectorAll('.task-list'); taskLists.forEach(list => { const items = Array.from(list.children); items.forEach((item, index) => { const currentLevel = parseInt(item.getAttribute('data-level')||1); let childCount = 0; let childChecked = 0; let hasChildren = false; for (let i = index + 1; i < items.length; i++) { const child = items[i]; const childLevel = parseInt(child.getAttribute('data-level')||1); if (childLevel <= currentLevel) break; hasChildren = true; childCount++; if (child.querySelector('input').checked) childChecked++; } if (hasChildren) { item.classList.add('has-children'); const percent = Math.round((childChecked / childCount) * 100); const fill = item.querySelector('.mini-progress-fill'); if (fill) fill.style.width = percent + '%'; } else { item.classList.remove('has-children'); } }); }); }
-        function initFolding(container) { const lists = container.querySelectorAll('.task-list'); lists.forEach(list => { const items = Array.from(list.children); items.forEach((item, index) => { const currentLevel = parseInt(item.getAttribute('data-level')||1); const nextItem = items[index + 1]; const nextLevel = nextItem ? parseInt(nextItem.getAttribute('data-level')||1) : 0; const placeholder = item.querySelector('.toggle-placeholder'); if (nextItem && nextLevel > currentLevel) { placeholder.innerHTML = '▶'; placeholder.className = 'toggle-btn'; placeholder.onclick = function(e) { e.stopPropagation(); toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); }; const isExpanded = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true'; if (isExpanded) { placeholder.classList.add('rotated'); placeholder.innerHTML = '▼'; } if (!isExpanded) hideChildren(items, index, currentLevel); } else { placeholder.className = 'spacer'; } }); }); }
-        function toggleChildren(allItems, parentIndex, parentLevel, btn, parentId) { const isCollapsing = btn.classList.contains('rotated'); if (isCollapsing) { btn.classList.remove('rotated'); btn.innerHTML = '▶'; localStorage.setItem('fold-' + parentId, 'false'); hideChildren(allItems, parentIndex, parentLevel); } else { btn.classList.add('rotated'); btn.innerHTML = '▼'; localStorage.setItem('fold-' + parentId, 'true'); showChildren(allItems, parentIndex, parentLevel); } }
-        function hideChildren(allItems, parentIndex, parentLevel) { for (let i = parentIndex + 1; i < allItems.length; i++) { const item = allItems[i]; if (parseInt(item.getAttribute('data-level')||1) <= parentLevel) break; item.classList.add('hidden-task'); } }
-        function showChildren(allItems, parentIndex, parentLevel) { for (let i = parentIndex + 1; i < allItems.length; i++) { const item = allItems[i]; const level = parseInt(item.getAttribute('data-level')||1); if (level <= parentLevel) break; item.classList.remove('hidden-task'); const toggleBtn = item.querySelector('.toggle-btn'); if (toggleBtn && !toggleBtn.classList.contains('rotated')) { let subParentLevel = level; let j = i + 1; while(j < allItems.length) { if(parseInt(allItems[j].getAttribute('data-level')||1) <= subParentLevel) break; j++; } i = j - 1; } } }
-        function getLogs() { return JSON.parse(localStorage.getItem('zetmeo_time_logs') || '{}'); }
-        function logTime(id, min) { let l=getLogs(); if(!l[id]) l[id]=[]; l[id].push({date:new Date().toISOString(), min:min}); localStorage.setItem('zetmeo_time_logs',JSON.stringify(l)); document.getElementById('toast').innerText=`Đã ghi ${min}p!`; document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",3000); }
+        function updateMiniProgressBars() { document.querySelectorAll('.task-list').forEach(l => { const it = Array.from(l.children); it.forEach((item, i) => { const cl = parseInt(item.getAttribute('data-level')||1); let cc = 0; let cchk = 0; let hc = false; for (let j = i + 1; j < it.length; j++) { const c = it[j]; const childL = parseInt(c.getAttribute('data-level')||1); if (childL <= cl) break; hc = true; cc++; if (c.querySelector('input').checked) cchk++; } if (hc) { item.classList.add('has-children'); const p = Math.round((cchk / cc) * 100); const f = item.querySelector('.mini-progress-fill'); if (f) f.style.width = p + '%'; } else { item.classList.remove('has-children'); } }); }); }
+        function initFolding(c) { c.querySelectorAll('.task-list').forEach(l => { const it = Array.from(l.children); it.forEach((item, i) => { const cl = parseInt(item.getAttribute('data-level')||1); const ni = it[i + 1]; const nl = ni ? parseInt(ni.getAttribute('data-level')||1) : 0; const p = item.querySelector('.toggle-placeholder'); if (ni && nl > cl) { p.innerHTML = '▶'; p.className = 'toggle-btn'; p.onclick = function(e) { e.stopPropagation(); toggleChildren(it, i, cl, this, item.getAttribute('data-id')); }; const exp = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true'; if (exp) { p.classList.add('rotated'); p.innerHTML = '▼'; } if (!exp) hideChildren(it, i, cl); } else { p.className = 'spacer'; } }); }); }
+        function toggleChildren(all, pi, pl, btn, pid) { const isCol = btn.classList.contains('rotated'); if (isCol) { btn.classList.remove('rotated'); btn.innerHTML = '▶'; localStorage.setItem('fold-' + pid, 'false'); hideChildren(all, pi, pl); } else { btn.classList.add('rotated'); btn.innerHTML = '▼'; localStorage.setItem('fold-' + pid, 'true'); showChildren(all, pi, pl); } }
+        function hideChildren(all, pi, pl) { for (let i = pi + 1; i < all.length; i++) { const item = all[i]; if (parseInt(item.getAttribute('data-level')||1) <= pl) break; item.classList.add('hidden-task'); } }
+        function showChildren(all, pi, pl) { for (let i = pi + 1; i < all.length; i++) { const item = all[i]; const l = parseInt(item.getAttribute('data-level')||1); if (l <= pl) break; item.classList.remove('hidden-task'); const tb = item.querySelector('.toggle-btn'); if (tb && !tb.classList.contains('rotated')) { let spl = l; let j = i + 1; while(j < all.length) { if(parseInt(all[j].getAttribute('data-level')||1) <= spl) break; j++; } i = j - 1; } } }
         function stringToHash(s) { let h=0; for(let i=0;i<s.length;i++) h=Math.abs(((h<<5)-h)+s.charCodeAt(i)); return h; }
 
         window.onload = function() { 
-            const data = localStorage.getItem('dashboardData') || defaultData; 
-            document.getElementById('old-data').value = data;
-            renderDashboard(data);
-            initDailyQuote(); 
+            const d = localStorage.getItem('dashboardData') || defaultData; 
+            document.getElementById('old-data').value = d; renderDashboard(d); initDailyQuote(); 
             if (localStorage.getItem('theme') === 'classic') document.body.setAttribute('data-theme', 'classic');
-            document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || '';
-            document.getElementById('book-ideas-area').value = localStorage.getItem('zetmeo_writer_content') || '';
-            
-            document.getElementById('brain-dump-area').addEventListener('input', () => { 
-                localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); 
-                triggerAutoSave(); 
-            });
-            document.getElementById('book-ideas-area').addEventListener('input', () => { 
-                localStorage.setItem('zetmeo_writer_content', document.getElementById('book-ideas-area').value); 
-                triggerAutoSave(); 
-            });
+            const bd = document.getElementById('brain-dump-area'); const bi = document.getElementById('book-ideas-area');
+            bd.value = localStorage.getItem('zetmeo_braindump') || ''; bi.value = localStorage.getItem('zetmeo_writer_content') || '';
+            bd.addEventListener('input', () => { localStorage.setItem('zetmeo_braindump', bd.value); triggerAutoSave(); });
+            bi.addEventListener('input', () => { localStorage.setItem('zetmeo_writer_content', bi.value); triggerAutoSave(); });
         }
     </script>
 </body>
