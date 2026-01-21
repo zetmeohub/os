@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V35.8 (Smart Edit & DnD Fix)</title>
+    <title>zetmeoOS - V35.9 (UI Polish)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -74,7 +74,6 @@
         .timer-btn:active { background: var(--box-color); color: #333; }
         .timer-running { background-color: #fff !important; color: #d63031 !important; border-color: #d63031 !important; animation: pulse 1s infinite; }
 
-        /* NEW TASK BUTTON (EDITED V35.8) */
         .btn-new-task { background-color: var(--box-color); color: #222; border: none; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 1em; cursor: pointer; margin-right: 8px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; height: 30px; }
         .btn-new-task:active { transform: scale(0.95); opacity: 0.9; }
 
@@ -113,9 +112,30 @@
         .mini-progress-fill { height: 100%; background-color: var(--box-color); border-radius: 2px; width: 0%; transition: width 0.3s; }
         .has-children .mini-progress-container { display: inline-block; }
 
-        /* QUICK EDIT STYLES */
-        .quick-edit-input { background: #111; border: 1px solid var(--main-color); color: #fff; padding: 4px 8px; border-radius: 4px; font-family: var(--font-main); font-size: 1em; width: 70%; vertical-align: middle; }
-        .btn-quick-save { background: var(--check-bg); color: #333; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; margin-left: 5px; cursor: pointer; font-size: 0.8em; vertical-align: middle; }
+        /* QUICK EDIT STYLES (UPDATED FOR MOBILE & COLOR) */
+        .quick-edit-input { 
+            background: #111; 
+            border: 1px solid var(--main-color); 
+            color: #fff; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-family: var(--font-main); 
+            font-size: 1em; 
+            width: 65%; /* Giảm width để chừa chỗ cho nút Lưu */
+            vertical-align: middle; 
+        }
+        .btn-quick-save { 
+            background: var(--box-color); /* Lấy màu theo Session */
+            color: #222; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            font-weight: 700; 
+            margin-left: 10px; /* Tăng khoảng cách margin */
+            cursor: pointer; 
+            font-size: 0.8em; 
+            vertical-align: middle; 
+        }
         .btn-quick-save:hover { opacity: 0.9; }
 
         /* STUDIO & OTHERS */
@@ -350,7 +370,7 @@
         function renderDashboard(text) {
             const container = document.getElementById('dashboard-container'); container.innerHTML = '';
             const lines = text.split('\n'); let currentBox, currentList; let currentTaskItem = null;
-            let autoEditElement = null; // To store reference for quick edit
+            let autoEditElement = null; 
 
             lines.forEach((line, lineIndex) => {
                 let trimmedLine = line.trim(); if (!trimmedLine) return;
@@ -438,7 +458,6 @@
                         currentList.appendChild(li);
                         if(localStorage.getItem(taskId) === "true") li.querySelector('input').checked = true;
 
-                        // Check for auto-edit
                         if (taskIdRaw == window.pendingAutoEditHash) {
                             autoEditElement = li.querySelector('.task-label');
                         }
@@ -447,11 +466,10 @@
             });
             initFolding(container); calculateStats(); 
 
-            // Trigger Auto Edit if pending
             if (autoEditElement) {
-                const textToEdit = autoEditElement.innerText; // or retrieve strictly
-                enableQuickEdit(autoEditElement, textToEdit, true); // True = Select All
-                window.pendingAutoEditHash = null; // Clear
+                const textToEdit = autoEditElement.innerText;
+                enableQuickEdit(autoEditElement, textToEdit, true);
+                window.pendingAutoEditHash = null;
             }
         }
 
@@ -480,7 +498,6 @@
                 const taskContent = `${prefix} Task mới`;
                 const newTaskLine = `- ${taskContent}`;
                 
-                // Set pending hash to trigger edit on render
                 window.pendingAutoEditHash = stringToHash(taskContent);
                 
                 lines.splice(insertIndex, 0, newTaskLine);
@@ -492,7 +509,7 @@
             }
         }
 
-        // --- DRAG & DROP LOGIC (FIXED) ---
+        // --- DRAG & DROP LOGIC ---
         let dragSrcEl = null;
         let dragSrcHash = null;
 
@@ -555,18 +572,14 @@
             if (this.classList.contains('drag-over-top')) action = 'before';
             else if (this.classList.contains('drag-over-nest')) action = 'nest';
 
-            // BUG FIX INDENTATION: Calculate difference relative to target
             let newBaseLevel = targetLevel;
             if (action === 'nest') newBaseLevel = targetLevel + 1;
             
-            // If dropping before/after, we want to match the target's level
-            // If dragging a nested item to a root item, we reduce indentation
             const dashDiff = newBaseLevel - srcLevel;
 
             const adjustedBlock = srcBlock.map(line => {
                 let currentDashes = (line.match(/^-+/) || [''])[0];
                 let content = line.substring(currentDashes.length);
-                // Ensure at least one dash
                 let newDashCount = Math.max(1, currentDashes.length + dashDiff);
                 let newDashes = '-'.repeat(newDashCount);
                 return newDashes + content;
@@ -601,10 +614,8 @@
             input.focus();
             
             if (selectAll) {
-                // For New Task: Select all text
                 input.select();
             } else {
-                // For Double Click: Cursor to end
                 const len = input.value.length;
                 input.setSelectionRange(len, len);
             }
