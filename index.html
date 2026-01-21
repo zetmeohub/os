@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V35.6 (Quick Edit)</title>
+    <title>zetmeoOS - V35.7 (DnD & New Task)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -100,10 +100,20 @@
 
         .box-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #444; background: linear-gradient(to right, rgba(255,255,255,0.03), transparent); }
         .box-title { margin: 0; color: var(--box-color); font-size: 1.4em; text-transform: uppercase; font-weight: 700; }
-        .header-timers { display: flex; gap: 8px; }
+        .header-timers { display: flex; gap: 8px; align-items: center; }
+        
         .timer-btn { background: transparent; border: 1px solid var(--box-color); color: var(--box-color); padding: 4px 10px; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 0.8em; min-width: 35px; transition: all 0.2s; }
         .timer-btn:active { background: var(--box-color); color: #333; }
         .timer-running { background-color: #fff !important; color: #d63031 !important; border-color: #d63031 !important; animation: pulse 1s infinite; }
+
+        /* NEW TASK BUTTON */
+        .btn-new-task {
+            background-color: var(--box-color); color: #222; border: none;
+            padding: 4px 10px; border-radius: 4px; font-weight: 700;
+            font-size: 0.8em; cursor: pointer; margin-right: 8px;
+            display: flex; align-items: center; gap: 4px; transition: transform 0.2s;
+        }
+        .btn-new-task:active { transform: scale(0.95); opacity: 0.9; }
 
         /* TABS */
         .tab-nav { display: flex; background: #222; border-bottom: 1px solid #444; }
@@ -112,11 +122,27 @@
         .tab-pane { display: none; padding: 15px; min-height: 100px; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s; }
 
-        /* TASK LIST & QUICK EDIT */
-        .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); }
+        /* TASK LIST & DnD */
+        .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
+        .task-item { 
+            margin-bottom: 8px; display: flex; align-items: flex-start; 
+            padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; 
+            background-color: rgba(255,255,255,0.02); 
+            transition: border 0.1s, transform 0.1s;
+        }
         .task-item:hover { background-color: rgba(255,255,255,0.05); }
-        .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
+        .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 20px; border-left: 2px solid #555; } .indent-3 { margin-left: 40px; border-left: 2px solid #666; }
+        
+        /* Drag & Drop Styles */
+        .task-item[draggable="true"] { cursor: grab; }
+        .task-item.dragging { opacity: 0.5; border: 1px dashed var(--main-color); transform: scale(0.98); }
+        .task-item.drag-over-top { border-top: 3px solid var(--main-color); }
+        .task-item.drag-over-bottom { border-bottom: 3px solid var(--main-color); }
+        .task-item.drag-over-nest { 
+            background: rgba(255,255,255,0.1); 
+            border: 2px dashed var(--box-color); 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
         
         .toggle-btn { 
             cursor: pointer; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; 
@@ -416,12 +442,12 @@
 # D. 💤 KHO Ý TƯỞNG
 - [D-01] Sắp xếp lại tủ sách`;
 
-        // --- RENDER & QUICK EDIT LOGIC (V35.6) ---
+        // --- RENDER & NEW FEATURES (V35.7) ---
         function renderDashboard(text) {
             const container = document.getElementById('dashboard-container'); container.innerHTML = '';
             const lines = text.split('\n'); let currentBox, currentList; let currentTaskItem = null;
 
-            lines.forEach(line => {
+            lines.forEach((line, lineIndex) => {
                 let trimmedLine = line.trim(); if (!trimmedLine) return;
                 if (trimmedLine.startsWith('!!!')) { document.getElementById('lam-msg').textContent = trimmedLine.replace('!!!','').trim(); return; }
                 if (trimmedLine.startsWith('^')) { return; }
@@ -430,6 +456,7 @@
                     currentTaskItem = null;
                     const title = trimmedLine.replace('#','').trim();
                     const boxId = 'box-' + stringToHash(title);
+                    const cleanTitle = title.replace(/^.\.\s*/, '').split(' ')[0]; // Extract URGENT, CORE...
                     
                     currentBox = document.createElement('div'); currentBox.className = 'box';
                     currentBox.setAttribute('data-type', title.toUpperCase()); 
@@ -438,6 +465,7 @@
                         <div class="box-header">
                             <h2 class="box-title">${title}</h2>
                             <div class="header-timers">
+                                <button class="btn-new-task" onclick="addNewTask('${title.replace(/'/g, "\\'")}')"><span>+</span> New Task</button>
                                 <button class="timer-btn" onclick="startTimer(this, 1)">1'</button>
                                 <button class="timer-btn" onclick="startTimer(this, 15)">15'</button>
                             </div>
@@ -474,9 +502,7 @@
                     if (currentList) {
                         let level = 1; if (trimmedLine.startsWith('---')) level = 3; else if (trimmedLine.startsWith('--')) level = 2;
                         let parts = trimmedLine.replace(/^-+/, '').split('|');
-                        let rawText = parts[0].trim(); // Text visible in label
-                        
-                        // Escape quotes for the onclick handler
+                        let rawText = parts[0].trim();
                         const safeText = rawText.replace(/"/g, '&quot;').replace(/'/g, "\\'");
                         
                         let displayHTML = rawText;
@@ -491,11 +517,24 @@
                         li.className = `task-item indent-${level}`;
                         li.setAttribute('data-id', taskId);
                         li.setAttribute('data-level', level); 
+                        li.setAttribute('draggable', 'true'); // Enable DnD
+                        
+                        // Pass unique ID to find original text line
+                        li.setAttribute('data-content-hash', taskIdRaw); 
+
                         li.innerHTML = `
                             <span class="toggle-placeholder"><span class="spacer"></span></span>
                             <input type="checkbox" id="${taskId}" onclick="checkTask(this)">
                             <label for="${taskId}" class="task-label" title="Double click để sửa nhanh" ondblclick="enableQuickEdit(this, '${safeText}')">${displayHTML}<div class="mini-progress-container"><div class="mini-progress-fill"></div></div></label>
                         `;
+                        
+                        // Add DnD Event Listeners
+                        li.addEventListener('dragstart', handleDragStart);
+                        li.addEventListener('dragover', handleDragOver);
+                        li.addEventListener('dragleave', handleDragLeave);
+                        li.addEventListener('drop', handleDrop);
+                        li.addEventListener('dragend', handleDragEnd);
+
                         currentList.appendChild(li);
                         if(localStorage.getItem(taskId) === "true") li.querySelector('input').checked = true;
                     }
@@ -504,82 +543,206 @@
             initFolding(container); calculateStats(); 
         }
 
-        function enableQuickEdit(labelEl, oldText) {
-            if(labelEl.querySelector('input')) return; // Already editing
-            
-            // Prevent checkbox click while editing
-            labelEl.onclick = function(e) { e.preventDefault(); };
-
-            labelEl.innerHTML = `
-                <input type="text" class="quick-edit-input" value="${oldText}" onkeydown="handleQuickEditKey(event, this, '${oldText}')">
-                <button class="btn-quick-save" onclick="saveQuickEdit(this, '${oldText}')">LƯU</button>
-            `;
-            const input = labelEl.querySelector('input');
-            input.focus();
-        }
-
-        function handleQuickEditKey(e, input, oldText) {
-            if (e.key === "Enter") {
-                saveQuickEdit(input.nextElementSibling, oldText);
-            } else if (e.key === "Escape") {
-                renderDashboard(localStorage.getItem('dashboardData')); // Cancel
-            }
-        }
-
-        function saveQuickEdit(btn, oldRawText) {
-            const input = btn.previousElementSibling;
-            const newText = input.value.trim();
-            
-            if(!newText || newText === oldRawText) {
-                renderDashboard(localStorage.getItem('dashboardData')); // No change or empty
-                return;
-            }
-
-            let data = localStorage.getItem('dashboardData');
+        // --- NEW TASK FEATURE ---
+        function addNewTask(boxTitle) {
+            let data = localStorage.getItem('dashboardData') || defaultData;
             const lines = data.split('\n');
-            let updated = false;
+            let insertIndex = -1;
+            let foundBox = false;
 
-            // Find the line containing the exact old text part and replace it
-            for(let i=0; i<lines.length; i++) {
-                let line = lines[i];
-                if(line.trim().startsWith('-')) {
-                    let parts = line.replace(/^-+/, '').split('|');
-                    let currentRawText = parts[0].trim();
-                    
-                    if(currentRawText === oldRawText) {
-                        // Reconstruct the line: replace ONLY the first part
-                        // Format: [dashes] [newText] [| suffix if exists]
-                        const dashMatch = line.match(/^(\s*-+)/);
-                        const dashes = dashMatch ? dashMatch[0] : '- ';
-                        
-                        // Keep suffix (link/note) if exists
-                        const suffix = line.includes('|') ? ' |' + line.split('|').slice(1).join('|') : '';
-                        
-                        lines[i] = `${dashes} ${newText}${suffix}`;
-                        updated = true;
-                        
-                        // Handle ID change if hash changes
-                        const oldId = 'task-' + stringToHash(oldRawText);
-                        const newId = 'task-' + stringToHash(newText);
-                        const isChecked = localStorage.getItem(oldId);
-                        if(isChecked !== null) {
-                            localStorage.setItem(newId, isChecked);
-                            localStorage.removeItem(oldId);
-                        }
-                        break; 
+            // Find the position to insert: Before the next '#' or end of file
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('#')) {
+                    const currentTitle = line.replace('#','').trim();
+                    if (currentTitle === boxTitle) {
+                        foundBox = true;
+                    } else if (foundBox) {
+                        // Found the NEXT box, insert before this
+                        insertIndex = i;
+                        break;
                     }
                 }
             }
 
-            if(updated) {
+            if (foundBox && insertIndex === -1) insertIndex = lines.length; // End of file
+
+            if (foundBox) {
+                // Determine prefix based on Box (A, B, C...)
+                let prefix = "[New]";
+                if(boxTitle.includes("URGENT")) prefix = "[A-xx]";
+                else if(boxTitle.includes("CORE")) prefix = "[B-xx]";
+                
+                const newTaskLine = `- ${prefix} Task mới`;
+                lines.splice(insertIndex, 0, newTaskLine);
                 const newData = lines.join('\n');
+                
                 localStorage.setItem('dashboardData', newData);
                 renderDashboard(newData);
                 triggerAutoSave();
-            } else {
-                alert("Không tìm thấy dòng dữ liệu gốc để sửa! Vui lòng sửa trong Setting.");
-                renderDashboard(data);
             }
+        }
+
+        // --- DRAG & DROP LOGIC ---
+        let dragSrcEl = null;
+        let dragSrcHash = null;
+
+        function handleDragStart(e) {
+            dragSrcEl = this;
+            dragSrcHash = this.getAttribute('data-content-hash');
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', dragSrcHash);
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            if (this === dragSrcEl) return false;
+
+            const rect = this.getBoundingClientRect();
+            const relY = e.clientY - rect.top;
+            const height = rect.height;
+            
+            // Remove existing classes
+            this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest');
+
+            // Logic: Top 25% = Insert Before, Bottom 25% = Insert After, Middle 50% = Nest (Make Child)
+            if (relY < height * 0.25) {
+                this.classList.add('drag-over-top');
+            } else if (relY > height * 0.75) {
+                this.classList.add('drag-over-bottom');
+            } else {
+                // If current item is collapsed/folded, highlight differently?
+                // The prompt says "if task list collape -> light up". 
+                // We'll treat middle zone as "Nest" action
+                this.classList.add('drag-over-nest');
+            }
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest');
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.task-item').forEach(item => {
+                item.classList.remove('drag-over-top', 'drag-over-bottom', 'drag-over-nest');
+            });
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (dragSrcEl === this) return false;
+
+            const targetHash = this.getAttribute('data-content-hash');
+            const data = localStorage.getItem('dashboardData').split('\n');
+            
+            // Find Line Indices based on Hash
+            // Note: Hash collision is rare but possible. We assume content is unique enough or first match.
+            // A safer way is ensuring uniqueness, but for this text-based system, we scan.
+            
+            let srcIndex = -1, targetIndex = -1;
+            let srcLevel = 1, targetLevel = 1;
+
+            // Helper to clean line and hash
+            function getHash(line) {
+                if(!line.trim().startsWith('-')) return null;
+                const raw = line.trim().replace(/^-+/, '').split('|')[0].trim();
+                return stringToHash(raw);
+            }
+
+            for(let i=0; i<data.length; i++) {
+                const h = getHash(data[i]);
+                if(h == dragSrcHash) { srcIndex = i; srcLevel = (data[i].match(/^-+/) || ['-'])[0].length; }
+                if(h == targetHash) { targetIndex = i; targetLevel = (data[i].match(/^-+/) || ['-'])[0].length; }
+            }
+
+            if(srcIndex === -1 || targetIndex === -1) return false;
+
+            // Get source block (task + its children)
+            let srcBlock = [data[srcIndex]];
+            let count = 1;
+            for(let i = srcIndex + 1; i < data.length; i++) {
+                const l = data[i].trim();
+                if(!l.startsWith('-')) break;
+                const lvl = (l.match(/^-+/) || ['-'])[0].length;
+                if(lvl <= srcLevel) break;
+                srcBlock.push(data[i]);
+                count++;
+            }
+
+            // Remove source block from array
+            data.splice(srcIndex, count);
+            
+            // Adjust targetIndex if removal affected it
+            if(srcIndex < targetIndex) targetIndex -= count;
+
+            // Determine Action based on drop zone
+            let action = 'after'; // default
+            if (this.classList.contains('drag-over-top')) action = 'before';
+            else if (this.classList.contains('drag-over-nest')) action = 'nest';
+
+            // Insert
+            if (action === 'before') {
+                data.splice(targetIndex, 0, ...srcBlock);
+            } else if (action === 'after') {
+                data.splice(targetIndex + 1, 0, ...srcBlock);
+            } else if (action === 'nest') {
+                // Change Indentation of Source Block
+                // Target is parent, so Source Level becomes Target Level + 1
+                const newBaseLevel = targetLevel + 1;
+                const dashDiff = newBaseLevel - srcLevel; // can be negative if moving out
+
+                const newBlock = srcBlock.map(line => {
+                    let currentDashes = (line.match(/^-+/) || [''])[0];
+                    let content = line.substring(currentDashes.length);
+                    
+                    let newDashes = '-'.repeat(Math.max(1, currentDashes.length + dashDiff));
+                    return newDashes + content;
+                });
+                
+                data.splice(targetIndex + 1, 0, ...newBlock);
+                
+                // Expand the target if folded
+                localStorage.setItem('fold-task-'+targetHash, 'true');
+            }
+
+            const newData = data.join('\n');
+            localStorage.setItem('dashboardData', newData);
+            renderDashboard(newData);
+            triggerAutoSave();
+            return false;
+        }
+
+        // --- QUICK EDIT LOGIC ---
+        function enableQuickEdit(labelEl, oldText) {
+            if(labelEl.querySelector('input')) return; 
+            labelEl.onclick = function(e) { e.preventDefault(); };
+            labelEl.innerHTML = `<input type="text" class="quick-edit-input" value="${oldText}" onkeydown="handleQuickEditKey(event, this, '${oldText}')"><button class="btn-quick-save" onclick="saveQuickEdit(this, '${oldText}')">LƯU</button>`;
+            const input = labelEl.querySelector('input'); input.focus();
+        }
+        function handleQuickEditKey(e, input, oldText) { if (e.key === "Enter") { saveQuickEdit(input.nextElementSibling, oldText); } else if (e.key === "Escape") { renderDashboard(localStorage.getItem('dashboardData')); } }
+        function saveQuickEdit(btn, oldRawText) {
+            const input = btn.previousElementSibling; const newText = input.value.trim();
+            if(!newText || newText === oldRawText) { renderDashboard(localStorage.getItem('dashboardData')); return; }
+            let data = localStorage.getItem('dashboardData'); const lines = data.split('\n'); let updated = false;
+            for(let i=0; i<lines.length; i++) {
+                let line = lines[i];
+                if(line.trim().startsWith('-')) {
+                    let parts = line.replace(/^-+/, '').split('|'); let currentRawText = parts[0].trim();
+                    if(currentRawText === oldRawText) {
+                        const dashMatch = line.match(/^(\s*-+)/); const dashes = dashMatch ? dashMatch[0] : '- ';
+                        const suffix = line.includes('|') ? ' |' + line.split('|').slice(1).join('|') : '';
+                        lines[i] = `${dashes} ${newText}${suffix}`; updated = true;
+                        const oldId = 'task-' + stringToHash(oldRawText); const newId = 'task-' + stringToHash(newText);
+                        const isChecked = localStorage.getItem(oldId); if(isChecked !== null) { localStorage.setItem(newId, isChecked); localStorage.removeItem(oldId); }
+                        break; 
+                    }
+                }
+            }
+            if(updated) { const newData = lines.join('\n'); localStorage.setItem('dashboardData', newData); renderDashboard(newData); triggerAutoSave(); } 
+            else { alert("Lỗi khi tìm dòng gốc!"); renderDashboard(data); }
         }
 
         // --- BRAINDOM & WRITER LOGIC ---
