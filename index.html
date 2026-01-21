@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V35.5 (Studio Editor)</title>
+    <title>zetmeoOS - V35.6 (Quick Edit)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -112,18 +112,16 @@
         .tab-pane { display: none; padding: 15px; min-height: 100px; }
         .tab-pane.active { display: block; animation: fadeIn 0.3s; }
 
-        /* TASK LIST */
+        /* TASK LIST & QUICK EDIT */
         .task-list { list-style: none; padding: 0; margin: 0; }
         .task-item { margin-bottom: 8px; display: flex; align-items: flex-start; padding: 10px; border-radius: 6px; border-bottom: 1px solid #3d3d3d; background-color: rgba(255,255,255,0.02); }
         .task-item:hover { background-color: rgba(255,255,255,0.05); }
         .indent-1 { margin-left: 0px; } .indent-2 { margin-left: 15px; border-left: 2px solid #555; } .indent-3 { margin-left: 30px; border-left: 2px solid #666; }
         
         .toggle-btn { 
-            cursor: pointer; width: 44px; height: 32px;
-            display: flex; align-items: center; justify-content: center; 
-            margin-right: 2px; color: #fff; font-size: 16px; 
-            user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px;
-            z-index: 10; position: relative; 
+            cursor: pointer; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; 
+            margin-right: 2px; color: #fff; font-size: 16px; user-select: none; background: rgba(255,255,255,0.1); 
+            border-radius: 4px; z-index: 10; position: relative; 
         }
         .rotated { transform: rotate(90deg); background: rgba(255,255,255,0.2); } 
         .spacer { width: 44px; margin-right: 2px; } 
@@ -132,13 +130,18 @@
         .task-item input[type="checkbox"] { appearance: none; width: 22px; height: 22px; border: 2px solid var(--text-dim); border-radius: 50%; margin-right: 12px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 5px; }
         .task-item input:checked { background-color: var(--check-bg); border-color: var(--check-bg); }
         .task-item input:checked::after { content: '✔'; color: #333; font-size: 14px; font-weight: 700; }
-        .task-label { flex: 1; cursor: pointer; line-height: 1.5; font-size: 1.05em; color: #ececec; } 
+        .task-label { flex: 1; cursor: text; line-height: 1.5; font-size: 1.05em; color: #ececec; user-select: text; } 
         .task-id-tag { font-family: var(--font-main); font-size: 0.85em; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 8px; color: #222; display: inline-block; background-color: var(--box-color, #ccc); }
         .task-item input:checked + .task-label { text-decoration: line-through; color: #666; }
         .task-item input:checked + .task-label .task-id-tag { opacity: 0.3; filter: grayscale(100%); }
         .mini-progress-container { display: inline-block; width: 40px; height: 4px; background-color: #444; border-radius: 2px; margin-left: 5px; vertical-align: middle; display: none; }
         .mini-progress-fill { height: 100%; background-color: var(--box-color); border-radius: 2px; width: 0%; transition: width 0.3s; }
         .has-children .mini-progress-container { display: inline-block; }
+
+        /* QUICK EDIT STYLES */
+        .quick-edit-input { background: #111; border: 1px solid var(--main-color); color: #fff; padding: 4px 8px; border-radius: 4px; font-family: var(--font-main); font-size: 1em; width: 70%; vertical-align: middle; }
+        .btn-quick-save { background: var(--check-bg); color: #333; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; margin-left: 5px; cursor: pointer; font-size: 0.8em; vertical-align: middle; }
+        .btn-quick-save:hover { opacity: 0.9; }
 
         /* TAB NOTE */
         .box-note-display { white-space: pre-wrap; color: #ddd; font-size: 0.95em; line-height: 1.6; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 6px; min-height: 50px; margin-bottom: 15px; border: 1px dashed #444; }
@@ -198,12 +201,10 @@
         
         /* ARCHIVE LIST STYLES */
         #archive-list-container { overflow-y: auto; flex: 1; background: #1a1a1a; border: 1px solid #444; padding: 10px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; color: #ddd; }
-        /* Studio Archive Specific */
         .studio-archive-textarea { flex: 1; background: #1a1a1a; color: #ccc; border: 1px solid #555; padding: 15px; overflow-y: auto; margin-bottom: 10px; font-family: monospace; resize: none; line-height: 1.5; font-size: 15px; }
         .studio-archive-textarea:read-only { background: #111; cursor: default; }
         .studio-archive-textarea:focus { outline: 1px solid var(--sub-3); background: #000; color: #fff; }
         
-        /* New Archive Buttons */
         .archive-toolbar { display: flex; gap: 10px; justify-content: flex-end; }
         .btn-arc { padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; font-size: 0.9em; flex: 1; color: #333; }
         .btn-arc-copy { background: var(--sub-3); }
@@ -295,7 +296,6 @@
 
     <input type="file" id="restore-input" accept=".json" onchange="restoreData(this)">
 
-    <!-- MAIN SETTING MODAL -->
     <div id="edit-modal">
         <div class="modal-content">
             <h3 style="color:var(--pastel-lavender); margin-top:0; display:flex; justify-content:space-between;">
@@ -338,7 +338,6 @@
         </div>
     </div>
 
-    <!-- TASK ARCHIVE LIST MODAL -->
     <div id="archive-list-modal">
         <div class="modal-content">
             <h3 style="color:var(--col-core); margin-top:0;">🏛️ KHO LƯU TRỮ (Đã xong)</h3>
@@ -349,14 +348,10 @@
         </div>
     </div>
 
-    <!-- STUDIO ARCHIVE MODAL (UPDATED) -->
     <div id="studio-archive-modal">
         <div class="modal-content">
             <h3 id="studio-archive-title" style="color:var(--pastel-lavender); margin-top:0;">📚 KHO LƯU TRỮ</h3>
-            
-            <!-- Changed from DIV to TEXTAREA for editing -->
             <textarea id="studio-archive-content" class="studio-archive-textarea" readonly></textarea>
-            
             <div class="archive-toolbar">
                 <button class="btn-arc btn-arc-copy" onclick="copyStudioArchiveText()">COPY</button>
                 <button id="btn-arc-edit" class="btn-arc btn-arc-edit" onclick="startEditArchive()">SỬA</button>
@@ -378,44 +373,25 @@
 
         // --- AUTO-SAVE SYSTEM (V35 CORE) ---
         let autoSaveTimer;
-        const SAVE_DELAY = 5000; // 5 seconds debounce
+        const SAVE_DELAY = 5000;
 
         function updateSyncStatus(status) {
             const badge = document.getElementById('sync-badge');
             badge.className = ''; 
-            
             switch(status) {
-                case 'waiting':
-                    badge.innerText = "⏳ Đang chờ...";
-                    badge.classList.add('status-waiting');
-                    break;
-                case 'saving':
-                    badge.innerText = "☁️ Đang lưu...";
-                    badge.classList.add('status-saving');
-                    break;
-                case 'synced':
-                    badge.innerText = "✅ Đã đồng bộ";
-                    badge.classList.add('status-synced');
-                    setTimeout(() => { badge.style.display = 'none'; }, 3000); // Hide after 3s
-                    break;
-                case 'error':
-                    badge.innerText = "❌ Lỗi mạng!";
-                    badge.classList.add('status-error');
-                    break;
-                default:
-                    badge.style.display = 'none';
+                case 'waiting': badge.innerText = "⏳ Đang chờ..."; badge.classList.add('status-waiting'); break;
+                case 'saving': badge.innerText = "☁️ Đang lưu..."; badge.classList.add('status-saving'); break;
+                case 'synced': badge.innerText = "✅ Đã đồng bộ"; badge.classList.add('status-synced'); setTimeout(() => { badge.style.display = 'none'; }, 3000); break;
+                case 'error': badge.innerText = "❌ Lỗi mạng!"; badge.classList.add('status-error'); break;
+                default: badge.style.display = 'none';
             }
         }
 
         function triggerAutoSave() {
             updateSyncStatus('waiting');
             if (autoSaveTimer) clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(() => {
-                syncUp(true); // Trigger Auto Sync
-            }, SAVE_DELAY);
+            autoSaveTimer = setTimeout(() => { syncUp(true); }, SAVE_DELAY);
         }
-
-        // --- END AUTO-SAVE SYSTEM ---
 
         function initDailyQuote() {
             const today = new Date(); const start = new Date(today.getFullYear(),0,0); const diff = today-start; const oneDay = 1000*60*60*24;
@@ -440,6 +416,7 @@
 # D. 💤 KHO Ý TƯỞNG
 - [D-01] Sắp xếp lại tủ sách`;
 
+        // --- RENDER & QUICK EDIT LOGIC (V35.6) ---
         function renderDashboard(text) {
             const container = document.getElementById('dashboard-container'); container.innerHTML = '';
             const lines = text.split('\n'); let currentBox, currentList; let currentTaskItem = null;
@@ -457,7 +434,7 @@
                     currentBox = document.createElement('div'); currentBox.className = 'box';
                     currentBox.setAttribute('data-type', title.toUpperCase()); 
                     
-                    const headerHTML = `
+                    currentBox.innerHTML = `
                         <div class="box-header">
                             <h2 class="box-title">${title}</h2>
                             <div class="header-timers">
@@ -465,16 +442,12 @@
                                 <button class="timer-btn" onclick="startTimer(this, 15)">15'</button>
                             </div>
                         </div>
-                    `;
-                    const tabsHTML = `
                         <div class="tab-nav">
                             <button class="tab-btn active" onclick="switchBoxTab(this, '${boxId}', 'task')">Task</button>
                             <button class="tab-btn" onclick="switchBoxTab(this, '${boxId}', 'note')">Note</button>
                             <button class="tab-btn" onclick="switchBoxTab(this, '${boxId}', 'log')">Log</button>
                         </div>
-                    `;
-                    const taskPaneHTML = `<div id="tab-task-${boxId}" class="tab-pane active"></div>`;
-                    const notePaneHTML = `
+                        <div id="tab-task-${boxId}" class="tab-pane active"></div>
                         <div id="tab-note-${boxId}" class="tab-pane">
                             <div id="note-display-${boxId}" class="box-note-display"></div>
                             <textarea id="note-editor-${boxId}" class="box-note-editor"></textarea>
@@ -484,8 +457,6 @@
                                 <button id="btn-cancel-${boxId}" class="btn-note-action btn-note-cancel" onclick="cancelBoxNote('${boxId}')">Đóng</button>
                             </div>
                         </div>
-                    `;
-                    const logPaneHTML = `
                         <div id="tab-log-${boxId}" class="tab-pane">
                             <div class="log-form">
                                 <div class="log-input-group"><span class="log-label">Mã Task:</span><input type="text" class="log-input" id="log-code-${boxId}" placeholder="VD: A-01"></div>
@@ -494,8 +465,6 @@
                             </div>
                         </div>
                     `;
-
-                    currentBox.innerHTML = headerHTML + tabsHTML + taskPaneHTML + notePaneHTML + logPaneHTML;
                     container.appendChild(currentBox);
                     currentList = document.createElement('ul'); currentList.className = 'task-list';
                     currentBox.querySelector(`#tab-task-${boxId}`).appendChild(currentList);
@@ -505,7 +474,11 @@
                     if (currentList) {
                         let level = 1; if (trimmedLine.startsWith('---')) level = 3; else if (trimmedLine.startsWith('--')) level = 2;
                         let parts = trimmedLine.replace(/^-+/, '').split('|');
-                        let rawText = parts[0].trim();
+                        let rawText = parts[0].trim(); // Text visible in label
+                        
+                        // Escape quotes for the onclick handler
+                        const safeText = rawText.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+                        
                         let displayHTML = rawText;
                         let taskIdRaw = stringToHash(rawText);
                         const idMatch = rawText.match(/^\[([A-Za-z0-9-]+)\]/);
@@ -521,7 +494,7 @@
                         li.innerHTML = `
                             <span class="toggle-placeholder"><span class="spacer"></span></span>
                             <input type="checkbox" id="${taskId}" onclick="checkTask(this)">
-                            <label for="${taskId}" class="task-label">${displayHTML}<div class="mini-progress-container"><div class="mini-progress-fill"></div></div></label>
+                            <label for="${taskId}" class="task-label" title="Double click để sửa nhanh" ondblclick="enableQuickEdit(this, '${safeText}')">${displayHTML}<div class="mini-progress-container"><div class="mini-progress-fill"></div></div></label>
                         `;
                         currentList.appendChild(li);
                         if(localStorage.getItem(taskId) === "true") li.querySelector('input').checked = true;
@@ -529,6 +502,84 @@
                 }
             });
             initFolding(container); calculateStats(); 
+        }
+
+        function enableQuickEdit(labelEl, oldText) {
+            if(labelEl.querySelector('input')) return; // Already editing
+            
+            // Prevent checkbox click while editing
+            labelEl.onclick = function(e) { e.preventDefault(); };
+
+            labelEl.innerHTML = `
+                <input type="text" class="quick-edit-input" value="${oldText}" onkeydown="handleQuickEditKey(event, this, '${oldText}')">
+                <button class="btn-quick-save" onclick="saveQuickEdit(this, '${oldText}')">LƯU</button>
+            `;
+            const input = labelEl.querySelector('input');
+            input.focus();
+        }
+
+        function handleQuickEditKey(e, input, oldText) {
+            if (e.key === "Enter") {
+                saveQuickEdit(input.nextElementSibling, oldText);
+            } else if (e.key === "Escape") {
+                renderDashboard(localStorage.getItem('dashboardData')); // Cancel
+            }
+        }
+
+        function saveQuickEdit(btn, oldRawText) {
+            const input = btn.previousElementSibling;
+            const newText = input.value.trim();
+            
+            if(!newText || newText === oldRawText) {
+                renderDashboard(localStorage.getItem('dashboardData')); // No change or empty
+                return;
+            }
+
+            let data = localStorage.getItem('dashboardData');
+            const lines = data.split('\n');
+            let updated = false;
+
+            // Find the line containing the exact old text part and replace it
+            for(let i=0; i<lines.length; i++) {
+                let line = lines[i];
+                if(line.trim().startsWith('-')) {
+                    let parts = line.replace(/^-+/, '').split('|');
+                    let currentRawText = parts[0].trim();
+                    
+                    if(currentRawText === oldRawText) {
+                        // Reconstruct the line: replace ONLY the first part
+                        // Format: [dashes] [newText] [| suffix if exists]
+                        const dashMatch = line.match(/^(\s*-+)/);
+                        const dashes = dashMatch ? dashMatch[0] : '- ';
+                        
+                        // Keep suffix (link/note) if exists
+                        const suffix = line.includes('|') ? ' |' + line.split('|').slice(1).join('|') : '';
+                        
+                        lines[i] = `${dashes} ${newText}${suffix}`;
+                        updated = true;
+                        
+                        // Handle ID change if hash changes
+                        const oldId = 'task-' + stringToHash(oldRawText);
+                        const newId = 'task-' + stringToHash(newText);
+                        const isChecked = localStorage.getItem(oldId);
+                        if(isChecked !== null) {
+                            localStorage.setItem(newId, isChecked);
+                            localStorage.removeItem(oldId);
+                        }
+                        break; 
+                    }
+                }
+            }
+
+            if(updated) {
+                const newData = lines.join('\n');
+                localStorage.setItem('dashboardData', newData);
+                renderDashboard(newData);
+                triggerAutoSave();
+            } else {
+                alert("Không tìm thấy dòng dữ liệu gốc để sửa! Vui lòng sửa trong Setting.");
+                renderDashboard(data);
+            }
         }
 
         // --- BRAINDOM & WRITER LOGIC ---
@@ -544,42 +595,35 @@
             const now = new Date().toLocaleString();
             const separator = `\n\n--- ${now} ---\n`;
             const currentArchive = localStorage.getItem(archiveKey) || "";
-            const newArchive = separator + content + currentArchive; // Newest on top
+            const newArchive = separator + content + currentArchive; 
             localStorage.setItem(archiveKey, newArchive);
 
             document.getElementById('toast').innerText = "✅ Đã lưu & thêm vào Kho!";
             document.getElementById('toast').className = "show";
             setTimeout(()=>document.getElementById('toast').className="", 3000);
             
-            triggerAutoSave(); // Trigger Auto Save
+            triggerAutoSave();
         }
 
-        // --- STUDIO ARCHIVE EDITOR LOGIC (NEW V35.5) ---
+        // --- STUDIO ARCHIVE EDITOR ---
         let currentStudioMode = '';
-
         function openStudioArchive(type) {
             currentStudioMode = type;
             const archiveKey = type === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
             const content = localStorage.getItem(archiveKey) || "";
             const title = type === 'braindom' ? '🧠 KHO BRAINDOM' : '📖 KHO WRITER';
-            
             document.getElementById('studio-archive-title').innerText = title;
             const textArea = document.getElementById('studio-archive-content');
             textArea.value = content;
-            
-            // Reset state
             textArea.readOnly = true;
             document.getElementById('btn-arc-edit').style.display = 'inline-block';
             document.getElementById('btn-arc-save').style.display = 'none';
-
             document.getElementById('studio-archive-modal').style.display = 'flex';
         }
 
         function startEditArchive() {
             const textArea = document.getElementById('studio-archive-content');
-            textArea.readOnly = false;
-            textArea.focus();
-            
+            textArea.readOnly = false; textArea.focus();
             document.getElementById('btn-arc-edit').style.display = 'none';
             document.getElementById('btn-arc-save').style.display = 'inline-block';
         }
@@ -587,16 +631,11 @@
         function saveEditArchive() {
             if(!currentStudioMode) return;
             const textArea = document.getElementById('studio-archive-content');
-            const newContent = textArea.value;
             const archiveKey = currentStudioMode === 'braindom' ? 'zetmeo_braindump_archive' : 'zetmeo_writer_archive';
-            
-            localStorage.setItem(archiveKey, newContent);
-            
-            // Reset UI
+            localStorage.setItem(archiveKey, textArea.value);
             textArea.readOnly = true;
             document.getElementById('btn-arc-edit').style.display = 'inline-block';
             document.getElementById('btn-arc-save').style.display = 'none';
-            
             alert("✅ Đã cập nhật Kho!");
             triggerAutoSave();
         }
@@ -608,8 +647,7 @@
         }
 
         function copyStudioArchiveText() {
-            const text = document.getElementById('studio-archive-content').value;
-            navigator.clipboard.writeText(text);
+            navigator.clipboard.writeText(document.getElementById('studio-archive-content').value);
             alert("Đã copy toàn bộ Kho lưu trữ!");
         }
 
@@ -619,7 +657,7 @@
                 const currentKey = type === 'braindom' ? 'zetmeo_braindump' : 'zetmeo_writer_content';
                 document.getElementById(areaId).value = "";
                 localStorage.setItem(currentKey, "");
-                triggerAutoSave(); // Trigger Auto Save
+                triggerAutoSave();
             }
         }
 
@@ -642,216 +680,77 @@
                 let trimmed = line.trim();
                 let isTask = trimmed.startsWith('-');
                 let isChecked = false;
-                
                 if (isTask) {
                     let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
                     let hash = stringToHash(cleanLine);
-                    if (localStorage.getItem('task-' + hash) === "true") {
-                        isChecked = true;
-                    }
+                    if (localStorage.getItem('task-' + hash) === "true") { isChecked = true; }
                 }
-
                 if (isChecked) {
-                    archiveArr.unshift({
-                        content: trimmed,
-                        date: new Date().toLocaleDateString(),
-                        timestamp: Date.now()
-                    });
+                    archiveArr.unshift({ content: trimmed, date: new Date().toLocaleDateString(), timestamp: Date.now() });
                     let cleanLine = trimmed.replace(/^-+\s*/, '').split('|')[0].trim();
                     localStorage.removeItem('task-' + stringToHash(cleanLine));
                     removedCount++;
-                } else {
-                    newLines.push(line);
-                }
+                } else { newLines.push(line); }
             });
 
             saveArchiveData(archiveArr);
             localStorage.setItem('dashboardData', newLines.join('\n'));
             alert(`✅ Đã lưu trữ ${removedCount} task thành công!`);
-            triggerAutoSave(); // Force Auto Save
-            location.reload();
+            triggerAutoSave(); location.reload();
         }
 
         function openArchiveList() {
             const arr = getArchive();
             const container = document.getElementById('archive-list-container');
             container.innerHTML = '';
-            
-            if (arr.length === 0) {
-                container.innerHTML = '<p style="color:#777; text-align:center">Chưa có dữ liệu lưu trữ.</p>';
-            } else {
+            if (arr.length === 0) { container.innerHTML = '<p style="color:#777; text-align:center">Chưa có dữ liệu lưu trữ.</p>'; } 
+            else {
                 arr.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'archive-item';
-                    div.innerHTML = `
-                        <div class="archive-content">
-                            <span class="archive-date">📅 ${item.date}</span>
-                            ${item.content.replace(/^-+/, '')}
-                        </div>
-                        <button class="btn-restore" onclick="restoreTask(${index})" title="Khôi phục">↩️</button>
-                    `;
+                    const div = document.createElement('div'); div.className = 'archive-item';
+                    div.innerHTML = `<div class="archive-content"><span class="archive-date">📅 ${item.date}</span>${item.content.replace(/^-+/, '')}</div><button class="btn-restore" onclick="restoreTask(${index})" title="Khôi phục">↩️</button>`;
                     container.appendChild(div);
                 });
             }
-            document.getElementById('edit-modal').style.display = 'none';
-            document.getElementById('archive-list-modal').style.display = 'flex';
+            document.getElementById('edit-modal').style.display = 'none'; document.getElementById('archive-list-modal').style.display = 'flex';
         }
 
         function restoreTask(index) {
-            let archiveArr = getArchive();
-            let taskToRestore = archiveArr[index];
-            if (!taskToRestore) return;
-
+            let archiveArr = getArchive(); let taskToRestore = archiveArr[index]; if (!taskToRestore) return;
             if(!confirm("Khôi phục task này về màn hình chính?")) return;
-
-            archiveArr.splice(index, 1);
-            saveArchiveData(archiveArr);
-
+            archiveArr.splice(index, 1); saveArchiveData(archiveArr);
             let currentData = localStorage.getItem('dashboardData') || defaultData;
-            let boxCode = null;
-            let match = taskToRestore.content.match(/\[([A-Z])-?/); 
+            let boxCode = null; let match = taskToRestore.content.match(/\[([A-Z])-?/); 
             if (match) boxCode = match[1];
-
             if (boxCode) {
-                let regex = new RegExp(`(#\\s*${boxCode}\\..*$)`, "m");
-                let matchPos = currentData.match(regex);
-                if (matchPos) {
-                    let insertIndex = matchPos.index + matchPos[0].length;
-                    currentData = currentData.slice(0, insertIndex) + "\n" + taskToRestore.content + currentData.slice(insertIndex);
-                } else { currentData += "\n" + taskToRestore.content; }
+                let regex = new RegExp(`(#\\s*${boxCode}\\..*$)`, "m"); let matchPos = currentData.match(regex);
+                if (matchPos) { let insertIndex = matchPos.index + matchPos[0].length; currentData = currentData.slice(0, insertIndex) + "\n" + taskToRestore.content + currentData.slice(insertIndex); } 
+                else { currentData += "\n" + taskToRestore.content; }
             } else { currentData += "\n" + taskToRestore.content; }
-
-            localStorage.setItem('dashboardData', currentData);
-            alert("✅ Đã khôi phục!");
-            triggerAutoSave(); // Force Auto Save
-            location.reload();
+            localStorage.setItem('dashboardData', currentData); alert("✅ Đã khôi phục!"); triggerAutoSave(); location.reload();
         }
 
-        // --- TAB LOGIC ---
+        // --- TAB & NOTE & LOG LOGIC ---
         function switchBoxTab(btn, boxId, tabName) {
-            const box = btn.closest('.box');
-            box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active');
+            const box = btn.closest('.box'); box.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); box.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active'); document.getElementById(`tab-${tabName}-${boxId}`).classList.add('active');
         }
-
-        // --- NOTE LOGIC ---
-        function loadBoxNote(boxId) {
-            const content = localStorage.getItem(`zetmeo_note_${boxId}`) || "(Chưa có ghi chú)";
-            const displayEl = document.getElementById(`note-display-${boxId}`);
-            if(displayEl) {
-                displayEl.innerText = content;
-                document.getElementById(`note-editor-${boxId}`).value = content === "(Chưa có ghi chú)" ? "" : content;
-            }
-        }
-        function editBoxNote(boxId) {
-            document.getElementById(`note-display-${boxId}`).style.display = 'none';
-            document.getElementById(`note-editor-${boxId}`).style.display = 'block';
-            document.getElementById(`btn-edit-${boxId}`).style.display = 'none';
-            document.getElementById(`btn-save-${boxId}`).style.display = 'inline-block';
-            document.getElementById(`btn-cancel-${boxId}`).style.display = 'inline-block';
-            document.getElementById(`note-editor-${boxId}`).focus();
-        }
-        function saveBoxNote(boxId) {
-            const content = document.getElementById(`note-editor-${boxId}`).value;
-            localStorage.setItem(`zetmeo_note_${boxId}`, content);
-            document.getElementById(`note-display-${boxId}`).innerText = content || "(Chưa có ghi chú)";
-            cancelBoxNote(boxId); 
-            triggerAutoSave(); // Trigger Auto Save
-        }
-        function cancelBoxNote(boxId) {
-            document.getElementById(`note-display-${boxId}`).style.display = 'block';
-            document.getElementById(`note-editor-${boxId}`).style.display = 'none';
-            document.getElementById(`btn-edit-${boxId}`).style.display = 'inline-block';
-            document.getElementById(`btn-save-${boxId}`).style.display = 'none';
-            document.getElementById(`btn-cancel-${boxId}`).style.display = 'none';
-        }
-
-        // --- LOG LOGIC ---
-        function saveLogFromTab(boxId) {
-            const code = document.getElementById(`log-code-${boxId}`).value.trim();
-            const min = parseInt(document.getElementById(`log-time-${boxId}`).value);
-            if (!code || isNaN(min) || min <= 0) { alert("Nhập thiếu Code hoặc Time!"); return; }
-            let foundId = null;
-            document.querySelectorAll('.task-item').forEach(item => {
-                if(item.innerText.includes(code)) foundId = item.getAttribute('data-id');
-            });
-            if(foundId) {
-                logTime(foundId, min);
-                document.getElementById(`log-time-${boxId}`).value = '';
-                alert(`✅ Đã log ${min}p cho ${code}`);
-                triggerAutoSave(); // Trigger Auto Save
-            } else { alert("❌ Không tìm thấy mã task này!"); }
-        }
+        function loadBoxNote(boxId) { const content = localStorage.getItem(`zetmeo_note_${boxId}`) || "(Chưa có ghi chú)"; const displayEl = document.getElementById(`note-display-${boxId}`); if(displayEl) { displayEl.innerText = content; document.getElementById(`note-editor-${boxId}`).value = content === "(Chưa có ghi chú)" ? "" : content; } }
+        function editBoxNote(boxId) { document.getElementById(`note-display-${boxId}`).style.display = 'none'; document.getElementById(`note-editor-${boxId}`).style.display = 'block'; document.getElementById(`btn-edit-${boxId}`).style.display = 'none'; document.getElementById(`btn-save-${boxId}`).style.display = 'inline-block'; document.getElementById(`btn-cancel-${boxId}`).style.display = 'inline-block'; document.getElementById(`note-editor-${boxId}`).focus(); }
+        function saveBoxNote(boxId) { const content = document.getElementById(`note-editor-${boxId}`).value; localStorage.setItem(`zetmeo_note_${boxId}`, content); document.getElementById(`note-display-${boxId}`).innerText = content || "(Chưa có ghi chú)"; cancelBoxNote(boxId); triggerAutoSave(); }
+        function cancelBoxNote(boxId) { document.getElementById(`note-display-${boxId}`).style.display = 'block'; document.getElementById(`note-editor-${boxId}`).style.display = 'none'; document.getElementById(`btn-edit-${boxId}`).style.display = 'inline-block'; document.getElementById(`btn-save-${boxId}`).style.display = 'none'; document.getElementById(`btn-cancel-${boxId}`).style.display = 'none'; }
+        function saveLogFromTab(boxId) { const code = document.getElementById(`log-code-${boxId}`).value.trim(); const min = parseInt(document.getElementById(`log-time-${boxId}`).value); if (!code || isNaN(min) || min <= 0) { alert("Nhập thiếu Code hoặc Time!"); return; } let foundId = null; document.querySelectorAll('.task-item').forEach(item => { if(item.innerText.includes(code)) foundId = item.getAttribute('data-id'); }); if(foundId) { logTime(foundId, min); document.getElementById(`log-time-${boxId}`).value = ''; alert(`✅ Đã log ${min}p cho ${code}`); triggerAutoSave(); } else { alert("❌ Không tìm thấy mã task này!"); } }
 
         // --- CORE FUNCTIONS ---
         let activeInterval, audioCtx;
         function playBeep() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type = 'sine'; o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.5); g.gain.setValueAtTime(0.5, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); o.start(); o.stop(audioCtx.currentTime + 0.5); }
-        function startTimer(btn, minutes) {
-            if (activeInterval) clearInterval(activeInterval);
-            document.querySelectorAll('.timer-btn').forEach(b => { b.classList.remove('timer-running'); if(b.dataset.orgText) b.innerText = b.dataset.orgText; b.disabled = false; }); 
-            if(!btn.dataset.orgText) btn.dataset.orgText = btn.innerText; 
-            let seconds = minutes * 60; btn.classList.add('timer-running'); btn.disabled = true; 
-            function update() { 
-                let m = Math.floor(seconds / 60); let s = seconds % 60; btn.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; 
-                if (seconds < 0) { clearInterval(activeInterval); btn.innerText = "DONE"; playBeep(); setTimeout(playBeep, 600); setTimeout(() => { btn.classList.remove('timer-running'); btn.innerText = btn.dataset.orgText; btn.disabled = false; }, 3000); } seconds--; 
-            } update(); activeInterval = setInterval(update, 1000); 
-        }
+        function startTimer(btn, minutes) { if (activeInterval) clearInterval(activeInterval); document.querySelectorAll('.timer-btn').forEach(b => { b.classList.remove('timer-running'); if(b.dataset.orgText) b.innerText = b.dataset.orgText; b.disabled = false; }); if(!btn.dataset.orgText) btn.dataset.orgText = btn.innerText; let seconds = minutes * 60; btn.classList.add('timer-running'); btn.disabled = true; function update() { let m = Math.floor(seconds / 60); let s = seconds % 60; btn.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; if (seconds < 0) { clearInterval(activeInterval); btn.innerText = "DONE"; playBeep(); setTimeout(playBeep, 600); setTimeout(() => { btn.classList.remove('timer-running'); btn.innerText = btn.dataset.orgText; btn.disabled = false; }, 3000); } seconds--; } update(); activeInterval = setInterval(update, 1000); }
         function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'classic' ? '' : 'classic'); localStorage.setItem('theme', document.body.getAttribute('data-theme')); }
         
-        async function getRecordID() {
-            let recordId = localStorage.getItem('zetmeo_cloud_record_id'); if (recordId) return recordId;
-            try { const response = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const data = await response.json();
-                if (data.records && data.records.length > 0) { recordId = data.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } 
-                else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; }
-            } catch (error) { return null; }
-        }
-        
-        // MODIFIED SYNC UP FOR AUTO-SAVE
-        async function syncUp(isAuto = false) { 
-            if(!isAuto && !confirm("Upload thủ công?")) return; 
-            
-            // Cancel auto-timer if manual
-            if(!isAuto && autoSaveTimer) clearTimeout(autoSaveTimer);
-
-            // Update UI to Saving
-            if(isAuto) updateSyncStatus('saving');
-            const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; 
-            if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>";
-            
-            const rid = await getRecordID(); if(!rid) { if(isAuto) updateSyncStatus('error'); return; }
-            
-            fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})})
-            .then(r=> {
-                if(r.ok) {
-                    if(!isAuto) alert("✅ OK");
-                    if(isAuto) updateSyncStatus('synced');
-                } else {
-                    if(!isAuto) alert("Lỗi");
-                    if(isAuto) updateSyncStatus('error');
-                }
-            })
-            .catch(() => { if(isAuto) updateSyncStatus('error'); })
-            .finally(()=> { if(!isAuto) btn.innerHTML=oldText; });
-        }
-
-        async function syncDown(isAuto = false) { 
-            if(!isAuto && !confirm("Download?")) return; 
-            const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; 
-            if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; 
-            const rid = await getRecordID(); if(!rid) return; 
-            fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ 
-                if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } 
-            }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); 
-        }
+        async function getRecordID() { let recordId = localStorage.getItem('zetmeo_cloud_record_id'); if (recordId) return recordId; try { const response = await fetch(AIRTABLE.API_URL, { headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}` } }); const data = await response.json(); if (data.records && data.records.length > 0) { recordId = data.records[0].id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } else { const createResponse = await fetch(AIRTABLE.API_URL, { method: 'POST', headers: { 'Authorization': `Bearer ${AIRTABLE.PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: { "Data": "{}" } }) }); const createData = await createResponse.json(); recordId = createData.id; localStorage.setItem('zetmeo_cloud_record_id', recordId); return recordId; } } catch (error) { return null; } }
+        async function syncUp(isAuto = false) { if(!isAuto && !confirm("Upload thủ công?")) return; if(!isAuto && autoSaveTimer) clearTimeout(autoSaveTimer); if(isAuto) updateSyncStatus('saving'); const btn = document.querySelectorAll('.nav-item')[1]; const oldText = btn.innerHTML; if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) { if(isAuto) updateSyncStatus('error'); return; } fetch(`${AIRTABLE.API_URL}/${rid}`, {method:'PATCH', headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`,'Content-Type':'application/json'}, body:JSON.stringify({fields:{"Data":JSON.stringify(localStorage)}})}).then(r=> { if(r.ok) { if(!isAuto) alert("✅ OK"); if(isAuto) updateSyncStatus('synced'); } else { if(!isAuto) alert("Lỗi"); if(isAuto) updateSyncStatus('error'); } }).catch(() => { if(isAuto) updateSyncStatus('error'); }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); }
+        async function syncDown(isAuto = false) { if(!isAuto && !confirm("Download?")) return; const btn = document.querySelectorAll('.nav-item')[2]; const oldText = btn.innerHTML; if(!isAuto) btn.innerHTML = "<span>⏳</span><span class='nav-label'>Wait...</span>"; const rid = await getRecordID(); if(!rid) return; fetch(`${AIRTABLE.API_URL}/${rid}`, {headers:{'Authorization':`Bearer ${AIRTABLE.PAT}`}}).then(r=>r.json()).then(d=>{ if(d.fields.Data) { const l=JSON.parse(d.fields.Data); localStorage.clear(); Object.keys(l).forEach(k=>localStorage.setItem(k,l[k])); location.reload(); } }).finally(()=> { if(!isAuto) btn.innerHTML=oldText; }); }
         
         function backupFull(isManual=false) { const backup = JSON.stringify(localStorage); const blob = new Blob([backup], { type: 'application/json' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `ZetmeoOS_Backup_${new Date().toISOString().slice(0,10)}.json`); document.body.appendChild(link); link.click(); document.body.removeChild(link); if (isManual) alert("✅ Đã sao lưu!"); }
-        
-        function initAutoBackupScheduler() {
-            // Auto backup logic if needed (optional)
-        }
-
         function restoreData(input) { const file = input.files[0]; if (!file) return; if(!confirm("Ghi đè dữ liệu?")) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); localStorage.clear(); Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); }); alert("✅ Khôi phục thành công!"); location.reload(); } catch (error) { alert("❌ Lỗi file!"); } }; reader.readAsText(file); }
         function exportCSV() { let logs = getLogs(); let csvContent = "Category,Task ID,Task Name,Date,Time (Minutes)\n"; const taskMap = {}; const boxes = document.querySelectorAll('.box'); boxes.forEach(box => { const category = box.getAttribute('data-type'); const taskItems = box.querySelectorAll('.task-item'); taskItems.forEach(item => { const id = item.getAttribute('data-id'); const label = item.querySelector('.task-label').innerText; taskMap[id] = { name: label, category: category }; }); }); for (const [taskId, logArray] of Object.entries(logs)) { const taskData = taskMap[taskId] || { name: "Deleted Task", category: "UNKNOWN" }; logArray.forEach(log => { csvContent += `"${taskData.category}",${taskId},"${taskData.name.replace(/"/g, '""')}",${new Date(log.date).toLocaleString()},${log.min}\n`; }); } const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); const url = URL.createObjectURL(blob); link.setAttribute("href", url); link.setAttribute("download", `Zetmeo_TimeLog_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
         function openModal(){ document.getElementById('input-data').value=localStorage.getItem('dashboardData')||defaultData; document.getElementById('edit-modal').style.display='flex'; }
@@ -860,11 +759,7 @@
         function toggleCompare() { const btn = document.getElementById('btn-compare'); const colOld = document.getElementById('col-old'); const inputArea = document.getElementById('input-data'); const diffView = document.getElementById('diff-view'); const historyPanel = document.getElementById('history-panel'); if (inputArea.style.display !== 'none') { btn.innerText = "👁️ EDIT"; btn.style.background = "#fff"; colOld.style.display = 'flex'; inputArea.style.display = 'none'; diffView.style.display = 'block'; historyPanel.style.display = 'none'; diffView.innerHTML = generateDiffHtml(document.getElementById('old-data').value, inputArea.value); } else { btn.innerText = "So Sánh"; btn.style.background = "var(--sub-3)"; colOld.style.display = 'none'; inputArea.style.display = 'block'; diffView.style.display = 'none'; historyPanel.style.display = 'flex'; } }
         function generateDiffHtml(oldText, newText) { const oldLines = oldText.split('\n').map(l => l.trim()).filter(l => l); const newLines = newText.split('\n').map(l => l.trim()).filter(l => l); let html = ''; newLines.forEach(line => { if (oldLines.includes(line)) html += `<div class="diff-line diff-same">${line}</div>`; else html += `<div class="diff-line diff-added">+ ${line}</div>`; }); let removedHtml = ''; oldLines.forEach(line => { if (!newLines.includes(line)) removedHtml += `<div class="diff-line diff-removed">- ${line}</div>`; }); return html + (removedHtml ? `<div style="margin-top:10px; border-top:1px dashed #555; padding-top:5px; font-size:0.8em; color:#888">ĐÃ XÓA:</div>` + removedHtml : ''); }
         
-        function checkTask(cb) { 
-            localStorage.setItem(cb.id, cb.checked); 
-            calculateStats(); 
-            triggerAutoSave(); // Trigger Auto Save on Check
-        }
+        function checkTask(cb) { localStorage.setItem(cb.id, cb.checked); calculateStats(); triggerAutoSave(); }
         function calculateStats() {
             const statsContainer = document.getElementById('stats-content'); statsContainer.innerHTML = ''; 
             const boxes = document.querySelectorAll('.box'); updateMiniProgressBars();
@@ -884,62 +779,11 @@
             globalRow.innerHTML = `<div class="stat-label"><span style="color: var(--sub-3); font-weight:bold">🚀 TIẾN ĐỘ NĂM 2026</span><span style="color: var(--sub-3); font-weight:bold">${totalGlobalProgress.toFixed(1)}%</span></div><div class="stat-bar-bg" style="height:12px; border: 1px solid #555"><div class="stat-bar-fill bar-total" style="width: ${totalGlobalProgress}%"></div></div>`;
             statsContainer.insertBefore(globalRow, statsContainer.firstChild);
         }
-        function updateMiniProgressBars() {
-            const taskLists = document.querySelectorAll('.task-list');
-            taskLists.forEach(list => {
-                const items = Array.from(list.children);
-                items.forEach((item, index) => {
-                    const currentLevel = parseInt(item.getAttribute('data-level')||1);
-                    let childCount = 0; let childChecked = 0; let hasChildren = false;
-                    for (let i = index + 1; i < items.length; i++) {
-                        const child = items[i]; const childLevel = parseInt(child.getAttribute('data-level')||1);
-                        if (childLevel <= currentLevel) break;
-                        hasChildren = true; childCount++;
-                        if (child.querySelector('input').checked) childChecked++;
-                    }
-                    if (hasChildren) {
-                        item.classList.add('has-children');
-                        const percent = Math.round((childChecked / childCount) * 100);
-                        const fill = item.querySelector('.mini-progress-fill');
-                        if (fill) fill.style.width = percent + '%';
-                    } else { item.classList.remove('has-children'); }
-                });
-            });
-        }
-        function initFolding(container) {
-            const lists = container.querySelectorAll('.task-list');
-            lists.forEach(list => {
-                const items = Array.from(list.children);
-                items.forEach((item, index) => {
-                    const currentLevel = parseInt(item.getAttribute('data-level')||1);
-                    const nextItem = items[index + 1]; const nextLevel = nextItem ? parseInt(nextItem.getAttribute('data-level')||1) : 0;
-                    const placeholder = item.querySelector('.toggle-placeholder');
-                    if (nextItem && nextLevel > currentLevel) {
-                        placeholder.innerHTML = '▶'; placeholder.className = 'toggle-btn';
-                        placeholder.onclick = function(e) { 
-                            e.stopPropagation(); 
-                            toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); 
-                        };
-                        const isExpanded = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true';
-                        if (isExpanded) { placeholder.classList.add('rotated'); placeholder.innerHTML = '▼'; }
-                        if (!isExpanded) hideChildren(items, index, currentLevel);
-                    } else { placeholder.className = 'spacer'; }
-                });
-            });
-        }
-        function toggleChildren(allItems, parentIndex, parentLevel, btn, parentId) {
-            const isCollapsing = btn.classList.contains('rotated');
-            if (isCollapsing) { btn.classList.remove('rotated'); btn.innerHTML = '▶'; localStorage.setItem('fold-' + parentId, 'false'); hideChildren(allItems, parentIndex, parentLevel); } 
-            else { btn.classList.add('rotated'); btn.innerHTML = '▼'; localStorage.setItem('fold-' + parentId, 'true'); showChildren(allItems, parentIndex, parentLevel); }
-        }
+        function updateMiniProgressBars() { const taskLists = document.querySelectorAll('.task-list'); taskLists.forEach(list => { const items = Array.from(list.children); items.forEach((item, index) => { const currentLevel = parseInt(item.getAttribute('data-level')||1); let childCount = 0; let childChecked = 0; let hasChildren = false; for (let i = index + 1; i < items.length; i++) { const child = items[i]; const childLevel = parseInt(child.getAttribute('data-level')||1); if (childLevel <= currentLevel) break; hasChildren = true; childCount++; if (child.querySelector('input').checked) childChecked++; } if (hasChildren) { item.classList.add('has-children'); const percent = Math.round((childChecked / childCount) * 100); const fill = item.querySelector('.mini-progress-fill'); if (fill) fill.style.width = percent + '%'; } else { item.classList.remove('has-children'); } }); }); }
+        function initFolding(container) { const lists = container.querySelectorAll('.task-list'); lists.forEach(list => { const items = Array.from(list.children); items.forEach((item, index) => { const currentLevel = parseInt(item.getAttribute('data-level')||1); const nextItem = items[index + 1]; const nextLevel = nextItem ? parseInt(nextItem.getAttribute('data-level')||1) : 0; const placeholder = item.querySelector('.toggle-placeholder'); if (nextItem && nextLevel > currentLevel) { placeholder.innerHTML = '▶'; placeholder.className = 'toggle-btn'; placeholder.onclick = function(e) { e.stopPropagation(); toggleChildren(items, index, currentLevel, this, item.getAttribute('data-id')); }; const isExpanded = localStorage.getItem('fold-' + item.getAttribute('data-id')) === 'true'; if (isExpanded) { placeholder.classList.add('rotated'); placeholder.innerHTML = '▼'; } if (!isExpanded) hideChildren(items, index, currentLevel); } else { placeholder.className = 'spacer'; } }); }); }
+        function toggleChildren(allItems, parentIndex, parentLevel, btn, parentId) { const isCollapsing = btn.classList.contains('rotated'); if (isCollapsing) { btn.classList.remove('rotated'); btn.innerHTML = '▶'; localStorage.setItem('fold-' + parentId, 'false'); hideChildren(allItems, parentIndex, parentLevel); } else { btn.classList.add('rotated'); btn.innerHTML = '▼'; localStorage.setItem('fold-' + parentId, 'true'); showChildren(allItems, parentIndex, parentLevel); } }
         function hideChildren(allItems, parentIndex, parentLevel) { for (let i = parentIndex + 1; i < allItems.length; i++) { const item = allItems[i]; if (parseInt(item.getAttribute('data-level')||1) <= parentLevel) break; item.classList.add('hidden-task'); } }
-        function showChildren(allItems, parentIndex, parentLevel) {
-            for (let i = parentIndex + 1; i < allItems.length; i++) {
-                const item = allItems[i]; const level = parseInt(item.getAttribute('data-level')||1); if (level <= parentLevel) break; item.classList.remove('hidden-task');
-                const toggleBtn = item.querySelector('.toggle-btn');
-                if (toggleBtn && !toggleBtn.classList.contains('rotated')) { let subParentLevel = level; let j = i + 1; while(j < allItems.length) { if(parseInt(allItems[j].getAttribute('data-level')||1) <= subParentLevel) break; j++; } i = j - 1; }
-            }
-        }
+        function showChildren(allItems, parentIndex, parentLevel) { for (let i = parentIndex + 1; i < allItems.length; i++) { const item = allItems[i]; const level = parseInt(item.getAttribute('data-level')||1); if (level <= parentLevel) break; item.classList.remove('hidden-task'); const toggleBtn = item.querySelector('.toggle-btn'); if (toggleBtn && !toggleBtn.classList.contains('rotated')) { let subParentLevel = level; let j = i + 1; while(j < allItems.length) { if(parseInt(allItems[j].getAttribute('data-level')||1) <= subParentLevel) break; j++; } i = j - 1; } } }
         function getLogs() { return JSON.parse(localStorage.getItem('zetmeo_time_logs') || '{}'); }
         function logTime(id, min) { let l=getLogs(); if(!l[id]) l[id]=[]; l[id].push({date:new Date().toISOString(), min:min}); localStorage.setItem('zetmeo_time_logs',JSON.stringify(l)); document.getElementById('toast').innerText=`Đã ghi ${min}p!`; document.getElementById('toast').className="show"; setTimeout(()=>document.getElementById('toast').className="",3000); }
         function stringToHash(s) { let h=0; for(let i=0;i<s.length;i++) h=Math.abs(((h<<5)-h)+s.charCodeAt(i)); return h; }
@@ -950,11 +794,9 @@
             renderDashboard(data);
             initDailyQuote(); 
             if (localStorage.getItem('theme') === 'classic') document.body.setAttribute('data-theme', 'classic');
-            initAutoBackupScheduler();
             document.getElementById('brain-dump-area').value = localStorage.getItem('zetmeo_braindump') || '';
             document.getElementById('book-ideas-area').value = localStorage.getItem('zetmeo_writer_content') || '';
             
-            // Auto-save triggers
             document.getElementById('brain-dump-area').addEventListener('input', () => { 
                 localStorage.setItem('zetmeo_braindump', document.getElementById('brain-dump-area').value); 
                 triggerAutoSave(); 
