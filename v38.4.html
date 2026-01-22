@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>zetmeoOS - V38.3 (Firebase & Sub-task Fix)</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #1a1a1a; --bg-box: #242424;
+            --main-color: #ff85a2; --text-color: #e0e0e0;
+            --accent-blue: #4fc3f7; --accent-green: #81c784;
+            --accent-grey: #9e9e9e; --danger: #ff5252;
+            --done-color: #555555;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Quicksand', sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-color); margin: 0; padding: 15px 15px 100px 15px; overflow-x: hidden; }
+
+        /* SYNC BADGE */
+        #sync-badge { position: fixed; top: 15px; right: 15px; z-index: 9999; padding: 6px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .status-waiting { background: #f1c40f; color: #222; display: flex !important; }
+        .status-synced { background: #2ecc71; color: #fff; display: flex !important; }
+
+        /* SESSION 1: RPG HEADER */
+        .rpg-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .rpg-box { background: var(--bg-box); border-radius: 15px; padding: 15px; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center; }
+        .profile-area { text-align: center; align-items: center; }
+        .mascot-img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--main-color); margin-bottom: 8px; object-fit: cover; }
+        .level-title { font-weight: 700; color: var(--main-color); font-size: 1.1em; }
+        .year-header { font-weight: 700; font-size: 0.9em; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; color: var(--main-color); }
+        .goal-item { margin-bottom: 10px; }
+        .goal-header { display: flex; justify-content: space-between; font-weight: 600; color: #ccc; font-size: 1.05em; margin-bottom: 4px; }
+        .progress-bar { background: #333; height: 6px; border-radius: 3px; overflow: hidden; margin-top:5px; width:80%; }
+        .progress-fill { height: 100%; transition: width 0.8s ease; background: var(--main-color); }
+
+        /* SESSION 2: GUIDE BOXES (RESTORED) */
+        .guide-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .guide-box { background: var(--bg-box); border-radius: 15px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 15px; border: 1px solid #333; position: relative; overflow: hidden; }
+        #quote-area { background-size: cover; background-position: center; }
+        #quote-area::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.7); }
+        .quote-text { position: relative; z-index: 1; font-weight: 600; font-style: italic; font-size: 0.9em; line-height: 1.4; color: #fff; }
+        .lam-avatar { font-size: 1.8em; margin-bottom: 5px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-8px);} }
+
+        /* TASK LIST */
+        .box { background: var(--bg-box); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; }
+        .box-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 12px; }
+        .box-title { color: var(--main-color); font-weight: 700; font-size: 1.1em; cursor: pointer; margin: 0; }
+        .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
+        .task-item { display: flex; align-items: center; padding: 6px 0; border-radius: 8px; position: relative; transition: 0.2s; }
+        .custom-cb { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--main-color); border-radius: 50%; cursor: pointer; position: relative; margin-right: 12px; flex-shrink: 0; transition: 0.2s; background: transparent; }
+        .custom-cb:checked { background: var(--main-color); }
+        .custom-cb:checked::after { content: "✓"; color: white; position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); font-size: 14px; font-weight: 900; }
+        .task-text { flex-grow: 1; border: none; background: transparent; color: var(--text-color); font-size: 1em; padding: 4px; outline: none; transition: 0.3s; }
+        .task-item.checked .task-text { color: var(--done-color); opacity: 0.6; }
+        
+        /* Indentation Logic */
+        .task-item.level-2 { margin-left: 28px; }
+        .task-item.level-3 { margin-left: 56px; }
+        .toggle-btn { margin-right: 8px; font-size: 0.7em; color: #555; cursor: pointer; width: 15px; text-align: center; }
+        .rotated { transform: rotate(-90deg); display: inline-block; }
+        .hidden-task { display: none !important; }
+
+        /* FLOATING NAV (RESTORED) */
+        .floating-nav { position: fixed; right: 15px; bottom: 90px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
+        .nav-circle { width: 42px; height: 42px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.7; font-size: 11px; font-weight: 700; }
+        .nav-circle:hover { opacity: 1; background: var(--main-color); }
+
+        /* BOTTOM MENU */
+        .bottom-menu { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; height: 75px; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .menu-item { color: #555; font-size: 1.5em; cursor: pointer; display: flex; flex-direction: column; align-items: center; border: none; background: none; outline: none; width: 25%; }
+        .menu-item.active { color: var(--main-color); }
+        .menu-label { font-size: 9px; margin-top: 2px; font-weight: 700; text-transform: uppercase; }
+
+        /* MODALS */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-content { background: var(--bg-box); border-radius: 20px; width: 95%; max-width: 950px; height: 88vh; display: flex; flex-direction: column; border: 1px solid #333; overflow: hidden; }
+        .modal-body { flex-grow: 1; padding: 20px; overflow-y: auto; }
+        .tab-btn-group { display: flex; padding: 10px 20px; border-bottom: 1px solid #333; gap: 10px; }
+        .tab-btn { background: none; border: none; color: #666; padding: 10px 15px; font-weight: 700; cursor: pointer; }
+        .tab-btn.active { color: var(--main-color); border-bottom: 2px solid var(--main-color); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid #333; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 12px; background: #222; }
+
+        textarea { width: 100%; height: 380px; background: #111; color: #81c784; border: 1px solid #333; border-radius: 12px; padding: 15px; font-family: monospace; font-size: 15px; resize: none; line-height: 1.6; outline: none; }
+        .pink-btn { background: var(--main-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .grey-btn { background: #333; color: #ccc; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .sync-label { font-size: 0.8em; color: var(--main-color); display: block; margin-bottom: 5px; font-weight: 700; margin-top: 10px; }
+        #celeb-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--main-color); color: white; padding: 18px 28px; border-radius: 50px; font-weight: 700; z-index: 3000; display: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="sync-badge"></div>
+    <canvas id="fireworks" style="position:fixed; inset:0; pointer-events:none; z-index:1999;"></canvas>
+    <div id="celeb-popup">Yeah A meo! Lại tiến thêm 1 bước.</div>
+
+    <div class="rpg-container">
+        <div class="rpg-box profile-area">
+            <img id="mascot-img" class="mascot-img" src="https://getdrawings.com/free-icon/cat-icon-png-53.png">
+            <div id="lv-display" class="level-title">Lv. 1 - Mầm Xanh Nhảy Số</div>
+            <div class="progress-bar"><div id="lv-fill" class="progress-fill" style="width: 0%"></div></div>
+        </div>
+        <div class="rpg-box">
+            <div class="year-header">2026: KẾT TINH & CỘNG HƯỞNG <span id="xp-summary" style="float:right">0/10000</span></div>
+            <div id="goals-list"></div>
+        </div>
+    </div>
+
+    <div class="guide-container">
+        <div id="quote-area" class="guide-box"><div id="quote-text" class="quote-text">...</div></div>
+        <div class="guide-box">
+            <div class="lam-avatar">👩‍💼</div>
+            <div id="lam-msg" style="font-weight:600; font-size:0.9em; padding:0 10px">Chào anh Meo! Chiến thôi!</div>
+        </div>
+    </div>
+
+    <div id="taskboard"></div>
+
+    <div class="floating-nav">
+        <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">TOP</div>
+        <div class="nav-circle" onclick="window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'})">BOT</div>
+    </div>
+
+    <div class="bottom-menu">
+        <button class="menu-item active" onclick="location.reload()">🏠<span class="menu-label">Home</span></button>
+        <button class="menu-item" onclick="syncUp()">📤<span class="menu-label">Upload</span></button>
+        <button class="menu-item" onclick="syncDown()">📥<span class="menu-label">Download</span></button>
+        <button class="menu-item" onclick="openAdmin()">⚙️<span class="menu-label">Admin</span></button>
+    </div>
+
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <div class="tab-btn-group">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-task')">Task Editor</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-rpg')">RPG Config</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-level')">Level Title</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="tab-task" class="tab-panel active">
+                    <textarea id="task-editor" spellcheck="false" placeholder="Nhập markdown task..."></textarea>
+                    <div id="history-container" style="margin-top:20px; border-top:1px solid #333; padding-top:15px"></div>
+                </div>
+
+                <div id="tab-rpg" class="tab-panel">
+                    <div id="goal-rows-container"></div>
+                    <button class="pink-btn" style="width:100%; margin:15px 0" onclick="addGoalRow()">+ Thêm mục tiêu</button>
+                    
+                    <strong style="display:block; margin-top:20px; border-bottom: 1px solid #444; pb:5px">FIREBASE CLOUD SYNC</strong>
+                    <label class="sync-label">API KEY</label>
+                    <input type="password" id="fb-api" placeholder="AIzaSy..." style="width:100%; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px">
+                    <label class="sync-label">DATABASE URL (Dán link Firebase của anh vào đây)</label>
+                    <input type="text" id="fb-db" placeholder="https://...firebasedatabase.app/" style="width:100%; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px">
+                    <label class="sync-label">PROJECT ID</label>
+                    <input type="text" id="fb-pid" placeholder="meo-dash-rpg" style="width:100%; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px">
+                    <label class="sync-label">APP ID</label>
+                    <input type="text" id="fb-appid" placeholder="1:740973177634:web:..." style="width:100%; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px">
+
+                    <button class="pink-btn" style="width:100%; margin-top:25px" onclick="openRewardsEditor()">🎁 Quản Lý Phần Thưởng</button>
+                    <button class="grey-btn" style="width:100%; margin-top:15px" onclick="resetRPG()">Reset Toàn Bộ XP</button>
+                </div>
+
+                <div id="tab-level" class="tab-panel">
+                    <textarea id="level-titles-area" style="height:350px"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="grey-btn" onclick="archiveDone()">🧹 Lưu Kho</button>
+                <button class="pink-btn" onclick="saveAll()">LƯU TẤT CẢ THAY ĐỔI</button>
+                <button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward-admin-modal" class="modal">
+        <div class="modal-content" style="max-width:450px; height:auto">
+            <div style="color:var(--main-color); padding:20px; font-weight:700; border-bottom:1px solid #333">🎁 PHẦN THƯỞNG CHIẾN LƯỢC</div>
+            <div id="reward-list-admin" style="padding:15px 20px"></div>
+            <div style="padding:20px; display:flex; gap:10px">
+                <button class="pink-btn" style="flex:1" onclick="addRewardRow()">+ Thêm</button>
+                <button class="grey-btn" onclick="document.getElementById('reward-admin-modal').style.display='none'">Xong</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & CONFIG ---
+        const defaultLevels = `1 | Mầm Xanh Nhảy Số\n11 | Phượng Hồng Rực Cháy\n26 | Mùa Gặt Bội Thu\n41 | Đỉnh Tuyết Tinh Anh`;
+        const defaultData = `# 🎯 CORE\n- [ ] Task chiến lược 1\n  - [ ] Sub-task level 2\n    - [ ] Sub-task level 3`;
+        const quotesDB = [
+            { text: "Sáng tạo là kết tinh của vô tri.", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" },
+            { text: "Mỗi bước đi nhỏ đều dẫn tới đỉnh cao.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80" },
+            { text: "ADHD là một siêu năng lực.", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" }
+        ];
+
+        let totalXP = parseInt(localStorage.getItem('zetmeo_xp_total')) || 0;
+        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || {
+            goals: [ { text: "Bán hàng", group: "Core", time: "2026" } ],
+            levelTitles: defaultLevels,
+            rewards: [ { lv: 5, item: "Gà Popeyes" } ],
+            fb: { apiKey: 'AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc', databaseURL: '', projectId: 'meo-dash-rpg', appId: '1:740973177634:web:31c47cd5ed395edab4d37b' }
+        };
+
+        // --- FIREBASE ENGINE (GLOBAL COMPAT) ---
+        function initFB() {
+            const c = rpgConfig.fb;
+            if(!c.apiKey || !c.databaseURL) return null;
+            if(!firebase.apps.length) firebase.initializeApp(c);
+            return firebase.database();
+        }
+
+        async function syncUp() {
+            const db = initFB(); if(!db) { alert("Anh điền link Database trong Admin trước nhé!"); return; }
+            const badge = document.getElementById('sync-badge');
+            badge.innerText = "⏳ Uploading..."; badge.style.display='flex'; badge.className='status-waiting';
+            try {
+                const data = { dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: localStorage.getItem('zetmeo_rpg_config') };
+                await db.ref('meoOS_Cloud').set(data);
+                badge.innerText="✅ Đã lên Cloud"; badge.className="status-synced";
+                setTimeout(()=>badge.style.display='none', 2000);
+            } catch(e) { alert("Lỗi Sync: " + e.message); }
+        }
+
+        async function syncDown() {
+            const db = initFB(); if(!db) return;
+            if(!confirm("Ghi đè bằng dữ liệu từ mây?")) return;
+            try {
+                const snap = await db.ref('meoOS_Cloud').once('value');
+                const val = snap.val();
+                if(val) {
+                    localStorage.setItem('dashboardData', val.dashboard);
+                    localStorage.setItem('zetmeo_xp_total', val.xp);
+                    localStorage.setItem('zetmeo_rpg_config', val.config);
+                    location.reload();
+                }
+            } catch(e) { alert("Download lỗi!"); }
+        }
+
+        // --- RENDERER (V35.9 RESTORED) ---
+        function renderDashboard(val) {
+            const board = document.getElementById('taskboard');
+            board.innerHTML = "";
+            const boxes = val.split(/(?=# )/);
+            
+            boxes.forEach(box => {
+                const lines = box.split('\n');
+                if(!lines[0].startsWith('#')) return;
+                const title = lines[0].replace('# ', '').trim();
+                const boxDiv = document.createElement('div');
+                boxDiv.className = 'box';
+                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2><button class="pink-btn" style="padding:2px 10px" onclick="addTask('${title}')">+</button></div>`;
+                
+                const list = document.createElement('ul');
+                list.className = 'task-list';
+                lines.slice(1).forEach((line) => {
+                    if(!line.trim().startsWith('- [')) return;
+                    
+                    // Thụt lề sub-task chuẩn xác
+                    const leadingSpaces = line.match(/^ */)[0].length;
+                    const lv = leadingSpaces >= 4 ? 3 : (leadingSpaces >= 2 ? 2 : 1);
+                    
+                    const isChecked = line.includes('[x]');
+                    const cleanText = line.replace(/^\s*- \[[ x]\] /, '');
+                    const li = document.createElement('li');
+                    li.className = `task-item level-${lv} ${isChecked ? 'checked' : ''}`;
+                    li.setAttribute('data-level', lv);
+                    li.innerHTML = `
+                        <div class="toggle-btn" onclick="toggleFolding(this)">${lv < 3 ? '▼' : ''}</div>
+                        <input type="checkbox" class="custom-cb" ${isChecked ? 'checked' : ''} onchange="toggleTask(this, '${title}', '${cleanText.replace(/'/g, "\\'")}')">
+                        <input type="text" class="task-text" value="${cleanText}" onchange="editTask(this, '${title}', '${cleanText.replace(/'/g, "\\'")}')">
+                    `;
+                    list.appendChild(li);
+                });
+                boxDiv.appendChild(list); board.appendChild(boxDiv);
+                new Sortable(list, { group: 'shared', animation: 150, onEnd: updateDOMToData });
+            });
+            localStorage.setItem('dashboardData', val);
+            initUIContent();
+        }
+
+        // --- FOLDING LOGIC (V35.9 ENGINE) ---
+        function toggleFolding(btn) {
+            const li = btn.closest('.task-item');
+            const lv = parseInt(li.getAttribute('data-level'));
+            const isRotated = btn.classList.toggle('rotated');
+            let next = li.nextElementSibling;
+            while(next) {
+                const nextLv = parseInt(next.getAttribute('data-level'));
+                if(nextLv <= lv) break;
+                if(isRotated) next.classList.add('hidden-task');
+                else {
+                    next.classList.remove('hidden-task');
+                    const subBtn = next.querySelector('.toggle-btn');
+                    if(subBtn && subBtn.classList.contains('rotated')) {
+                        let skipLv = nextLv;
+                        let skip = next.nextElementSibling;
+                        while(skip && parseInt(skip.getAttribute('data-level')) > skipLv) skip = skip.nextElementSibling;
+                        next = skip; continue;
+                    }
+                }
+                next = next.nextElementSibling;
+            }
+        }
+
+        // --- CORE ACTIONS ---
+        function saveAll() {
+            const data = document.getElementById('task-editor').value;
+            rpgConfig.goals = Array.from(document.querySelectorAll('.goal-row')).map(r => ({ text: r.querySelector('.g-name').value, group: r.querySelector('.g-group').value, time: r.querySelector('.g-time').value }));
+            rpgConfig.fb = { apiKey: document.getElementById('fb-api').value, databaseURL: document.getElementById('fb-db').value, projectId: document.getElementById('fb-pid').value, appId: document.getElementById('fb-appid').value };
+            rpgConfig.levelTitles = document.getElementById('level-titles-area').value;
+            localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig));
+            localStorage.setItem('dashboardData', data);
+            renderDashboard(data); updateRPGUI(); saveToHistory(data); closeAdmin();
+            alert("✅ Đã lưu dữ liệu cục bộ!");
+        }
+
+        function updateDOMToData() {
+            let dataArr = [];
+            document.querySelectorAll('.box').forEach(box => {
+                const title = box.querySelector('.box-title').innerText.replace('▼ ', '').replace('▶ ', '');
+                dataArr.push(`# ${title}`);
+                box.querySelectorAll('.task-item').forEach(li => {
+                    const cb = li.querySelector('.custom-cb').checked ? '[x]' : '[ ]';
+                    const txt = li.querySelector('.task-text').value;
+                    const lv = parseInt(li.getAttribute('data-level'));
+                    const sp = lv === 3 ? '    ' : (lv === 2 ? '  ' : '');
+                    dataArr.push(`${sp}- ${cb} ${txt}`);
+                });
+                dataArr.push("");
+            });
+            localStorage.setItem('dashboardData', dataArr.join('\n').trim());
+        }
+
+        function toggleTask(cb, boxName, text) {
+            const val = localStorage.getItem('dashboardData');
+            const pts = boxName.toUpperCase().includes('CORE') ? 10 : (boxName.toUpperCase().includes('FOUNDATION') ? 8 : 2.5);
+            const newLines = val.split('\n').map(l => l.includes(text) ? (cb.checked ? l.replace('[ ]', '[x]') : l.replace('[x]', '[ ]')) : l);
+            totalXP = cb.checked ? totalXP + pts : Math.max(0, totalXP - pts);
+            localStorage.setItem('zetmeo_xp_total', totalXP);
+            renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData();
+            if(cb.checked) launchFireworks(pts);
+        }
+
+        function addTask(boxTitle) {
+            const val = localStorage.getItem('dashboardData') || "";
+            const lines = val.split('\n');
+            const idx = lines.findIndex(l => l.includes('# ' + boxTitle));
+            lines.splice(idx + 1, 0, `- [ ] Nhập việc mới...`);
+            renderDashboard(lines.join('\n'));
+        }
+
+        // --- UI UTILS ---
+        function openAdmin() { 
+            document.getElementById('task-editor').value = localStorage.getItem('dashboardData') || ""; 
+            document.getElementById('level-titles-area').value = rpgConfig.levelTitles; 
+            document.getElementById('fb-api').value = rpgConfig.fb.apiKey;
+            document.getElementById('fb-db').value = rpgConfig.fb.databaseURL;
+            document.getElementById('fb-pid').value = rpgConfig.fb.projectId;
+            document.getElementById('fb-appid').value = rpgConfig.fb.appId;
+            renderGoalAdmin(); renderHistory(); 
+            document.getElementById('admin-modal').style.display = 'flex'; 
+        }
+        function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
+        function switchTab(e, id) { document.querySelectorAll('.tab-panel, .tab-btn').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
+        function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼') ? el.innerText.replace('▼', '▶') : el.innerText.replace('▶', '▼'); }
+        function renderGoalAdmin() { const c = document.getElementById('goal-rows-container'); c.innerHTML = ""; rpgConfig.goals.forEach(g => { c.innerHTML += `<div class="goal-row" style="display:flex; gap:5px; margin-bottom:5px"><input type="text" class="g-name" style="flex:2; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" value="${g.text}"><input type="text" class="g-group" style="flex:1; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" value="${g.group}"><input type="text" class="g-time" style="width:70px; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" value="${g.time}"></div>`; }); }
+        function addGoalRow() { const c = document.getElementById('goal-rows-container'); const d = document.createElement('div'); d.className = "goal-row"; d.style = "display:flex; gap:5px; margin-bottom:5px"; d.innerHTML = `<input type="text" class="g-name" style="flex:2; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" placeholder="Mục tiêu"><input type="text" class="g-group" style="flex:1; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" placeholder="Nhóm"><input type="text" class="g-time" style="width:70px; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" placeholder="Hạn">`; c.appendChild(d); }
+        function launchFireworks(pts) { const p = document.getElementById('celeb-popup'); p.innerText = `Yeah A meo! +${pts} XP.`; p.style.display = 'block'; setTimeout(() => p.style.display = 'none', 2500); const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let parts = []; for(let i=0;i<40;i++) parts.push({x:canvas.width/2, y:canvas.height/2, vx:(Math.random()-0.5)*12, vy:(Math.random()-0.5)*12, color:`hsl(${Math.random()*360},100%,50%)`, life:1}); function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i) => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.15; p.life-=0.02; ctx.fillStyle=p.color; ctx.globalAlpha=p.life; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill(); if(p.life<=0) parts.splice(i,1); }); if(parts.length) requestAnimationFrame(draw); } draw(); }
+        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = `<strong style="color:var(--main-color); display:block; margin-bottom:10px">🕒 Lịch sử phiên bản</strong>` + hist.map((h, i) => `<div style="background:#222; padding:10px; border-radius:8px; margin-bottom:5px; cursor:pointer" onclick="restoreHist(${i})">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
+        function saveToHistory(data) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: data }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
+        function restoreHist(i) { const h = JSON.parse(localStorage.getItem('zetmeo_history'))[i]; if(confirm("Khôi phục?")) { renderDashboard(h.content); closeAdmin(); } }
+        function archiveDone() { const lines = localStorage.getItem('dashboardData').split('\n'); const newLines = lines.filter(l => !l.includes('[x]')); renderDashboard(newLines.join('\n')); alert("Đã dọn dẹp!"); }
+
+        function updateRPGUI() {
+            const map = rpgConfig.levelTitles.trim().split('\n').map(l => { const [lv, name] = l.split('|').map(s => s.trim()); return { lv: parseInt(lv), name }; }).sort((a,b) => b.lv - a.lv);
+            let lv = 1; while (100 * Math.pow(lv, 1.5) <= totalXP) lv++;
+            const title = map.find(t => lv >= t.lv)?.name || "Mầm Xanh";
+            const nextXP = Math.ceil(100 * Math.pow(lv, 1.5)), prevXP = lv === 1 ? 0 : Math.ceil(100 * Math.pow(lv-1, 1.5));
+            document.getElementById('lv-display').innerText = `Lv. ${lv} - ${title}`;
+            document.getElementById('xp-summary').innerText = `${totalXP} XP`;
+            document.getElementById('lv-fill').style.width = `${((totalXP-prevXP)/(nextXP-prevXP))*100}%`;
+            const gList = document.getElementById('goals-list'); gList.innerHTML = "";
+            rpgConfig.goals.forEach(g => { gList.innerHTML += `<div class="goal-item"><div class="goal-header"><span>${g.text} / ${g.group}</span><span>${g.time}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${(totalXP/10000)*100}%"></div></div></div>`; });
+        }
+
+        function initUIContent() {
+            const q = quotesDB[Math.floor(Math.random() * quotesDB.length)];
+            document.getElementById('quote-text').innerText = q.text;
+            document.getElementById('quote-area').style.backgroundImage = `url('${q.img}')`;
+            const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
+            if(lamLine) document.getElementById('lam-msg').innerText = lamLine.replace('!!!', '').trim();
+        }
+        
+        function openRewardsEditor() { document.getElementById('reward-admin-modal').style.display = 'flex'; renderRewardAdmin(); }
+        function renderRewardAdmin() { const container = document.getElementById('reward-list-admin'); container.innerHTML = ""; rpgConfig.rewards.forEach((r, i) => { container.innerHTML += `<div class="goal-row" style="display:flex; gap:5px; margin-bottom:5px"><input type="number" style="width:60px; background:#111; color:white; border:1px solid #333; padding:8px; border-radius:8px" value="${r.lv}" onchange="updateRewardData(${i}, 'lv', this.value)"><input type="text" class="flex-grow" style="background:#111; color:white; border:1px solid #333; padding:8px; border-radius:8px" value="${r.item}" onchange="updateRewardData(${i}, 'item', this.value)"><button class="grey-btn" onclick="rpgConfig.rewards.splice(${i},1); renderRewardAdmin()">❌</button></div>`; }); }
+        function updateRewardData(i, k, v) { rpgConfig.rewards[i][k] = k==='lv'?parseInt(v):v; localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig)); }
+        function addRewardRow() { rpgConfig.rewards.push({ lv: 0, item: "Phần thưởng mới" }); renderRewardAdmin(); }
+
+        window.onload = () => { renderDashboard(localStorage.getItem('dashboardData') || defaultData); updateRPGUI(); };
+    </script>
+</body>
+</html>
