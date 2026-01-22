@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V38.9 (Studio Edition)</title>
+    <title>zetmeoOS - V39.0 (Archive & Studio Pro)</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -36,8 +36,6 @@
         .level-title { font-weight: 700; color: var(--main-color); font-size: 1em; }
         .next-lv-msg { font-size: 0.8em; color: #888; margin-top: 5px; line-height: 1.3; }
         .year-header { font-weight: 700; font-size: 0.85em; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 5px; color: var(--main-color); }
-        .goal-item { margin-bottom: 8px; }
-        .goal-header { display: flex; justify-content: space-between; font-weight: 600; color: #ccc; font-size: 0.9em; margin-bottom: 3px; }
         .progress-bar { background: #333; height: 6px; border-radius: 3px; overflow: hidden; width:100%; }
         .progress-fill { height: 100%; transition: width 0.8s ease; background: var(--main-color); }
 
@@ -50,12 +48,11 @@
         .lam-avatar { font-size: 1.6em; margin-bottom: 3px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-5px);} }
 
-        /* TASK LIST & NOTE ICON */
+        /* TASK LIST */
         .box { background: var(--bg-box); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; }
         .box-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
         .box-title { color: var(--main-color); font-weight: 700; font-size: 1.05em; margin: 0; cursor: pointer; }
         .note-trigger { font-size: 1.1em; cursor: pointer; opacity: 0.6; transition: 0.2s; }
-        .note-trigger:hover { opacity: 1; transform: scale(1.1); }
         
         .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
         .task-item { display: flex; align-items: center; padding: 6px 0; border-radius: 8px; position: relative; }
@@ -75,13 +72,17 @@
         .studio-box { background: #1e1e1e; border: 2px solid var(--main-color); border-radius: 20px; padding: 15px; margin-bottom: 20px; }
         .studio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; letter-spacing: 1px; }
-        .studio-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .studio-actions { display: flex; gap: 8px; }
         .studio-btn { background: #333; color: #eee; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; text-transform: uppercase; }
         .studio-btn.save { background: var(--main-color); color: white; }
-        .studio-textarea { width: 100%; height: 150px; background: #111; color: var(--accent-green); border: 1px solid #333; border-radius: 12px; padding: 12px; font-family: monospace; resize: vertical; outline: none; display: none; }
-        .studio-display { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; min-height: 60px; font-size: 0.9em; white-space: pre-wrap; color: #ccc; }
+        .studio-textarea { width: 100%; height: 120px; background: #111; color: var(--accent-green); border: 1px solid #333; border-radius: 12px; padding: 12px; font-family: monospace; resize: vertical; outline: none; display: block; }
 
-        /* FOOTER VERSION */
+        /* ARCHIVE LIST UI */
+        .archive-item { background: #111; border: 1px solid #333; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+        .archive-time { font-size: 10px; color: #555; margin-bottom: 5px; display: block; font-weight: 700; }
+        .archive-content { font-size: 13px; color: #ccc; white-space: pre-wrap; margin-bottom: 10px; }
+        .archive-btns { display: flex; gap: 5px; }
+
         .footer-version { text-align: center; color: #444; font-size: 10px; font-weight: 700; margin: 20px 0; letter-spacing: 2px; }
 
         /* BOTTOM MENU */
@@ -108,7 +109,6 @@
         @media (max-width: 600px) {
             .rpg-container, .guide-container { grid-template-columns: 1fr; }
             .modal-footer { flex-direction: column; }
-            .modal-footer select { width: 100%; height: 45px; }
         }
     </style>
 </head>
@@ -144,31 +144,25 @@
         <div class="studio-header">
             <span class="studio-title">🧠 BRAINDOM STUDIO</span>
             <div class="studio-actions">
-                <button class="studio-btn" onclick="copyStudio('braindom')">Copy</button>
-                <button class="studio-btn" onclick="toggleEditStudio('braindom')">Sửa</button>
-                <button class="studio-btn save" onclick="saveStudio('braindom')">Lưu</button>
-                <button class="studio-btn" onclick="clearStudio('braindom')">Kho</button>
+                <button class="studio-btn save" onclick="saveToArchive('braindom')">Lưu</button>
+                <button class="studio-btn" onclick="openArchiveModal('braindom')">Kho</button>
             </div>
         </div>
-        <div id="braindom-display" class="studio-display">...</div>
-        <textarea id="braindom-input" class="studio-textarea"></textarea>
+        <textarea id="braindom-input" class="studio-textarea" placeholder="Ném ý tưởng vào đây..."></textarea>
     </div>
 
     <div class="studio-box">
         <div class="studio-header">
             <span class="studio-title">✍️ WRITER STUDIO</span>
             <div class="studio-actions">
-                <button class="studio-btn" onclick="copyStudio('writer')">Copy</button>
-                <button class="studio-btn" onclick="toggleEditStudio('writer')">Sửa</button>
-                <button class="studio-btn save" onclick="saveStudio('writer')">Lưu</button>
-                <button class="studio-btn" onclick="clearStudio('writer')">Kho</button>
+                <button class="studio-btn save" onclick="saveToArchive('writer')">Lưu</button>
+                <button class="studio-btn" onclick="openArchiveModal('writer')">Kho</button>
             </div>
         </div>
-        <div id="writer-display" class="studio-display">...</div>
-        <textarea id="writer-input" class="studio-textarea"></textarea>
+        <textarea id="writer-input" class="studio-textarea" placeholder="Viết nháp sâu..."></textarea>
     </div>
 
-    <div class="footer-version">ZETMEO OS V38.9 - STRATEGIC EVOLUTION</div>
+    <div class="footer-version">ZETMEO OS V39.0 - ARCHIVE & STUDIO PRO</div>
 
     <div class="bottom-menu">
         <button class="menu-item active" onclick="location.reload()">🏠<span class="menu-label">Home</span></button>
@@ -181,13 +175,16 @@
         <div class="modal-content">
             <div class="tab-btn-group">
                 <button class="tab-btn active" onclick="switchTab(event, 'tab-task')">Task Editor</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-kho-task')">Kho Task Done</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-rpg')">RPG Config</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-firebase')">Firebase</button>
             </div>
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
                     <textarea id="task-editor" style="height:450px" spellcheck="false"></textarea>
-                    <div id="history-container" style="margin-top:10px; border-top:1px solid #333; padding-top:10px"></div>
+                </div>
+                <div id="tab-kho-task" class="tab-panel">
+                    <div id="kho-task-list"></div>
                 </div>
                 <div id="tab-rpg" class="tab-panel">
                     <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
@@ -196,7 +193,6 @@
                     <textarea id="rewards-area" style="height:100px"></textarea>
                     <label class="sync-label">DANH HIỆU (LEVEL | TÊN)</label>
                     <textarea id="levels-area" style="height:100px"></textarea>
-                    <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
                 </div>
                 <div id="tab-firebase" class="tab-panel">
                     <label class="sync-label">FIREBASE DATABASE URL</label>
@@ -204,11 +200,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <select class="grey-btn" onchange="handleBulk(this)">
-                    <option value="">Lệnh Dữ Liệu...</option>
-                    <option value="archive">🧹 Lưu Kho Task Done</option>
+                <select class="grey-btn" id="bulk-actions" onchange="handleBulk(this)">
+                    <option value="">Lệnh kho...</option>
+                    <option value="archive">🧹 Dọn dẹp Task Done</option>
                     <option value="backup">💾 Copy Backup</option>
-                    <option value="export">📊 Xuất CSV</option>
                 </select>
                 <button class="pink-btn" style="flex:2" onclick="saveAll()">LƯU TẤT CẢ</button>
                 <button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button>
@@ -216,72 +211,54 @@
         </div>
     </div>
 
-    <div id="note-modal" class="modal">
-        <div class="modal-content" style="max-width:500px; height:auto">
-            <div style="padding:20px; border-bottom:1px solid #333; font-weight:700; color:var(--main-color)" id="note-modal-title">Ghi chú Session</div>
-            <div class="modal-body">
-                <textarea id="note-input" style="height:250px" placeholder="Viết ghi chú tại đây..."></textarea>
-            </div>
+    <div id="archive-modal" class="modal">
+        <div class="modal-content" style="max-width:600px;">
+            <div style="padding:15px; border-bottom:1px solid #333; font-weight:800; color:var(--main-color)" id="archive-modal-title">KHO LƯU TRỮ</div>
+            <div class="modal-body" id="archive-list-container"></div>
             <div class="modal-footer">
-                <button class="grey-btn" onclick="deleteNote()">Xóa</button>
-                <button class="pink-btn" style="flex:2" onclick="saveNote()">Lưu Ghi Chú</button>
-                <button class="grey-btn" onclick="document.getElementById('note-modal').style.display='none'">Đóng</button>
+                <button class="grey-btn" onclick="document.getElementById('archive-modal').style.display='none'">Đóng</button>
             </div>
         </div>
     </div>
 
     <script>
-        const isMobile = window.matchMedia("(max-width: 768px)").matches || ('ontouchstart' in window);
-        const fbConfig = { apiKey: "AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc", authDomain: "meo-dash-rpg.firebaseapp.com", projectId: "meo-dash-rpg", storageBucket: "meo-dash-rpg.firebasestorage.app", messagingSenderId: "740973177634", appId: "1:740973177634:web:31c47cd5ed395edab4d37b" };
+        const fbConfig = { apiKey: "AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc", authDomain: "meo-dash-rpg.firebaseapp.com", projectId: "meo-dash-rpg", databaseURL: "" };
         
         let totalXP = parseInt(localStorage.getItem('zetmeo_xp_total')) || 0;
-        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { 
-            goals: "Sáng tạo | Core | 2026", 
-            rewards: "5 | Gà Popeyes", 
-            levels: "1 | Mầm Xanh\n11 | Phượng Hồng\n26 | Mùa Gặt", 
-            fbUrl: "" 
-        };
-        let sessionNotes = JSON.parse(localStorage.getItem('zetmeo_notes')) || {};
-        let activeNoteSession = "";
+        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { goals: "", rewards: "", levels: "1 | Mầm Xanh\n11 | Phượng Hồng", fbUrl: "" };
+        let taskArchive = JSON.parse(localStorage.getItem('zetmeo_task_archive')) || [];
+        let studioArchives = JSON.parse(localStorage.getItem('zetmeo_studio_archive')) || { braindom: [], writer: [] };
 
         // --- FIREBASE ---
-        function getDB() {
-            if(!rpgConfig.fbUrl) return null;
-            if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl});
-            return firebase.database();
-        }
+        function getDB() { if(!rpgConfig.fbUrl) return null; if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl}); return firebase.database(); }
         async function syncUp() {
-            const db = getDB(); if(!db) return alert("Cài Firebase URL trước!");
+            const db = getDB(); if(!db) return;
             const badge = document.getElementById('sync-badge'); badge.innerText = "⏳ Pushing..."; badge.style.display='flex'; badge.className='status-waiting';
             try {
-                const data = { 
+                await db.ref('meoOS_V39').set({ 
                     dashboard: localStorage.getItem('dashboardData'), 
-                    xp: totalXP, 
-                    config: JSON.stringify(rpgConfig),
-                    notes: JSON.stringify(sessionNotes),
-                    braindom: localStorage.getItem('zetmeo_braindom'),
-                    writer: localStorage.getItem('zetmeo_writer')
-                };
-                await db.ref('meoOS_V38_9').set(data);
+                    xp: totalXP, config: JSON.stringify(rpgConfig),
+                    taskArchive: JSON.stringify(taskArchive),
+                    studioArchive: JSON.stringify(studioArchives)
+                });
                 badge.innerText="✅ Cloud Synced"; badge.className="status-synced"; setTimeout(()=>badge.style.display='none', 2000);
-            } catch(e) { alert("Lỗi Sync!"); }
+            } catch(e) { alert("Sync lỗi!"); }
         }
         async function syncDown() {
             const db = getDB(); if(!db) return;
             if(!confirm("Tải dữ liệu mây về?")) return;
             try {
-                const snap = await db.ref('meoOS_V38_9').once('value');
+                const snap = await db.ref('meoOS_V39').once('value');
                 const val = snap.val();
                 if(val) {
                     localStorage.setItem('dashboardData', val.dashboard);
                     localStorage.setItem('zetmeo_xp_total', val.xp);
                     localStorage.setItem('zetmeo_rpg_config', val.config);
-                    localStorage.setItem('zetmeo_notes', val.notes);
-                    localStorage.setItem('zetmeo_braindom', val.braindom);
-                    localStorage.setItem('zetmeo_writer', val.writer);
+                    localStorage.setItem('zetmeo_task_archive', val.taskArchive);
+                    localStorage.setItem('zetmeo_studio_archive', val.studioArchive);
                     location.reload();
                 }
-            } catch(e) { alert("Lỗi tải!"); }
+            } catch(e) { alert("Download lỗi!"); }
         }
 
         // --- RENDERER ---
@@ -291,7 +268,7 @@
                 const lines = box.split('\n'); if(!lines[0].startsWith('#')) return;
                 const title = lines[0].replace('# ', '').trim();
                 const boxDiv = document.createElement('div'); boxDiv.className = 'box';
-                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2><span class="note-trigger" onclick="openNote('${title}')">📝</span></div>`;
+                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2></div>`;
                 const list = document.createElement('ul'); list.className = 'task-list';
                 lines.slice(1).forEach(line => {
                     if(!line.trim().startsWith('- [')) return;
@@ -304,51 +281,100 @@
                     list.appendChild(li);
                 });
                 boxDiv.appendChild(list); board.appendChild(boxDiv);
-                new Sortable(list, { group:'shared', animation:150, disabled:isMobile, onEnd:updateDOMToData });
+                new Sortable(list, { group:'shared', animation:150, onEnd:updateDOMToData });
             });
             localStorage.setItem('dashboardData', val);
-            initStudios();
         }
 
-        // --- SESSION NOTES ---
-        function openNote(session) {
-            activeNoteSession = session;
-            document.getElementById('note-modal-title').innerText = "📝 GHI CHÚ: " + session;
-            document.getElementById('note-input').value = sessionNotes[session] || "";
-            document.getElementById('note-modal').style.display = 'flex';
+        // --- STUDIO LOGIC ---
+        function saveToArchive(type) {
+            const input = document.getElementById(type + '-input');
+            const val = input.value.trim();
+            if(!val) return;
+            studioArchives[type].unshift({ time: new Date().toLocaleString(), content: val });
+            localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));
+            input.value = "";
+            alert("Đã lưu vào Kho!");
         }
-        function saveNote() {
-            sessionNotes[activeNoteSession] = document.getElementById('note-input').value;
-            localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes));
-            document.getElementById('note-modal').style.display = 'none';
-        }
-        function deleteNote() { if(confirm("Xóa note này?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display = 'none'; } }
 
-        // --- STUDIOS ---
-        function initStudios() {
-            ['braindom', 'writer'].forEach(s => {
-                const val = localStorage.getItem('zetmeo_'+s) || "Chưa có nội dung...";
-                document.getElementById(s+'-display').innerText = val;
-                document.getElementById(s+'-input').value = val;
+        function openArchiveModal(type) {
+            const container = document.getElementById('archive-list-container');
+            document.getElementById('archive-modal-title').innerText = "KHO: " + type.toUpperCase();
+            container.innerHTML = "";
+            studioArchives[type].forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = "archive-item";
+                div.innerHTML = `<span class="archive-time">${item.time}</span><div class="archive-content">${item.content}</div>
+                <div class="archive-btns">
+                    <button class="pink-btn" onclick="copyTextArchive('${type}', ${i})">Copy</button>
+                    <button class="grey-btn" onclick="editFromArchive('${type}', ${i})">Sửa</button>
+                    <button class="grey-btn" onclick="deleteStudioArchive('${type}', ${i})">Xóa</button>
+                </div>`;
+                container.appendChild(div);
+            });
+            document.getElementById('archive-modal').style.display = 'flex';
+        }
+
+        function copyTextArchive(type, i) { navigator.clipboard.writeText(studioArchives[type][i].content); alert("Đã copy!"); }
+        function editFromArchive(type, i) { 
+            document.getElementById(type + '-input').value = studioArchives[type][i].content; 
+            document.getElementById('archive-modal').style.display = 'none';
+            document.getElementById(type + '-input').scrollIntoView();
+        }
+        function deleteStudioArchive(type, i) { if(confirm("Xóa bản lưu này?")) { studioArchives[type].splice(i,1); localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives)); openArchiveModal(type); } }
+
+        // --- TASK ACTIONS ---
+        function handleBulk(sel) {
+            if(sel.value === 'archive') {
+                const data = localStorage.getItem('dashboardData');
+                const lines = data.split('\n');
+                const doneTasks = lines.filter(l => l.includes('[x]'));
+                const remainTasks = lines.filter(l => !l.includes('[x]'));
+                
+                doneTasks.forEach(t => {
+                    taskArchive.unshift({ time: new Date().toLocaleDateString(), text: t.replace(/^\s*- \[x\] /, '').trim() });
+                });
+                
+                localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
+                localStorage.setItem('dashboardData', remainTasks.join('\n'));
+                document.getElementById('task-editor').value = remainTasks.join('\n');
+                renderDashboard(remainTasks.join('\n'));
+                renderKhoTask();
+                alert("Đã chuyển Task xong vào Kho!");
+            }
+            if(sel.value === 'backup') { navigator.clipboard.writeText(localStorage.getItem('dashboardData')); alert("Đã copy backup!"); }
+            sel.value = "";
+        }
+
+        function renderKhoTask() {
+            const container = document.getElementById('kho-task-list');
+            container.innerHTML = taskArchive.length ? "" : "<p style='color:#666'>Kho trống...</p>";
+            taskArchive.forEach((task, i) => {
+                const div = document.createElement('div');
+                div.className = "archive-item";
+                div.innerHTML = `<span class="archive-time">${task.time}</span><div class="archive-content">${task.text}</div>
+                <button class="pink-btn" onclick="restoreTask(${i})">Khôi phục</button>
+                <button class="grey-btn" onclick="taskArchive.splice(${i},1); localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive)); renderKhoTask()">Xóa</button>`;
+                container.appendChild(div);
             });
         }
-        function toggleEditStudio(s) {
-            const disp = document.getElementById(s+'-display');
-            const inp = document.getElementById(s+'-input');
-            if(inp.style.display === 'block') { inp.style.display = 'none'; disp.style.display = 'block'; }
-            else { inp.style.display = 'block'; disp.style.display = 'none'; inp.focus(); }
-        }
-        function saveStudio(s) {
-            const val = document.getElementById(s+'-input').value;
-            localStorage.setItem('zetmeo_'+s, val);
-            document.getElementById(s+'-display').innerText = val;
-            document.getElementById(s+'-input').style.display = 'none';
-            document.getElementById(s+'-display').style.display = 'block';
-        }
-        function copyStudio(s) { navigator.clipboard.writeText(document.getElementById(s+'-input').value); alert("Đã copy!"); }
-        function clearStudio(s) { if(confirm("Dọn sạch Studio này?")) { document.getElementById(s+'-input').value = ""; saveStudio(s); } }
 
-        // --- LOGIC ---
+        function restoreTask(i) {
+            const task = taskArchive[i];
+            let data = localStorage.getItem('dashboardData');
+            const lines = data.split('\n');
+            lines.splice(1, 0, `- [ ] ${task.text}`);
+            const newData = lines.join('\n');
+            taskArchive.splice(i,1);
+            localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
+            localStorage.setItem('dashboardData', newData);
+            document.getElementById('task-editor').value = newData;
+            renderDashboard(newData);
+            renderKhoTask();
+            alert("Đã khôi phục task!");
+        }
+
+        // --- RPG LOGIC ---
         function toggleTask(cb, box, txt) {
             const val = localStorage.getItem('dashboardData');
             const pts = box.toUpperCase().includes('CORE')?10:(box.toUpperCase().includes('FOUNDATION')?8:2.5);
@@ -398,6 +424,7 @@
             document.getElementById('rewards-area').value = rpgConfig.rewards;
             document.getElementById('levels-area').value = rpgConfig.levels;
             document.getElementById('fb-db').value = rpgConfig.fbUrl;
+            renderKhoTask();
             document.getElementById('admin-modal').style.display='flex'; 
         }
         function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
@@ -413,12 +440,6 @@
                 next = next.nextElementSibling;
             }
         }
-        function handleBulk(sel) {
-            const d = localStorage.getItem('dashboardData');
-            if(sel.value==='archive') { renderDashboard(d.split('\n').filter(l=>!l.includes('[x]')).join('\n')); alert("Đã dọn dẹp!"); }
-            if(sel.value==='backup') { navigator.clipboard.writeText(d); alert("Đã copy!"); }
-            sel.value="";
-        }
         function launchFireworks(pts) { 
             const p = document.getElementById('celeb-popup'); p.innerText = `Yeah A meo! +${pts} XP.`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500); 
             const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight;
@@ -428,10 +449,9 @@
         function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
 
         window.onload = () => { 
-            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Task chiến lược"); 
+            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Bắt đầu hành trình"); 
             updateRPGUI(); 
-            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực.", "Cộng hưởng để đi xa."];
-            document.getElementById('quote-text').innerText = q[Math.floor(Math.random()*q.length)];
+            document.getElementById('quote-text').innerText = "Sáng tạo là sự kết tinh của kỷ luật.";
             document.getElementById('quote-area').style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')";
         };
     </script>
