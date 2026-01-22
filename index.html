@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V38.6 (Mobile Ready)</title>
+    <title>zetmeoOS - V38.7 (Final Stable)</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -69,7 +69,7 @@
 
         /* FLOATING NAV */
         .floating-nav { position: fixed; right: 10px; bottom: 90px; display: flex; flex-direction: column; gap: 8px; z-index: 90; }
-        .nav-circle { width: 40px; height: 40px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 10px; font-weight: 700; }
+        .nav-circle { width: 40px; height: 40px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 16px; font-weight: 700; }
 
         /* BOTTOM MENU */
         .bottom-menu { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; height: 75px; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
@@ -99,11 +99,8 @@
 
         @media (max-width: 600px) {
             .rpg-container, .guide-container { grid-template-columns: 1fr; }
-            .rpg-box { padding: 10px; }
-            .modal-content { height: 95vh; }
             .modal-footer { flex-direction: column; }
             .modal-footer button { width: 100%; }
-            .tab-btn { padding: 10px 8px; font-size: 0.8em; }
         }
     </style>
 </head>
@@ -136,8 +133,8 @@
     <div id="taskboard"></div>
 
     <div class="floating-nav">
-        <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">TOP</div>
-        <div class="nav-circle" onclick="window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'})">BOT</div>
+        <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
+        <div class="nav-circle" onclick="window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'})">▼</div>
     </div>
 
     <div class="bottom-menu">
@@ -156,19 +153,19 @@
             </div>
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
-                    <textarea id="task-editor" spellcheck="false"></textarea>
+                    <textarea id="task-editor" spellcheck="false" placeholder="Nhập markdown tại đây..."></textarea>
                     <div id="history-container" style="margin-top:15px; border-top:1px solid #333; padding-top:10px"></div>
                 </div>
                 <div id="tab-rpg" class="tab-panel">
                     <div id="goal-rows-container"></div>
                     <button class="pink-btn" style="width:100%; margin:10px 0" onclick="addGoalRow()">+ Thêm mục tiêu</button>
-                    <strong style="display:block; margin-top:15px; border-bottom: 1px solid #444; pb:5px">DATABASE URL</strong>
+                    <strong style="display:block; margin-top:15px; border-bottom: 1px solid #444; pb:5px">FIREBASE URL</strong>
                     <input type="text" id="fb-db" placeholder="https://...firebasedatabase.app/" style="width:100%; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px; margin-top:5px">
                     <button class="pink-btn" style="width:100%; margin-top:20px" onclick="openRewardsEditor()">🎁 Quản Lý Phần Thưởng</button>
                     <button class="grey-btn" style="width:100%; margin-top:10px" onclick="resetXP()">Reset XP</button>
                 </div>
                 <div id="tab-level" class="tab-panel">
-                    <textarea id="level-titles-area" style="height:350px" placeholder="1 | Mầm Xanh..."></textarea>
+                    <textarea id="level-titles-area" style="height:350px"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -191,6 +188,9 @@
     </div>
 
     <script>
+        // --- DEVICE DETECTION ---
+        const isMobile = window.matchMedia("(max-width: 768px)").matches || ('ontouchstart' in window);
+
         // --- CORE DATA ---
         const fbConfig = { apiKey: "AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc", authDomain: "meo-dash-rpg.firebaseapp.com", projectId: "meo-dash-rpg", storageBucket: "meo-dash-rpg.firebasestorage.app", messagingSenderId: "740973177634", appId: "1:740973177634:web:31c47cd5ed395edab4d37b" };
         const quotesDB = [ { text: "Sáng tạo là kết tinh của vô tri.", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" }, { text: "ADHD là một siêu năng lực.", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" } ];
@@ -208,7 +208,7 @@
         }
 
         async function syncUp() {
-            const db = getDB(); if(!db) { alert("Điền URL Firebase trong Admin nhé!"); return; }
+            const db = getDB(); if(!db) { alert("Điền URL Firebase trong Admin trước nhé!"); return; }
             const badge = document.getElementById('sync-badge'); badge.innerText = "⏳ Đang đẩy lên..."; badge.style.display='flex'; badge.className='status-waiting';
             try {
                 await db.ref('meoOS_V38').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig) });
@@ -218,7 +218,7 @@
 
         async function syncDown() {
             const db = getDB(); if(!db) return;
-            if(!confirm("Tải dữ liệu mây về? Dữ liệu hiện tại sẽ bị xóa sạch!")) return;
+            if(!confirm("Tải dữ liệu mây về? (Dữ liệu cũ sẽ bị đè)")) return;
             try {
                 const snap = await db.ref('meoOS_V38').once('value');
                 const val = snap.val();
@@ -231,7 +231,7 @@
             } catch(e) { alert("Lỗi tải về!"); }
         }
 
-        // --- RENDERER (Indentation Fixed) ---
+        // --- RENDERER (V35.9 RESTORED) ---
         function renderDashboard(val) {
             const board = document.getElementById('taskboard'); board.innerHTML = "";
             const boxes = val.split(/(?=# )/);
@@ -254,10 +254,17 @@
                     list.appendChild(li);
                 });
                 boxDiv.appendChild(list); board.appendChild(boxDiv);
-                new Sortable(list, { group: 'shared', animation: 150, onEnd: updateDOMToData });
+                
+                // Disable drag on mobile to allow scrolling
+                new Sortable(list, { 
+                    group: 'shared', 
+                    animation: 150, 
+                    disabled: isMobile,
+                    onEnd: updateDOMToData 
+                });
             });
             localStorage.setItem('dashboardData', val);
-            initQuote();
+            initUIContent();
         }
 
         function toggleFolding(btn) {
@@ -324,7 +331,7 @@
             rpgConfig.goals.forEach(g => { gList.innerHTML += `<div class="goal-item"><div class="goal-header"><span>${g.text} / ${g.group}</span><span>${g.time}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,(totalXP/10000)*100)}%"></div></div></div>`; });
         }
 
-        function initQuote() {
+        function initUIContent() {
             const q = quotesDB[Math.floor(Math.random() * quotesDB.length)];
             document.getElementById('quote-text').innerText = q.text; document.getElementById('quote-area').style.backgroundImage = `url('${q.img}')`;
             const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
@@ -338,7 +345,7 @@
         function renderGoalAdmin() { const c = document.getElementById('goal-rows-container'); c.innerHTML = ""; rpgConfig.goals.forEach(g => { c.innerHTML += `<div class="goal-row" style="display:flex; gap:5px; margin-bottom:5px"><input type="text" class="g-name" style="flex:2; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" value="${g.text}"><input type="text" class="g-group" style="flex:1; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" value="${g.group}"><input type="text" class="g-time" style="width:70px; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" value="${g.time}"></div>`; }); }
         function addGoalRow() { const c = document.getElementById('goal-rows-container'); const d = document.createElement('div'); d.className = "goal-row"; d.style = "display:flex; gap:5px; margin-bottom:5px"; d.innerHTML = `<input type="text" class="g-name" style="flex:2; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" placeholder="Mục tiêu"><input type="text" class="g-group" style="flex:1; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" placeholder="Nhóm"><input type="text" class="g-time" style="width:70px; background:#111; border:1px solid #333; color:white; padding:10px; border-radius:8px" placeholder="Hạn">`; c.appendChild(d); }
         function launchFireworks(pts) { const p = document.getElementById('celeb-popup'); p.innerText = `Yeah A meo! +${pts} XP.`; p.style.display = 'block'; setTimeout(() => p.style.display = 'none', 2500); const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let parts = []; for(let i=0;i<40;i++) parts.push({x:canvas.width/2, y:canvas.height/2, vx:(Math.random()-0.5)*12, vy:(Math.random()-0.5)*12, color:`hsl(${Math.random()*360},100%,50%)`, life:1}); function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i) => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.15; p.life-=0.02; ctx.fillStyle=p.color; ctx.globalAlpha=p.life; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill(); if(p.life<=0) parts.splice(i,1); }); if(parts.length) requestAnimationFrame(draw); } draw(); }
-        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = `<strong style="color:var(--main-color); display:block; margin-bottom:8px">🕒 Lịch sử phiên bản</strong>` + hist.map((h, i) => `<div style="background:#222; padding:8px; border-radius:8px; margin-bottom:5px; cursor:pointer; font-size:12px" onclick="restoreHist(${i})">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
+        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = `<strong style="color:var(--main-color); display:block; margin-bottom:8px">🕒 Lịch sử phiên bản</strong>` + hist.map((h, i) => `<div style="background:#222; padding:10px; border-radius:8px; margin-bottom:5px; cursor:pointer; font-size:12px" onclick="restoreHist(${i})">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
         function saveToHistory(data) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: data }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
         function restoreHist(i) { const h = JSON.parse(localStorage.getItem('zetmeo_history'))[i]; if(confirm("Khôi phục?")) { renderDashboard(h.content); closeAdmin(); } }
         function archiveDone() { const lines = localStorage.getItem('dashboardData').split('\n'); renderDashboard(lines.filter(l => !l.includes('[x]')).join('\n')); alert("Dọn dẹp xong!"); }
@@ -347,7 +354,7 @@
         function addRewardRow() { rpgConfig.rewards.push({ lv: 0, item: "Phần thưởng mới" }); renderRewardAdmin(); }
         function resetXP() { if(confirm("Reset toàn bộ XP về 0?")) { totalXP = 0; localStorage.setItem('zetmeo_xp_total', 0); location.reload(); } }
 
-        window.onload = () => { renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Task chiến lược"); updateRPGUI(); };
+        window.onload = () => { renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Task mẫu"); updateRPGUI(); };
     </script>
 </body>
 </html>
