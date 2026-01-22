@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V39.5 (The Perfect Merge)</title>
+    <title>zetmeoOS - V39.6 (Ultimate Design)</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -19,7 +19,6 @@
             --danger: #ff5252; --done-color: #555555;
         }
 
-        /* 2. TOÀN BỘ FONT QUICKSAND */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Quicksand', sans-serif !important; }
         body { background-color: var(--bg-body); color: var(--text-color); margin: 0; padding: 10px 10px 120px 10px; overflow-x: hidden; }
 
@@ -27,17 +26,17 @@
         .status-waiting { background: #f1c40f; color: #222; display: flex !important; }
         .status-synced { background: #2ecc71; color: #fff; display: flex !important; }
 
-        /* SESSION 1: RPG HEADER (V39.4 STYLE) */
+        /* SESSION 1: RPG HEADER */
         .rpg-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .rpg-box { background: var(--bg-box); border-radius: 20px; padding: 15px; border: 1px solid #333; display: flex; flex-direction: column; justify-content: center; }
         .profile-area { text-align: center; align-items: center; }
         .mascot-img { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--main-color); margin-bottom: 8px; object-fit: cover; }
         .level-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; }
-        .next-lv-msg { font-size: 0.8em; color: #aaa; margin-top: 8px; font-weight: 600; line-height: 1.4; }
+        .next-lv-msg { font-size: 0.85em; color: #aaa; margin-top: 8px; font-weight: 600; line-height: 1.4; }
         
-        .year-header { font-weight: 800; font-size: 0.9em; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 8px; color: var(--main-color); text-transform: uppercase; }
+        .year-header { font-weight: 800; font-size: 0.95em; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 8px; color: var(--main-color); text-transform: uppercase; }
 
-        /* 1. PROGRESS BAR GRADIENT (V39.4 STYLE) */
+        /* PROGRESS BARS (GRADIENT & TEXT INSIDE) */
         .goal-item { margin-bottom: 15px; }
         .progress-bar { 
             background: #111; height: 32px; border-radius: 16px; overflow: hidden; width: 100%; 
@@ -49,16 +48,25 @@
         }
         .goal-header-inside { 
             position: absolute; width: 100%; height: 100%; display: flex; justify-content: space-between; 
-            align-items: center; padding: 0 15px; font-weight: 700; color: white; font-size: 0.8em; z-index: 2; pointer-events: none;
+            align-items: center; padding: 0 15px; font-weight: 800; color: white; font-size: 1.05em; z-index: 2; pointer-events: none;
         }
 
-        /* SESSION 2: GUIDE (RESTORED) */
+        /* 1. AVATAR XP BAR (LARGER) */
+        .avatar-xp-bar { height: 20px; border-radius: 10px; margin: 10px 0; width: 85%; }
+
+        /* SESSION 2: GUIDE (LARGE TEXT) */
         .guide-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .guide-box { background: var(--bg-box); border-radius: 20px; height: 115px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 15px; border: 1px solid #333; position: relative; overflow: hidden; }
+        .guide-box { background: var(--bg-box); border-radius: 20px; min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 18px; border: 1px solid #333; position: relative; overflow: hidden; }
         #quote-area { background-size: cover; background-position: center; }
         #quote-area::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.75); }
-        .quote-text { position: relative; z-index: 1; font-weight: 600; font-style: italic; font-size: 0.85em; line-height: 1.4; color: #fff; }
-        .lam-avatar { font-size: 1.8em; margin-bottom: 3px; animation: bounce 2s infinite; }
+        
+        /* 2 & 3. LARGE QUOTE & LAM TEXT */
+        .quote-text, #lam-msg { 
+            position: relative; z-index: 1; font-weight: 800; font-size: 1.1em; line-height: 1.4; color: #fff; 
+        }
+        .quote-text { font-style: italic; }
+        
+        .lam-avatar { font-size: 2em; margin-bottom: 5px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-6px);} }
 
         /* TASK LIST */
@@ -81,33 +89,31 @@
         .rotated { transform: rotate(-90deg); display: inline-block; }
         .hidden-task { display: none !important; }
 
-        /* STUDIO SESSIONS */
+        /* STUDIO */
         .studio-box { background: #1e1e1e; border: 1px solid #444; border-radius: 20px; padding: 18px; margin-bottom: 22px; border-left: 4px solid var(--main-color); }
         .studio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; letter-spacing: 1px; text-transform: uppercase; }
+        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; text-transform: uppercase; }
         .studio-actions { display: flex; gap: 8px; }
         .studio-btn { background: #333; color: #eee; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .studio-btn.save { background: var(--main-color); color: white; }
         .studio-textarea { width: 100%; height: 140px; background: #111; color: var(--accent-green); border: 1px solid #333; border-radius: 12px; padding: 12px; font-family: monospace !important; resize: vertical; outline: none; display: block; font-size: 15px; }
 
-        /* KHO / ARCHIVE UI */
+        /* ARCHIVE UI */
         .archive-item { background: #111; border: 1px solid #333; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
         .archive-time { font-size: 10px; color: #666; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
         .archive-editor { width: 100%; background: #000; color: #81c784; border: 1px solid #222; border-radius: 10px; padding: 10px; font-family: monospace !important; font-size: 14px; margin-bottom: 10px; }
 
         .footer-version { text-align: center; color: #444; font-size: 10px; font-weight: 700; margin: 30px 0; letter-spacing: 3px; }
 
-        /* FLOATING NAV ARROWS */
-        .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
-        .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
-
-        /* BOTTOM MENU */
+        /* NAVIGATION & MENU */
         .bottom-menu { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; height: 80px; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .menu-item { color: #555; font-size: 1.5em; cursor: pointer; display: flex; flex-direction: column; align-items: center; border: none; background: none; width: 25%; outline: none; }
         .menu-item.active { color: var(--main-color); }
         .menu-label { font-size: 9px; margin-top: 4px; font-weight: 700; text-transform: uppercase; }
 
-        /* MODALS (FIXED FLAT STRUCTURE) */
+        .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
+        .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
+
+        /* MODALS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
         .modal-content { background: var(--bg-box); border-radius: 25px; width: 100%; max-width: 950px; height: 92vh; display: flex; flex-direction: column; border: 1px solid #333; overflow: hidden; }
         .modal-body { flex-grow: 1; padding: 20px; overflow-y: auto; }
@@ -139,11 +145,11 @@
         <div class="rpg-box profile-area">
             <img id="mascot-img" class="mascot-img" src="https://getdrawings.com/free-icon/cat-icon-png-53.png">
             <div id="lv-display" class="level-title">...</div>
-            <div class="progress-bar" style="height:10px; margin: 10px 0"><div id="lv-fill" class="progress-fill" style="width: 0%"></div></div>
+            <div class="progress-bar avatar-xp-bar"><div id="lv-fill" class="progress-fill" style="width: 0%"></div></div>
             <div id="next-lv-text" class="next-lv-msg">...</div>
         </div>
         <div class="rpg-box">
-            <div class="year-header">2026: KẾT TINH <span id="xp-summary" style="float:right">0/10000 XP</span></div>
+            <div class="year-header">2026: KẾT TINH & CỘNG HƯỞNG <span id="xp-summary" style="float:right">0/10000 XP</span></div>
             <div id="goals-list"></div>
         </div>
     </div>
@@ -152,7 +158,7 @@
         <div id="quote-area" class="guide-box"><div id="quote-text" class="quote-text">...</div></div>
         <div class="guide-box">
             <div class="lam-avatar">👩‍💼</div>
-            <div id="lam-msg" style="font-weight:700; font-size:0.85em; padding:0 5px">Chiến thôi anh Meo!</div>
+            <div id="lam-msg">Chiến thôi anh Meo!</div>
         </div>
     </div>
 
@@ -162,7 +168,7 @@
         <div class="studio-header">
             <span class="studio-title">🧠 BRAINDOM STUDIO</span>
             <div class="studio-actions">
-                <button class="studio-btn save" onclick="saveStudioToArchive('braindom')">Lưu</button>
+                <button class="studio-btn" style="background:var(--main-color); color:white" onclick="saveStudioToArchive('braindom')">Lưu</button>
                 <button class="studio-btn" onclick="openStudioArchive('braindom')">Kho</button>
             </div>
         </div>
@@ -173,14 +179,14 @@
         <div class="studio-header">
             <span class="studio-title">✍️ WRITER STUDIO</span>
             <div class="studio-actions">
-                <button class="studio-btn save" onclick="saveStudioToArchive('writer')">Lưu</button>
+                <button class="studio-btn" style="background:var(--main-color); color:white" onclick="saveStudioToArchive('writer')">Lưu</button>
                 <button class="studio-btn" onclick="openStudioArchive('writer')">Kho</button>
             </div>
         </div>
         <textarea id="writer-input" class="studio-textarea" placeholder="Viết nháp sâu..."></textarea>
     </div>
 
-    <div class="footer-version">ZETMEO OS V39.5 - THE PERFECT MERGE</div>
+    <div class="footer-version">ZETMEO OS V39.6 - ULTIMATE DESIGN</div>
 
     <div class="floating-nav">
         <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
@@ -202,25 +208,22 @@
                 <button class="tab-btn" onclick="switchTab(event, 'tab-rpg')">RPG Config</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-firebase')">Firebase</button>
             </div>
-            
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
                     <textarea id="task-editor" style="height:400px" spellcheck="false"></textarea>
-                    <strong class="sync-label">🕒 Lịch sử phiên bản (Backup)</strong>
+                    <strong class="sync-label">🕒 Lịch sử phiên bản</strong>
                     <div id="history-container"></div>
                 </div>
-
                 <div id="tab-archive" class="tab-panel">
                     <div style="display:flex; gap:10px; margin-bottom:15px">
                         <button class="pink-btn" onclick="archiveDoneTasks()">🧹 Dọn dẹp Done</button>
-                        <select id="archive-sort" class="grey-btn" onchange="renderKhoTask()">
+                        <select id="archive-sort" class="grey-btn" style="height:45px" onchange="renderKhoTask()">
                             <option value="newest">Mới nhất trước</option>
                             <option value="oldest">Cũ nhất trước</option>
                         </select>
                     </div>
                     <div id="kho-task-list"></div>
                 </div>
-
                 <div id="tab-rpg" class="tab-panel">
                     <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
                     <textarea id="goals-area" style="height:120px"></textarea>
@@ -230,13 +233,11 @@
                     <textarea id="levels-area" style="height:100px"></textarea>
                     <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
                 </div>
-
                 <div id="tab-firebase" class="tab-panel">
                     <label class="sync-label">FIREBASE DATABASE URL</label>
                     <input type="text" id="fb-db" placeholder="https://..." style="width:100%; background:#111; border:1px solid #333; color:white; padding:12px; border-radius:10px">
                 </div>
             </div>
-
             <div class="modal-footer">
                 <button class="pink-btn" style="flex:2" onclick="saveAll()">LƯU TẤT CẢ THAY ĐỔI</button>
                 <button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button>
@@ -246,7 +247,7 @@
 
     <div id="studio-archive-modal" class="modal">
         <div class="modal-content">
-            <div style="padding:15px; border-bottom:1px solid #333; font-weight:800; color:var(--main-color)" id="studio-archive-title">KHO STUDIO</div>
+            <div style="padding:15px; border-bottom:1px solid #333; font-weight:800; color:var(--main-color)" id="studio-archive-title">KHO LƯU TRỮ STUDIO</div>
             <div class="modal-body" id="studio-archive-list"></div>
             <div class="modal-footer"><button class="grey-btn" onclick="document.getElementById('studio-archive-modal').style.display='none'">Đóng</button></div>
         </div>
@@ -269,7 +270,7 @@
         const fbConfig = { apiKey: "AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc", authDomain: "meo-dash-rpg.firebaseapp.com", projectId: "meo-dash-rpg" };
 
         let totalXP = parseInt(localStorage.getItem('zetmeo_xp_total')) || 0;
-        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { goals: "Bán hàng | Core | 2026", rewards: "5 | Gà Popeyes", levels: "1 | Mầm Xanh Nhảy Số\n11 | Phượng Hồng\n26 | Mùa Gặt", fbUrl: "" };
+        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { goals: "Bán hàng | CORE | 2026", rewards: "5 | Gà Popeyes", levels: "1 | Mầm Xanh Nhảy Số\n11 | Phượng Hồng\n26 | Mùa Gặt", fbUrl: "" };
         let taskArchive = JSON.parse(localStorage.getItem('zetmeo_task_archive')) || [];
         let studioArchives = JSON.parse(localStorage.getItem('zetmeo_studio_archive')) || { braindom: [], writer: [] };
         let sessionNotes = JSON.parse(localStorage.getItem('zetmeo_notes')) || {};
@@ -281,7 +282,7 @@
             const db = getDB(); if(!db) return alert("Cài Firebase URL!");
             const badge = document.getElementById('sync-badge'); badge.style.display='flex'; badge.className='status-waiting';
             try {
-                await db.ref('meoOS_V39_5').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig), taskArchive: JSON.stringify(taskArchive), studioArchive: JSON.stringify(studioArchives), notes: JSON.stringify(sessionNotes) });
+                await db.ref('meoOS_V39_6').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig), taskArchive: JSON.stringify(taskArchive), studioArchive: JSON.stringify(studioArchives), notes: JSON.stringify(sessionNotes) });
                 badge.innerText="✅ Cloud Synced"; badge.className="status-synced"; setTimeout(()=>badge.style.display='none', 2000);
             } catch(e) { alert("Sync lỗi!"); }
         }
@@ -289,7 +290,7 @@
             const db = getDB(); if(!db) return;
             if(!confirm("Tải dữ liệu mây về?")) return;
             try {
-                const snap = await db.ref('meoOS_V39_5').once('value');
+                const snap = await db.ref('meoOS_V39_6').once('value');
                 const val = snap.val();
                 if(val) {
                     localStorage.setItem('dashboardData', val.dashboard); localStorage.setItem('zetmeo_xp_total', val.xp);
@@ -323,10 +324,9 @@
                 new Sortable(list, { group:'shared', animation:150, disabled:isMobile, onEnd:updateDOMToData });
             });
             localStorage.setItem('dashboardData', val);
-            initUI();
         }
 
-        // --- 5. LINKING LOGIC ---
+        // --- LINKING LOGIC ---
         function getXPBySession(sessionName) {
             const data = localStorage.getItem('dashboardData') || "";
             const boxes = data.split(/(?=# )/);
@@ -335,6 +335,7 @@
             let xp = 0;
             target.split('\n').forEach(l => {
                 if(l.includes('[x]')) {
+                    const cleanTxt = l.replace(/^\s*- \[x\] /, '').trim();
                     if(sessionName.toUpperCase().includes('CORE')) xp += 10;
                     else if(sessionName.toUpperCase().includes('FOUNDATION')) xp += 8;
                     else xp += 2.5;
@@ -366,7 +367,7 @@
             });
         }
 
-        // --- STUDIO LOGIC ---
+        // --- STUDIO ---
         function saveStudioToArchive(type) {
             const v = document.getElementById(type + '-input').value.trim(); if(!v) return;
             const now = new Date();
@@ -392,13 +393,13 @@
             });
             document.getElementById('studio-archive-modal').style.display = 'flex';
         }
-        function saveStudioArchiveTxt(t,i) { studioArchives[t][i].content = document.getElementById(`studio-txt-${t}-${i}`).value; localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives)); alert("Đã lưu!"); }
+        function saveStudioArchiveTxt(t,i) { studioArchives[t][i].content = document.getElementById(`studio-txt-${t}-${i}`).value; localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives)); alert("Đã cập nhật!"); }
 
         // --- ACTIONS ---
         function archiveDoneTasks() {
             const data = localStorage.getItem('dashboardData');
             const lines = data.split('\n'); const done = lines.filter(l => l.includes('[x]')); const remain = lines.filter(l => !l.includes('[x]'));
-            if(!done.length) return alert("Trống!");
+            if(!done.length) return alert("Không có task xong!");
             done.forEach(t => taskArchive.unshift({ time: new Date().toLocaleString('vi-VN'), text: t.replace(/^\s*- \[x\] /, '').trim() }));
             localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
             localStorage.setItem('dashboardData', remain.join('\n'));
@@ -422,7 +423,7 @@
             localStorage.setItem('dashboardData', lines.join('\n')); renderDashboard(lines.join('\n')); renderKhoTask();
         }
 
-        // --- UI UTILS ---
+        // --- UI CORE ---
         function saveAll() {
             rpgConfig.goals = document.getElementById('goals-area').value;
             rpgConfig.rewards = document.getElementById('rewards-area').value;
@@ -439,26 +440,8 @@
             document.getElementById('levels-area').value = rpgConfig.levels; document.getElementById('fb-db').value = rpgConfig.fbUrl;
             renderKhoTask(); renderHistory(); document.getElementById('admin-modal').style.display='flex'; 
         }
-        function toggleTask(cb, box, txt) {
-            const pts = box.toUpperCase().includes('CORE')?10:(box.toUpperCase().includes('FOUNDATION')?8:2.5);
-            const d = localStorage.getItem('dashboardData');
-            const newLines = d.split('\n').map(l => l.includes(txt)?(cb.checked?l.replace('[ ]','[x]'):l.replace('[x]','[ ]')):l);
-            totalXP = cb.checked?totalXP+pts:Math.max(0,totalXP-pts);
-            localStorage.setItem('zetmeo_xp_total', totalXP);
-            renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData();
-            if(cb.checked) launchFireworks(pts);
-        }
-        function updateDOMToData() {
-            let arr = []; document.querySelectorAll('.box').forEach(b => {
-                const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`);
-                b.querySelectorAll('.task-item').forEach(li => {
-                    const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]'; const txt = li.querySelector('.task-text').value;
-                    const lv = parseInt(li.getAttribute('data-level')); const sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`);
-                }); arr.push("");
-            }); localStorage.setItem('dashboardData', arr.join('\n').trim());
-        }
         function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:#111; padding:10px; border-radius:10px; font-size:11px; cursor:pointer; border:1px solid #333; margin-bottom:5px" onclick="restoreHist(${i})">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
-        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
+        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString('vi-VN'), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
         function restoreHist(i) { const h = JSON.parse(localStorage.getItem('zetmeo_history'))[i]; if(confirm("Khôi phục?")) { renderDashboard(h.content); document.getElementById('task-editor').value = h.content; } }
         function switchTab(e,id) { document.querySelectorAll('.tab-panel, .tab-btn').forEach(el=>el.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
         function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼')?el.innerText.replace('▼','▶'):el.innerText.replace('▶','▼'); }
@@ -472,22 +455,32 @@
                 next = next.nextElementSibling;
             }
         }
+        function updateDOMToData() {
+            let arr = []; document.querySelectorAll('.box').forEach(b => {
+                const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`);
+                b.querySelectorAll('.task-item').forEach(li => {
+                    const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]'; const txt = li.querySelector('.task-text').value;
+                    const lv = parseInt(li.getAttribute('data-level')); const sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`);
+                }); arr.push("");
+            }); localStorage.setItem('dashboardData', arr.join('\n').trim());
+        }
         function openNote(s) { activeNoteSession=s; document.getElementById('note-modal-title').innerText="📝 NOTE: "+s; document.getElementById('note-input').value=sessionNotes[s]||""; document.getElementById('note-modal').style.display='flex'; }
         function saveNote() { sessionNotes[activeNoteSession]=document.getElementById('note-input').value; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; }
         function deleteNote() { if(confirm("Xóa?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; } }
         function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
         function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
-        function launchFireworks(pts) { 
-            const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-            let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1});
-            function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw();
-            const p = document.getElementById('celeb-popup'); p.innerText=`Yeah A meo! +${pts} XP`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500);
-        }
 
         function initUI() {
-            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực.", "Cộng hưởng để đi xa."];
-            document.getElementById('quote-text').innerText = q[Math.floor(Math.random()*q.length)];
+            const quotes = [
+                { text: "Sáng tạo là sự kết tinh của kỷ luật.", author: "Zetmeo" },
+                { text: "ADHD là một siêu năng lực nếu biết cộng hưởng.", author: "Lam" },
+                { text: "Tập trung là nghệ thuật nói không với hàng ngàn thứ.", author: "Steve Jobs" }
+            ];
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            // 2. TEXT QUOTE BẮT ĐẦU BẰNG ANH MEO ƠI
+            document.getElementById('quote-text').innerText = `Anh meo ơi! "${q.text}" - ${q.author}`;
             document.getElementById('quote-area').style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')";
+            
             const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
             if(lamLine) document.getElementById('lam-msg').innerText = lamLine.replace('!!!', '').trim();
         }
