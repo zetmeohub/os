@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V39.8 (Auto-Sync Shield)</title>
+    <title>zetmeoOS - V39.9 (Final Polish)</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
 
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -18,6 +20,7 @@
             --accent-blue: #4fc3f7; --accent-green: #81c784;
             --danger: #ff5252; --done-color: #555555;
             --input-bg: #111; --border-color: #333;
+            --dark-gray: #555555;
         }
 
         body.light-mode {
@@ -29,9 +32,12 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Quicksand', sans-serif !important; }
         body { background-color: var(--bg-body); color: var(--text-color); margin: 0; padding: 10px 10px 120px 10px; overflow-x: hidden; transition: background 0.3s ease; }
 
-        #sync-badge { position: fixed; top: 10px; right: 10px; z-index: 9999; padding: 6px 12px; border-radius: 20px; font-size: 0.7em; font-weight: 700; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .status-waiting { background: #f1c40f; color: #222; display: flex !important; }
-        .status-synced { background: #2ecc71; color: #fff; display: flex !important; }
+        /* SYNC BADGES */
+        #sync-badge, #sync-countdown { position: fixed; top: 15px; right: 15px; z-index: 9999; padding: 8px 15px; border-radius: 25px; font-size: 0.75em; font-weight: 800; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-transform: uppercase; }
+        #sync-badge.status-waiting { background: #f1c40f; color: #222; display: flex !important; }
+        #sync-badge.status-synced { background: #2ecc71; color: #fff; display: flex !important; }
+        /* 1. SYNC COUNTDOWN STYLE */
+        #sync-countdown { background: var(--main-color); color: #fff; display: none; border: 2px solid rgba(255,255,255,0.2); }
 
         /* SESSION 1: RPG HEADER */
         .rpg-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
@@ -40,25 +46,14 @@
         .mascot-img { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--main-color); margin-bottom: 8px; object-fit: cover; }
         .level-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; }
         .next-lv-msg { font-size: 0.85em; color: var(--text-color); opacity: 0.7; margin-top: 8px; font-weight: 600; line-height: 1.4; }
-        
         .year-header { font-weight: 800; font-size: 0.95em; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; color: var(--main-color); text-transform: uppercase; }
 
         /* PROGRESS BARS */
         .goal-item { margin-bottom: 15px; }
-        .progress-bar { 
-            background: var(--input-bg); height: 32px; border-radius: 16px; overflow: hidden; width: 100%; 
-            position: relative; border: 1px solid var(--border-color); margin-top: 10px;
-        }
-        .progress-fill { 
-            height: 100%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); 
-            background: linear-gradient(90deg, #ffb1c5 0%, var(--main-color) 100%); 
-        }
-        .goal-header-inside { 
-            position: absolute; width: 100%; height: 100%; display: flex; justify-content: space-between; 
-            align-items: center; padding: 0 15px; font-weight: 800; color: #fff; font-size: 1.05em; z-index: 2; pointer-events: none;
-        }
+        .progress-bar { background: var(--input-bg); height: 32px; border-radius: 16px; overflow: hidden; width: 100%; position: relative; border: 1px solid var(--border-color); margin-top: 10px; }
+        .progress-fill { height: 100%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #ffb1c5 0%, var(--main-color) 100%); }
+        .goal-header-inside { position: absolute; width: 100%; height: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; font-weight: 800; color: #fff; font-size: 1.05em; z-index: 2; pointer-events: none; }
         body.light-mode .goal-header-inside { color: #333; }
-
         .avatar-xp-bar { height: 20px; border-radius: 10px; margin: 10px 0; width: 85%; }
 
         /* SESSION 2: GUIDE */
@@ -67,7 +62,6 @@
         #quote-area { background-size: cover; background-position: center; }
         #quote-area::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.75); }
         body.light-mode #quote-area::before { background: rgba(255,255,255,0.85); }
-        
         .quote-text, #lam-msg { position: relative; z-index: 1; font-weight: 800; font-size: 1.1em; line-height: 1.4; color: #fff; }
         body.light-mode .quote-text, body.light-mode #lam-msg { color: #333; }
         .quote-text { font-style: italic; }
@@ -78,76 +72,53 @@
         .box { background: var(--bg-box); border-radius: 20px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
         .box-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; }
         .box-title { color: var(--main-color); font-weight: 800; font-size: 1.1em; margin: 0; cursor: pointer; }
-        .note-trigger { font-size: 1.2em; cursor: pointer; opacity: 0.6; }
-        
         .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
-        .task-item { display: flex; align-items: center; padding: 7px 0; border-radius: 8px; position: relative; }
+        .task-item { display: flex; align-items: center; padding: 7px 0; }
         .task-item.level-2 { margin-left: 28px; }
         .task-item.level-3 { margin-left: 55px; }
-        
-        .custom-cb { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--main-color); border-radius: 50%; cursor: pointer; position: relative; margin-right: 12px; flex-shrink: 0; background: transparent; }
+        .custom-cb { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--main-color); border-radius: 50%; cursor: pointer; position: relative; margin-right: 12px; flex-shrink: 0; }
         .custom-cb:checked { background: var(--main-color); }
         .custom-cb:checked::after { content: "✓"; color: white; position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); font-size: 13px; font-weight: 900; }
         .task-text { flex-grow: 1; border: none; background: transparent; color: var(--text-color); font-size: 1em; padding: 4px; outline: none; width: 100%; font-weight: 500; }
         .task-item.checked .task-text { color: var(--done-color); opacity: 0.6; text-decoration: line-through; }
-        .toggle-btn { margin-right: 6px; font-size: 0.7em; color: #666; cursor: pointer; width: 18px; text-align: center; }
-        .rotated { transform: rotate(-90deg); display: inline-block; }
-        .hidden-task { display: none !important; }
 
         /* STUDIO */
         .studio-box { background: var(--bg-box); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; margin-bottom: 22px; border-left: 4px solid var(--main-color); }
-        .studio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; text-transform: uppercase; }
-        .studio-actions { display: flex; gap: 8px; }
         .studio-btn { background: #333; color: #eee; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .studio-textarea { width: 100%; height: 140px; background: var(--input-bg); color: var(--accent-green); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; font-family: monospace !important; resize: vertical; outline: none; display: block; font-size: 15px; }
 
-        /* ARCHIVE / KHO UI */
-        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
-        .archive-time { font-size: 10px; color: var(--text-color); opacity: 0.5; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
-        .archive-editor { width: 100%; background: #000; color: #81c784; border: 1px solid #222; border-radius: 10px; padding: 10px; font-family: monospace !important; font-size: 14px; margin-bottom: 10px; }
-        body.light-mode .archive-editor { background: #fff; color: #333; border-color: #ddd; }
-
-        .footer-version { text-align: center; color: #444; font-size: 10px; font-weight: 700; margin: 30px 0; letter-spacing: 3px; }
-
-        /* NAVIGATION & MENU */
+        /* 2. MINIMALIST BOTTOM MENU */
         .bottom-menu { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-body); height: 80px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .menu-item { color: #555; font-size: 1.5em; cursor: pointer; display: flex; flex-direction: column; align-items: center; border: none; background: none; width: 25%; outline: none; }
+        .menu-item { color: var(--dark-gray); cursor: pointer; display: flex; flex-direction: column; align-items: center; border: none; background: none; width: 25%; outline: none; transition: 0.3s; }
+        .menu-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
         .menu-item.active { color: var(--main-color); }
-        .menu-label { font-size: 9px; margin-top: 4px; font-weight: 700; text-transform: uppercase; }
+        .menu-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
-        .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
-        body.light-mode .nav-circle { background: #fff; border-color: #ccc; color: #333; }
+        /* ARCHIVE UI */
+        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
+        .archive-editor { width: 100%; background: #000; color: #81c784; border: 1px solid #222; border-radius: 10px; padding: 10px; font-family: monospace !important; }
 
         /* MODALS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
-        body.light-mode .modal { background: rgba(255,255,255,0.96); }
         .modal-content { background: var(--bg-box); border-radius: 25px; width: 100%; max-width: 950px; height: 92vh; display: flex; flex-direction: column; border: 1px solid var(--border-color); overflow: hidden; }
         .modal-body { flex-grow: 1; padding: 20px; overflow-y: auto; }
-        .tab-btn-group { display: flex; padding: 8px 15px; border-bottom: 1px solid var(--border-color); overflow-x: auto; white-space: nowrap; gap: 8px; }
-        .tab-btn { background: none; border: none; color: #666; padding: 12px 18px; font-weight: 700; cursor: pointer; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; }
+        .tab-btn { background: none; border: none; color: #666; padding: 12px 18px; font-weight: 700; cursor: pointer; font-size: 0.85em; text-transform: uppercase; }
         .tab-btn.active { color: var(--main-color); border-bottom: 2px solid var(--main-color); }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .modal-footer { padding: 15px; border-top: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 10px; background: var(--bg-body); }
-        .modal-footer button { flex: 1; min-width: 100px; }
+        textarea, input { width: 100%; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; font-size: 15px; outline: none; margin-bottom: 15px; }
+        .pink-btn { background: var(--main-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .grey-btn { background: #333; color: #ccc; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
-        textarea, input[type="text"], input[type="password"], input[type="number"] { width: 100%; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; font-size: 15px; resize: none; line-height: 1.6; outline: none; margin-bottom: 15px; }
-        .pink-btn { background: var(--main-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
-        .grey-btn { background: #333; color: #ccc; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
-        body.light-mode .grey-btn { background: #e0e0e0; color: #333; }
-        .sync-label { font-size: 0.75em; color: var(--main-color); display: block; margin-bottom: 6px; font-weight: 800; text-transform: uppercase; }
+        .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
+        .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
 
-        @media (max-width: 600px) {
-            .rpg-container, .guide-container { grid-template-columns: 1fr; }
-            .modal-footer { flex-direction: column; }
-        }
+        @media (max-width: 600px) { .rpg-container, .guide-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div id="sync-badge"></div>
+    <div id="sync-countdown"></div>
+
     <canvas id="fireworks" style="position:fixed; inset:0; pointer-events:none; z-index:1999;"></canvas>
     <div id="celeb-popup" style="position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: var(--main-color); color: white; padding: 15px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; display: none; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">Yeah! +10 XP</div>
 
@@ -175,10 +146,10 @@
     <div id="taskboard"></div>
 
     <div class="studio-box">
-        <div class="studio-header">
+        <div class="studio-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
             <span class="studio-title">🧠 BRAINDOM STUDIO</span>
-            <div class="studio-actions">
-                <button class="studio-btn save" onclick="saveStudioToArchive('braindom')">Lưu</button>
+            <div class="studio-actions" style="display:flex; gap:8px">
+                <button class="studio-btn" style="background:var(--main-color); color:white" onclick="saveToStudio('braindom')">Lưu</button>
                 <button class="studio-btn" onclick="openStudioArchive('braindom')">Kho</button>
             </div>
         </div>
@@ -186,17 +157,17 @@
     </div>
 
     <div class="studio-box">
-        <div class="studio-header">
+        <div class="studio-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
             <span class="studio-title">✍️ WRITER STUDIO</span>
-            <div class="studio-actions">
-                <button class="studio-btn save" onclick="saveStudioToArchive('writer')">Lưu</button>
+            <div class="studio-actions" style="display:flex; gap:8px">
+                <button class="studio-btn" style="background:var(--main-color); color:white" onclick="saveToStudio('writer')">Lưu</button>
                 <button class="studio-btn" onclick="openStudioArchive('writer')">Kho</button>
             </div>
         </div>
         <textarea id="writer-input" class="studio-textarea" placeholder="Viết nháp sâu..."></textarea>
     </div>
 
-    <div class="footer-version">ZETMEO OS V39.8 - AUTO-SYNC SHIELD</div>
+    <div class="footer-version">ZETMEO OS V39.9 - THE FINAL POLISH</div>
 
     <div class="floating-nav">
         <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
@@ -204,67 +175,65 @@
     </div>
 
     <div class="bottom-menu">
-        <button class="menu-item active" onclick="location.reload()">🏠<span class="menu-label">Home</span></button>
-        <button class="menu-item" onclick="syncUp()">📤<span class="menu-label">Push</span></button>
-        <button class="menu-item" onclick="syncDown()">📥<span class="menu-label">Pull</span></button>
-        <button class="menu-item" onclick="openAdmin()">⚙️<span class="menu-label">Admin</span></button>
+        <button class="menu-item active" onclick="location.reload()">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="menu-label">Home</span>
+        </button>
+        <button class="menu-item" onclick="syncUp()">
+            <svg viewBox="0 0 24 24"><path d="M12 19v-7m0 0l-3 3m3-3l3 3M12 3a9 9 0 0 0 0 18z"></path></svg>
+            <span class="menu-label">Push</span>
+        </button>
+        <button class="menu-item" onclick="syncDown()">
+            <svg viewBox="0 0 24 24"><path d="M12 5v7m0 0l-3-3m3 3l3-3M12 21a9 9 0 0 0 0-18z"></path></svg>
+            <span class="menu-label">Pull</span>
+        </button>
+        <button class="menu-item" onclick="openAdmin()">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span class="menu-label">Admin</span>
+        </button>
     </div>
 
     <div id="admin-modal" class="modal">
         <div class="modal-content">
-            <div class="tab-btn-group">
+            <div class="tab-btn-group" style="display:flex; border-bottom:1px solid var(--border-color); overflow-x:auto">
                 <button class="tab-btn active" onclick="switchTab(event, 'tab-task')">Task Editor</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-archive')">Archive</button>
                 <button class="tab-btn" onclick="switchTab(event, 'tab-rpg')">RPG Config</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tab-firebase')">Firebase</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-fb')">Firebase</button>
             </div>
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
-                    <label class="sync-label">Tự động đồng bộ sau (phút) - Nhập 0 để tắt</label>
-                    <input type="number" id="auto-sync-min" placeholder="Ví dụ: 1" min="0">
-                    
-                    <label class="sync-label">NỘI DUNG TASKBOARD (Markdown)</label>
-                    <textarea id="task-editor" style="height:350px" spellcheck="false"></textarea>
-                    
+                    <label class="sync-label">Đồng bộ tự động (phút) - Nhập 0 để tắt</label>
+                    <input type="number" id="auto-sync-min" placeholder="1">
+                    <textarea id="task-editor" style="height:400px" spellcheck="false"></textarea>
                     <strong class="sync-label">🕒 Lịch sử phiên bản</strong>
                     <div id="history-container"></div>
                 </div>
                 <div id="tab-archive" class="tab-panel">
                     <div style="display:flex; gap:10px; margin-bottom:15px">
                         <button class="pink-btn" onclick="archiveDoneTasks()">🧹 Dọn dẹp Done</button>
-                        <select id="archive-sort" class="grey-btn" style="height:45px" onchange="renderKhoTask()">
-                            <option value="newest">Mới nhất trước</option>
-                            <option value="oldest">Cũ nhất trước</option>
-                        </select>
+                        <select id="archive-sort" class="grey-btn" onchange="renderKhoTask()"><option value="newest">Mới nhất</option><option value="oldest">Cũ nhất</option></select>
                     </div>
                     <div id="kho-task-list"></div>
                 </div>
                 <div id="tab-rpg" class="tab-panel">
-                    <label class="sync-label">CHẾ ĐỘ GIAO DIỆN</label>
                     <button class="grey-btn" id="theme-toggle" style="width:100%; margin-bottom:20px" onclick="toggleTheme()">Tắt Night Mode</button>
-                    <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
-                    <textarea id="goals-area" style="height:120px"></textarea>
-                    <label class="sync-label">PHẦN THƯỞNG (LEVEL | QUÀ)</label>
-                    <textarea id="rewards-area" style="height:100px"></textarea>
-                    <label class="sync-label">DANH HIỆU LEVEL (LEVEL | TÊN)</label>
-                    <textarea id="levels-area" style="height:100px"></textarea>
-                    <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
+                    <label class="sync-label">MỤC TIÊU | NHÓM | NĂM</label><textarea id="goals-area" style="height:120px"></textarea>
+                    <label class="sync-label">LEVEL | PHẦN THƯỞNG</label><textarea id="rewards-area" style="height:100px"></textarea>
+                    <label class="sync-label">LEVEL | DANH HIỆU</label><textarea id="levels-area" style="height:100px"></textarea>
                 </div>
-                <div id="tab-firebase" class="tab-panel">
-                    <label class="sync-label">FIREBASE DATABASE URL</label>
-                    <input type="text" id="fb-db" placeholder="https://..." style="width:100%; background:var(--input-bg); color:var(--text-color); border:1px solid var(--border-color); border-radius:10px">
+                <div id="tab-fb" class="tab-panel">
+                    <label class="sync-label">FIREBASE URL</label>
+                    <input type="text" id="fb-db" placeholder="https://...">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="pink-btn" style="flex:2" onclick="saveAll()">LƯU TẤT CẢ THAY ĐỔI</button>
-                <button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button>
-            </div>
+            <div class="modal-footer"><button class="pink-btn" style="flex:2" onclick="saveAll()">LƯU TẤT CẢ</button><button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button></div>
         </div>
     </div>
 
     <div id="studio-archive-modal" class="modal">
         <div class="modal-content">
-            <div style="padding:15px; border-bottom:1px solid var(--border-color); font-weight:800; color:var(--main-color)" id="studio-archive-title">KHO STUDIO</div>
+            <div style="padding:15px; border-bottom:1px solid var(--border-color); font-weight:800; color:var(--main-color)" id="studio-archive-title">KHO LƯU TRỮ</div>
             <div class="modal-body" id="studio-archive-list"></div>
             <div class="modal-footer"><button class="grey-btn" onclick="document.getElementById('studio-archive-modal').style.display='none'">Đóng</button></div>
         </div>
@@ -274,11 +243,7 @@
         <div class="modal-content" style="max-width:500px; height:auto">
             <div style="padding:20px; border-bottom:1px solid var(--border-color); font-weight:700; color:var(--main-color)" id="note-modal-title">Ghi chú</div>
             <div class="modal-body"><textarea id="note-input" style="height:250px"></textarea></div>
-            <div class="modal-footer">
-                <button class="grey-btn" onclick="deleteNote()">Xóa</button>
-                <button class="pink-btn" style="flex:2" onclick="saveNote()">Lưu Ghi Chú</button>
-                <button class="grey-btn" onclick="document.getElementById('note-modal').style.display='none'">Đóng</button>
-            </div>
+            <div class="modal-footer"><button class="pink-btn" style="flex:2" onclick="saveNote()">Lưu</button><button class="grey-btn" onclick="document.getElementById('note-modal').style.display='none'">Đóng</button></div>
         </div>
     </div>
 
@@ -287,44 +252,50 @@
         const fbConfig = { apiKey: "AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc", authDomain: "meo-dash-rpg.firebaseapp.com", projectId: "meo-dash-rpg" };
 
         let totalXP = parseInt(localStorage.getItem('zetmeo_xp_total')) || 0;
-        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { goals: "Bán hàng | Core | 2026", rewards: "5 | Gà Popeyes", levels: "1 | Mầm Xanh Nhảy Số\n11 | Phượng Hồng\n26 | Mùa Gặt", fbUrl: "", lightMode: false, autoSyncMin: 1 };
+        let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { goals: "Sáng tạo | CORE | 2026", rewards: "5 | Gà Popeyes", levels: "1 | Mầm Xanh Nhảy Số", fbUrl: "", lightMode: false, autoSyncMin: 1 };
         let taskArchive = JSON.parse(localStorage.getItem('zetmeo_task_archive')) || [];
         let studioArchives = JSON.parse(localStorage.getItem('zetmeo_studio_archive')) || { braindom: [], writer: [] };
         let sessionNotes = JSON.parse(localStorage.getItem('zetmeo_notes')) || {};
         let activeNoteSession = "";
-        let autoSyncTimer = null;
+        let autoSyncSecs = 0;
+        let syncInterval = null;
 
-        // --- AUTO SYNC LOGIC ---
-        function setupAutoSync() {
-            if(autoSyncTimer) clearInterval(autoSyncTimer);
+        // --- 1 & 4. ENHANCED AUTO SYNC WITH COUNTDOWN ---
+        function startAutoSyncEngine() {
+            if(syncInterval) clearInterval(syncInterval);
             const mins = parseInt(rpgConfig.autoSyncMin);
-            if(mins > 0) {
-                autoSyncTimer = setInterval(() => {
-                    const modal = document.getElementById('admin-modal');
-                    if(modal.style.display === 'none' || !modal.style.display) {
-                        syncUp(true); // Silent push
-                    }
-                }, mins * 60 * 1000);
-            }
-        }
+            if(mins <= 0) return;
+            autoSyncSecs = mins * 60;
+            
+            syncInterval = setInterval(() => {
+                const adminVisible = document.getElementById('admin-modal').style.display === 'flex';
+                if(adminVisible) return; // Không sync khi đang sửa Admin
 
-        // --- THEME ---
-        function toggleTheme() { rpgConfig.lightMode = !rpgConfig.lightMode; applyTheme(); localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig)); }
-        function applyTheme() {
-            const btn = document.getElementById('theme-toggle');
-            if(rpgConfig.lightMode) { document.body.classList.add('light-mode'); if(btn) btn.innerText = "Bật Night Mode"; }
-            else { document.body.classList.remove('light-mode'); if(btn) btn.innerText = "Tắt Night Mode"; }
+                autoSyncSecs--;
+                const countdownEl = document.getElementById('sync-countdown');
+                
+                if(autoSyncSecs <= 10 && autoSyncSecs > 0) {
+                    countdownEl.style.display = 'block';
+                    countdownEl.innerText = `☁️ ĐỒNG BỘ SAU ${autoSyncSecs}S...`;
+                } else {
+                    countdownEl.style.display = 'none';
+                }
+
+                if(autoSyncSecs <= 0) {
+                    syncUp(true);
+                    autoSyncSecs = mins * 60;
+                }
+            }, 1000);
         }
 
         // --- FIREBASE ---
         function getDB() { if(!rpgConfig.fbUrl) return null; if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl}); return firebase.database(); }
-        
         async function syncUp(silent = false) {
-            const db = getDB(); if(!db) return silent ? null : alert("Cài URL Firebase!");
+            const db = getDB(); if(!db) return silent ? null : alert("Cài Firebase URL!");
             const badge = document.getElementById('sync-badge');
             if(!silent) { badge.style.display='flex'; badge.className='status-waiting'; badge.innerText = "⏳ Pushing..."; }
             try {
-                await db.ref('meoOS_V39_8').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig), taskArchive: JSON.stringify(taskArchive), studioArchive: JSON.stringify(studioArchives), notes: JSON.stringify(sessionNotes) });
+                await db.ref('meoOS_V39_9').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig), taskArchive: JSON.stringify(taskArchive), studioArchive: JSON.stringify(studioArchives), notes: JSON.stringify(sessionNotes) });
                 if(silent) { badge.style.display='flex'; badge.className='status-synced'; badge.innerText="☁️ Auto-Synced"; setTimeout(()=>badge.style.display='none', 1500); }
                 else { badge.innerText="✅ Cloud Synced"; setTimeout(()=>badge.style.display='none', 2000); }
             } catch(e) { if(!silent) alert("Sync lỗi!"); }
@@ -332,9 +303,9 @@
 
         async function syncDown() {
             const db = getDB(); if(!db) return;
-            if(!confirm("Tải dữ liệu mây về? (Bản cục bộ sẽ bị đè)")) return;
+            if(!confirm("Tải dữ liệu mây về?")) return;
             try {
-                const snap = await db.ref('meoOS_V39_8').once('value');
+                const snap = await db.ref('meoOS_V39_9').once('value');
                 const val = snap.val();
                 if(val) {
                     localStorage.setItem('dashboardData', val.dashboard); localStorage.setItem('zetmeo_xp_total', val.xp);
@@ -358,8 +329,7 @@
                     if(!line.trim().startsWith('- [')) return;
                     const sp = line.match(/^ */)[0].length;
                     const lv = sp >= 4 ? 3 : (sp >= 2 ? 2 : 1);
-                    const chk = line.includes('[x]');
-                    const txt = line.replace(/^\s*- \[[ x]\] /, '');
+                    const chk = line.includes('[x]'), txt = line.replace(/^\s*- \[[ x]\] /, '');
                     const li = document.createElement('li'); li.className = `task-item level-${lv} ${chk ? 'checked' : ''}`; li.setAttribute('data-level', lv);
                     li.innerHTML = `<div class="toggle-btn" onclick="toggleFolding(this)">${lv<3?'▼':''}</div><input type="checkbox" class="custom-cb" ${chk?'checked':''} onchange="toggleTask(this,'${title}','${txt.replace(/'/g,"\\'")}')"><input type="text" class="task-text" value="${txt}" onchange="updateDOMToData()">`;
                     list.appendChild(li);
@@ -370,74 +340,7 @@
             localStorage.setItem('dashboardData', val);
         }
 
-        // --- RPG LOGIC ---
-        function getXPBySession(sessionName) {
-            const data = localStorage.getItem('dashboardData') || "";
-            const target = data.split(/(?=# )/).find(b => b.includes('# ' + sessionName));
-            if(!target) return 0;
-            let xp = 0;
-            target.split('\n').forEach(l => {
-                if(l.includes('[x]')) {
-                    if(sessionName.toUpperCase().includes('CORE')) xp += 10;
-                    else if(sessionName.toUpperCase().includes('FOUNDATION')) xp += 8;
-                    else xp += 2.5;
-                }
-            });
-            return xp;
-        }
-
-        function updateRPGUI() {
-            const maps = rpgConfig.levels.split('\n').map(l => { const [lv,n]=l.split('|').map(s=>s.trim()); return {lv:parseInt(lv),n}; }).sort((a,b)=>b.lv-a.lv);
-            let lv = 1; while(100*Math.pow(lv,1.5)<=totalXP) lv++;
-            const title = maps.find(t=>lv>=t.lv)?.n || "Khởi Nguyên";
-            const nextL = maps.slice().reverse().find(t=>t.lv>lv) || {lv:lv+1,n:"Đỉnh Cao"};
-            const nextXP = Math.ceil(100*Math.pow(lv,1.5)), prevXP = lv===1?0:Math.ceil(100*Math.pow(lv-1,1.5));
-
-            document.getElementById('lv-display').innerText = `Lv. ${lv} - ${title}`;
-            document.getElementById('xp-summary').innerText = `${totalXP}/10000 XP`;
-            document.getElementById('lv-fill').style.width = `${Math.min(100, ((totalXP-prevXP)/(nextXP-prevXP))*100)}%`;
-            document.getElementById('next-lv-text').innerText = `Anh meo ơi! Còn ${nextXP-totalXP} XP nữa là đạt được Lv ${nextL.lv} - ${nextL.n}`;
-            
-            const gList = document.getElementById('goals-list'); gList.innerHTML = "";
-            rpgConfig.goals.split('\n').forEach(l => {
-                const [t,g,time]=l.split('|').map(s=>s.trim()); 
-                if(t) {
-                    const linkedXP = getXPBySession(g);
-                    const percent = Math.min(100, (linkedXP / 2000) * 100); 
-                    gList.innerHTML += `<div class="goal-item"><div class="progress-bar"><div class="goal-header-inside"><span>${t} | ${g}</span><span>${time}</span></div><div class="progress-fill" style="width:${percent}%"></div></div></div>`;
-                }
-            });
-        }
-
-        // --- STUDIO ---
-        function saveStudioToArchive(type) {
-            const v = document.getElementById(type + '-input').value.trim(); if(!v) return;
-            const now = new Date();
-            const timestamp = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()}`;
-            studioArchives[type].unshift({ time: timestamp, content: v });
-            localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));
-            document.getElementById(type + '-input').value = ""; alert("Đã lưu!");
-        }
-        function openStudioArchive(type) {
-            const c = document.getElementById('studio-archive-list');
-            document.getElementById('studio-archive-title').innerText = "KHO: " + type.toUpperCase();
-            c.innerHTML = "";
-            studioArchives[type].forEach((item, i) => {
-                const div = document.createElement('div'); div.className = "archive-item";
-                div.innerHTML = `<span class="archive-time">${item.time}</span>
-                <textarea id="studio-txt-${type}-${i}" class="archive-editor" rows="6">${item.content}</textarea>
-                <div style="display:flex; gap:5px">
-                    <button class="pink-btn" onclick="navigator.clipboard.writeText(document.getElementById('studio-txt-${type}-${i}').value); alert('Copy!')">Copy</button>
-                    <button class="grey-btn" onclick="saveStudioArchiveTxt('${type}', ${i})">Lưu</button>
-                    <button class="grey-btn" onclick="studioArchives['${type}'].splice(${i},1); localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives)); openStudioArchive('${type}')">Xóa</button>
-                </div>`;
-                c.appendChild(div);
-            });
-            document.getElementById('studio-archive-modal').style.display = 'flex';
-        }
-        function saveStudioArchiveTxt(t,i) { studioArchives[t][i].content = document.getElementById(`studio-txt-${t}-${i}`).value; localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives)); alert("Đã cập nhật!"); }
-
-        // --- UI CORE ---
+        // --- ACTIONS ---
         function saveAll() {
             rpgConfig.autoSyncMin = document.getElementById('auto-sync-min').value || 1;
             rpgConfig.goals = document.getElementById('goals-area').value;
@@ -447,41 +350,15 @@
             localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig));
             const data = document.getElementById('task-editor').value;
             localStorage.setItem('dashboardData', data); saveToHistory(data);
-            renderDashboard(data); updateRPGUI(); setupAutoSync(); closeAdmin(); alert("Đã lưu!");
+            renderDashboard(data); updateRPGUI(); startAutoSyncEngine(); closeAdmin(); alert("Đã lưu!");
         }
+
         function openAdmin() { 
             document.getElementById('auto-sync-min').value = rpgConfig.autoSyncMin;
             document.getElementById('task-editor').value = localStorage.getItem('dashboardData')||"";
             document.getElementById('goals-area').value = rpgConfig.goals; document.getElementById('rewards-area').value = rpgConfig.rewards;
             document.getElementById('levels-area').value = rpgConfig.levels; document.getElementById('fb-db').value = rpgConfig.fbUrl;
             renderKhoTask(); renderHistory(); document.getElementById('admin-modal').style.display='flex'; 
-        }
-        
-        function archiveDoneTasks() {
-            const data = localStorage.getItem('dashboardData');
-            const lines = data.split('\n'); const done = lines.filter(l => l.includes('[x]')); const remain = lines.filter(l => !l.includes('[x]'));
-            if(!done.length) return alert("Trống!");
-            done.forEach(t => taskArchive.unshift({ time: new Date().toLocaleString('vi-VN'), text: t.replace(/^\s*- \[x\] /, '').trim() }));
-            localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
-            localStorage.setItem('dashboardData', remain.join('\n'));
-            renderDashboard(remain.join('\n')); renderKhoTask(); alert("Đã dọn!");
-        }
-        function renderKhoTask() {
-            const c = document.getElementById('kho-task-list'); const sort = document.getElementById('archive-sort').value;
-            let list = [...taskArchive]; if(sort==='oldest') list.reverse();
-            c.innerHTML = list.length ? "" : "<p style='color:#666'>Trống...</p>";
-            list.forEach((t, i) => {
-                const div = document.createElement('div'); div.className = "archive-item";
-                div.innerHTML = `<span class="archive-time">${t.time}</span><div class="archive-content">${t.text}</div>
-                <button class="pink-btn" style="padding:4px 8px" onclick="restoreTask(${i})">Khôi phục</button>`;
-                c.appendChild(div);
-            });
-        }
-        function restoreTask(i) {
-            const t = taskArchive[i]; let data = localStorage.getItem('dashboardData');
-            const lines = data.split('\n'); lines.splice(1, 0, `- [ ] ${t.text}`);
-            taskArchive.splice(i,1); localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
-            localStorage.setItem('dashboardData', lines.join('\n')); renderDashboard(lines.join('\n')); renderKhoTask();
         }
 
         function toggleTask(cb, box, txt) {
@@ -493,45 +370,74 @@
             renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData();
             if(cb.checked) launchFireworks(pts);
         }
-        function updateDOMToData() {
-            let arr = []; document.querySelectorAll('.box').forEach(b => {
-                const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`);
-                b.querySelectorAll('.task-item').forEach(li => {
-                    const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]'; const txt = li.querySelector('.task-text').value;
-                    const lv = parseInt(li.getAttribute('data-level')); const sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`);
-                }); arr.push("");
-            }); localStorage.setItem('dashboardData', arr.join('\n').trim());
+
+        // --- STUDIO ---
+        function saveToStudio(type) {
+            const v = document.getElementById(type + '-input').value.trim(); if(!v) return;
+            const now = new Date(); const ts = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()}`;
+            studioArchives[type].unshift({ time: ts, content: v });
+            localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));
+            document.getElementById(type + '-input').value = ""; alert("Đã lưu!");
         }
-        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:11px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="restoreHist(${i})">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
-        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString('vi-VN'), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
-        function restoreHist(i) { const h = JSON.parse(localStorage.getItem('zetmeo_history'))[i]; if(confirm("Khôi phục?")) { renderDashboard(h.content); document.getElementById('task-editor').value = h.content; } }
+        function openStudioArchive(type) {
+            const c = document.getElementById('studio-archive-list');
+            document.getElementById('studio-archive-title').innerText = "KHO STUDIO: " + type.toUpperCase();
+            c.innerHTML = "";
+            studioArchives[type].forEach((item, i) => {
+                const div = document.createElement('div'); div.className = "archive-item";
+                div.innerHTML = `<span class="archive-time">${item.time}</span>
+                <textarea id="studio-txt-${type}-${i}" class="archive-editor" rows="6">${item.content}</textarea>
+                <div style="display:flex; gap:5px">
+                    <button class="pink-btn" onclick="navigator.clipboard.writeText(document.getElementById('studio-txt-${type}-${i}').value); alert('Copy!')">Copy</button>
+                    <button class="grey-btn" onclick="studioArchives['${type}'][${i}].content=document.getElementById('studio-txt-${type}-${i}').value;localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));alert('Đã lưu!')">Lưu</button>
+                    <button class="grey-btn" onclick="studioArchives['${type}'].splice(${i},1);localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));openStudioArchive('${type}')">Xóa</button>
+                </div>`;
+                c.appendChild(div);
+            });
+            document.getElementById('studio-archive-modal').style.display = 'flex';
+        }
+
+        // --- UI UTILS ---
+        function updateRPGUI() {
+            const maps = rpgConfig.levels.split('\n').map(l => { const [lv,n]=l.split('|').map(s=>s.trim()); return {lv:parseInt(lv),n}; }).sort((a,b)=>b.lv-a.lv);
+            let lv = 1; while(100*Math.pow(lv,1.5)<=totalXP) lv++;
+            const title = maps.find(t=>lv>=t.lv)?.n || "Khởi Nguyên", nextL = maps.slice().reverse().find(t=>t.lv>lv) || {lv:lv+1,n:"Đỉnh Cao"};
+            const nextXP = Math.ceil(100*Math.pow(lv,1.5)), prevXP = lv===1?0:Math.ceil(100*Math.pow(lv-1,1.5));
+            document.getElementById('lv-display').innerText = `Lv. ${lv} - ${title}`;
+            document.getElementById('xp-summary').innerText = `${totalXP}/10000 XP`;
+            document.getElementById('lv-fill').style.width = `${Math.min(100, ((totalXP-prevXP)/(nextXP-prevXP))*100)}%`;
+            document.getElementById('next-lv-text').innerText = `Anh meo ơi! Còn ${nextXP-totalXP} XP nữa là đạt được Lv ${nextL.lv} - ${nextL.n}`;
+            const gList = document.getElementById('goals-list'); gList.innerHTML = "";
+            rpgConfig.goals.split('\n').forEach(l => {
+                const [t,g,time]=l.split('|').map(s=>s.trim()); if(t) {
+                    const lXP = getXPBySession(g), per = Math.min(100, (lXP / 2000) * 100);
+                    gList.innerHTML += `<div class="goal-item"><div class="progress-bar"><div class="goal-header-inside"><span>${t} | ${g}</span><span>${time}</span></div><div class="progress-fill" style="width:${per}%"></div></div></div>`;
+                }
+            });
+        }
+        function getXPBySession(s) { const data = localStorage.getItem('dashboardData')||""; const target = data.split(/(?=# )/).find(b => b.includes('# '+s)); if(!target) return 0; let xp = 0; target.split('\n').forEach(l => { if(l.includes('[x]')) { if(s.toUpperCase().includes('CORE')) xp+=10; else if(s.toUpperCase().includes('FOUNDATION')) xp+=8; else xp+=2.5; } }); return xp; }
+        function archiveDoneTasks() { const data = localStorage.getItem('dashboardData'); const lines = data.split('\n'); const done = lines.filter(l => l.includes('[x]')), remain = lines.filter(l => !l.includes('[x]')); if(!done.length) return; done.forEach(t => taskArchive.unshift({ time: new Date().toLocaleString(), text: t.replace(/^\s*- \[x\] /, '').trim() })); localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive)); localStorage.setItem('dashboardData', remain.join('\n')); renderDashboard(remain.join('\n')); renderKhoTask(); }
+        function renderKhoTask() { const c = document.getElementById('kho-task-list'), sort = document.getElementById('archive-sort').value; let list = [...taskArchive]; if(sort==='oldest') list.reverse(); c.innerHTML = list.map((t,i) => `<div class="archive-item"><span class="archive-time">${t.time}</span><div style="font-size:13px">${t.text}</div></div>`).join(''); }
+        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:11px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="renderDashboard('${h.content.replace(/'/g,"\\'")}');document.getElementById('task-editor').value='${h.content.replace(/'/g,"\\'")}'">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
+        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
+        function applyTheme() { const btn = document.getElementById('theme-toggle'); if(rpgConfig.lightMode) { document.body.classList.add('light-mode'); if(btn) btn.innerText = "Bật Night Mode"; } else { document.body.classList.remove('light-mode'); if(btn) btn.innerText = "Tắt Night Mode"; } }
+        function toggleTheme() { rpgConfig.lightMode = !rpgConfig.lightMode; applyTheme(); localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig)); }
         function switchTab(e,id) { document.querySelectorAll('.tab-panel, .tab-btn').forEach(el=>el.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
         function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼')?el.innerText.replace('▼','▶'):el.innerText.replace('▶','▼'); }
         function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
-        function toggleFolding(btn) {
-            const li = btn.closest('.task-item'); const lv = parseInt(li.getAttribute('data-level'));
-            const rot = btn.classList.toggle('rotated'); let next = li.nextElementSibling;
-            while(next) {
-                const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break;
-                if(rot) next.classList.add('hidden-task');
-                else { next.classList.remove('hidden-task'); const sub = next.querySelector('.toggle-btn'); if(sub && sub.classList.contains('rotated')) { let sLv=nLv; let skip=next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip=skip.nextElementSibling; next=skip; continue; } }
-                next = next.nextElementSibling;
-            }
-        }
-        function launchFireworks(pts) { 
-            const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-            let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1});
-            function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw();
-            const p = document.getElementById('celeb-popup'); p.innerText=`Yeah A meo! +${pts} XP`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500);
-        }
-
-        function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
+        function updateDOMToData() { let arr = []; document.querySelectorAll('.box').forEach(b => { const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`); b.querySelectorAll('.task-item').forEach(li => { const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]'; const txt = li.querySelector('.task-text').value, lv = parseInt(li.getAttribute('data-level')), sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`); }); arr.push(""); }); localStorage.setItem('dashboardData', arr.join('\n').trim()); }
+        function toggleFolding(btn) { const li = btn.closest('.task-item'), lv = parseInt(li.getAttribute('data-level')), rot = btn.classList.toggle('rotated'); let next = li.nextElementSibling; while(next) { const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break; if(rot) next.classList.add('hidden-task'); else { next.classList.remove('hidden-task'); const sub = next.querySelector('.toggle-btn'); if(sub && sub.classList.contains('rotated')) { let sLv=nLv; let skip=next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip=skip.nextElementSibling; next=skip; continue; } } next = next.nextElementSibling; } }
+        function openNote(s) { activeNoteSession=s; document.getElementById('note-modal-title').innerText="📝 NOTE: "+s; document.getElementById('note-input').value=sessionNotes[s]||""; document.getElementById('note-modal').style.display='flex'; }
+        function saveNote() { sessionNotes[activeNoteSession]=document.getElementById('note-input').value; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; }
+        function deleteNote() { if(confirm("Xóa?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; } }
+        function launchFireworks(pts) { const canvas = document.getElementById('fireworks'), ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight; let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1}); function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw(); const p = document.getElementById('celeb-popup'); p.innerText=`Yeah A meo! +${pts} XP`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500); }
 
         window.onload = () => { 
             renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Khởi đầu"); 
-            updateRPGUI(); applyTheme(); setupAutoSync();
-            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực."];
-            document.getElementById('quote-text').innerText = `Anh meo ơi! "${q[Math.floor(Math.random()*q.length)]}"`;
+            updateRPGUI(); applyTheme(); startAutoSyncEngine();
+            const quotes = [{text: "Sáng tạo là sự kết tinh của kỷ luật.", author: "Zetmeo"}, {text: "ADHD là một siêu năng lực.", author: "Lam"}];
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote-text').innerText = `Anh meo ơi! "${q.text}" - ${q.author}`;
             document.getElementById('quote-area').style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')";
             const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
             if(lamLine) document.getElementById('lam-msg').innerText = lamLine.replace('!!!', '').trim();
