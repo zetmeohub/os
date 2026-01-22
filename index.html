@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V38.8 (Strategic Evolution)</title>
+    <title>zetmeoOS - V38.9 (Studio Edition)</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -21,7 +21,7 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Quicksand', sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-color); margin: 0; padding: 10px 10px 100px 10px; overflow-x: hidden; }
+        body { background-color: var(--bg-body); color: var(--text-color); margin: 0; padding: 10px 10px 120px 10px; overflow-x: hidden; }
 
         /* SYNC BADGE */
         #sync-badge { position: fixed; top: 10px; right: 10px; z-index: 9999; padding: 6px 12px; border-radius: 20px; font-size: 0.7em; font-weight: 700; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
@@ -35,7 +35,6 @@
         .mascot-img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--main-color); margin-bottom: 5px; object-fit: cover; }
         .level-title { font-weight: 700; color: var(--main-color); font-size: 1em; }
         .next-lv-msg { font-size: 0.8em; color: #888; margin-top: 5px; line-height: 1.3; }
-
         .year-header { font-weight: 700; font-size: 0.85em; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 5px; color: var(--main-color); }
         .goal-item { margin-bottom: 8px; }
         .goal-header { display: flex; justify-content: space-between; font-weight: 600; color: #ccc; font-size: 0.9em; margin-bottom: 3px; }
@@ -51,12 +50,15 @@
         .lam-avatar { font-size: 1.6em; margin-bottom: 3px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-5px);} }
 
-        /* TASK LIST */
+        /* TASK LIST & NOTE ICON */
         .box { background: var(--bg-box); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; }
         .box-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
-        .box-title { color: var(--main-color); font-weight: 700; font-size: 1.05em; margin: 0; }
+        .box-title { color: var(--main-color); font-weight: 700; font-size: 1.05em; margin: 0; cursor: pointer; }
+        .note-trigger { font-size: 1.1em; cursor: pointer; opacity: 0.6; transition: 0.2s; }
+        .note-trigger:hover { opacity: 1; transform: scale(1.1); }
+        
         .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
-        .task-item { display: flex; align-items: center; padding: 8px 0; border-radius: 8px; position: relative; }
+        .task-item { display: flex; align-items: center; padding: 6px 0; border-radius: 8px; position: relative; }
         .task-item.level-2 { margin-left: 25px; }
         .task-item.level-3 { margin-left: 50px; }
         
@@ -69,9 +71,18 @@
         .rotated { transform: rotate(-90deg); display: inline-block; }
         .hidden-task { display: none !important; }
 
-        /* FLOATING NAV */
-        .floating-nav { position: fixed; right: 10px; bottom: 90px; display: flex; flex-direction: column; gap: 8px; z-index: 90; }
-        .nav-circle { width: 40px; height: 40px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 16px; font-weight: 700; }
+        /* STUDIO SESSIONS */
+        .studio-box { background: #1e1e1e; border: 2px solid var(--main-color); border-radius: 20px; padding: 15px; margin-bottom: 20px; }
+        .studio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; letter-spacing: 1px; }
+        .studio-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .studio-btn { background: #333; color: #eee; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .studio-btn.save { background: var(--main-color); color: white; }
+        .studio-textarea { width: 100%; height: 150px; background: #111; color: var(--accent-green); border: 1px solid #333; border-radius: 12px; padding: 12px; font-family: monospace; resize: vertical; outline: none; display: none; }
+        .studio-display { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; min-height: 60px; font-size: 0.9em; white-space: pre-wrap; color: #ccc; }
+
+        /* FOOTER VERSION */
+        .footer-version { text-align: center; color: #444; font-size: 10px; font-weight: 700; margin: 20px 0; letter-spacing: 2px; }
 
         /* BOTTOM MENU */
         .bottom-menu { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; height: 75px; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
@@ -79,16 +90,13 @@
         .menu-item.active { color: var(--main-color); }
         .menu-label { font-size: 8px; margin-top: 2px; font-weight: 700; text-transform: uppercase; }
 
-        /* MODALS RESPONSIVE */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 10px; }
+        /* MODALS */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
         .modal-content { background: var(--bg-box); border-radius: 20px; width: 100%; max-width: 900px; height: 92vh; display: flex; flex-direction: column; border: 1px solid #333; overflow: hidden; }
         .modal-body { flex-grow: 1; padding: 15px; overflow-y: auto; }
         .tab-btn-group { display: flex; padding: 5px 10px; border-bottom: 1px solid #333; overflow-x: auto; white-space: nowrap; gap: 5px; }
         .tab-btn { background: none; border: none; color: #666; padding: 12px 15px; font-weight: 700; cursor: pointer; font-size: 0.85em; text-transform: uppercase; }
         .tab-btn.active { color: var(--main-color); border-bottom: 2px solid var(--main-color); }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        
         .modal-footer { padding: 10px; border-top: 1px solid #333; display: flex; flex-wrap: wrap; gap: 8px; background: #1a1a1a; }
         .modal-footer button, .modal-footer select { flex: 1; min-width: 80px; }
 
@@ -96,8 +104,6 @@
         .pink-btn { background: var(--main-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
         .grey-btn { background: #333; color: #ccc; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
         .sync-label { font-size: 0.75em; color: var(--main-color); display: block; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
-
-        #celeb-popup { position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: var(--main-color); color: white; padding: 15px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; display: none; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         @media (max-width: 600px) {
             .rpg-container, .guide-container { grid-template-columns: 1fr; }
@@ -110,12 +116,11 @@
 
     <div id="sync-badge"></div>
     <canvas id="fireworks" style="position:fixed; inset:0; pointer-events:none; z-index:1999;"></canvas>
-    <div id="celeb-popup">Yeah A meo! +10 XP</div>
 
     <div class="rpg-container">
         <div class="rpg-box profile-area">
             <img id="mascot-img" class="mascot-img" src="https://getdrawings.com/free-icon/cat-icon-png-53.png">
-            <div id="lv-display" class="level-title">Đang tải...</div>
+            <div id="lv-display" class="level-title">...</div>
             <div class="progress-bar"><div id="lv-fill" class="progress-fill" style="width: 0%"></div></div>
             <div id="next-lv-text" class="next-lv-msg">...</div>
         </div>
@@ -135,10 +140,35 @@
 
     <div id="taskboard"></div>
 
-    <div class="floating-nav">
-        <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
-        <div class="nav-circle" onclick="window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'})">▼</div>
+    <div class="studio-box">
+        <div class="studio-header">
+            <span class="studio-title">🧠 BRAINDOM STUDIO</span>
+            <div class="studio-actions">
+                <button class="studio-btn" onclick="copyStudio('braindom')">Copy</button>
+                <button class="studio-btn" onclick="toggleEditStudio('braindom')">Sửa</button>
+                <button class="studio-btn save" onclick="saveStudio('braindom')">Lưu</button>
+                <button class="studio-btn" onclick="clearStudio('braindom')">Kho</button>
+            </div>
+        </div>
+        <div id="braindom-display" class="studio-display">...</div>
+        <textarea id="braindom-input" class="studio-textarea"></textarea>
     </div>
+
+    <div class="studio-box">
+        <div class="studio-header">
+            <span class="studio-title">✍️ WRITER STUDIO</span>
+            <div class="studio-actions">
+                <button class="studio-btn" onclick="copyStudio('writer')">Copy</button>
+                <button class="studio-btn" onclick="toggleEditStudio('writer')">Sửa</button>
+                <button class="studio-btn save" onclick="saveStudio('writer')">Lưu</button>
+                <button class="studio-btn" onclick="clearStudio('writer')">Kho</button>
+            </div>
+        </div>
+        <div id="writer-display" class="studio-display">...</div>
+        <textarea id="writer-input" class="studio-textarea"></textarea>
+    </div>
+
+    <div class="footer-version">ZETMEO OS V38.9 - STRATEGIC EVOLUTION</div>
 
     <div class="bottom-menu">
         <button class="menu-item active" onclick="location.reload()">🏠<span class="menu-label">Home</span></button>
@@ -160,228 +190,250 @@
                     <div id="history-container" style="margin-top:10px; border-top:1px solid #333; padding-top:10px"></div>
                 </div>
                 <div id="tab-rpg" class="tab-panel">
-                    <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Thời Gian)</label>
-                    <textarea id="goals-area" style="height:150px" placeholder="Ví dụ: Bán hàng | Core | 2026"></textarea>
-
-                    <label class="sync-label">QUẢN LÝ PHẦN THƯỞNG (LEVEL | PHẦN THƯỞNG)</label>
-                    <textarea id="rewards-area" style="height:120px" placeholder="Ví dụ: 5 | Gà Popeyes"></textarea>
-
-                    <label class="sync-label">DANH HIỆU LEVEL (LEVEL | TÊN LEVEL)</label>
-                    <textarea id="level-titles-area" style="height:120px" placeholder="Ví dụ: 1 | Mầm Xanh"></textarea>
-                    
+                    <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
+                    <textarea id="goals-area" style="height:140px"></textarea>
+                    <label class="sync-label">PHẦN THƯỞNG (LEVEL | QUÀ)</label>
+                    <textarea id="rewards-area" style="height:100px"></textarea>
+                    <label class="sync-label">DANH HIỆU (LEVEL | TÊN)</label>
+                    <textarea id="levels-area" style="height:100px"></textarea>
                     <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
                 </div>
                 <div id="tab-firebase" class="tab-panel">
-                    <strong style="display:block; margin-bottom:15px; border-bottom: 1px solid #444; pb:5px">KẾT NỐI ĐÁM MÂY</strong>
-                    <label class="sync-label">DATABASE URL</label>
-                    <input type="text" id="fb-db" placeholder="https://...firebasedatabase.app/" style="width:100%; background:#111; border:1px solid #333; color:white; padding:12px; border-radius:10px; margin-bottom:15px">
-                    <p style="font-size:0.8em; color:#666">Hệ thống sử dụng Realtime Database. Hãy đảm bảo quy tắc Rules là {".read":true, ".write":true}.</p>
+                    <label class="sync-label">FIREBASE DATABASE URL</label>
+                    <input type="text" id="fb-db" style="width:100%; background:#111; border:1px solid #333; color:white; padding:12px; border-radius:10px">
                 </div>
             </div>
             <div class="modal-footer">
-                <select class="grey-btn" id="bulk-actions" onchange="handleBulk(this)">
-                    <option value="">Lệnh kho...</option>
-                    <option value="archive">🧹 Lưu kho Task Xong</option>
+                <select class="grey-btn" onchange="handleBulk(this)">
+                    <option value="">Lệnh Dữ Liệu...</option>
+                    <option value="archive">🧹 Lưu Kho Task Done</option>
                     <option value="backup">💾 Copy Backup</option>
-                    <option value="export">📊 Xuất file CSV</option>
+                    <option value="export">📊 Xuất CSV</option>
                 </select>
-                <button class="pink-btn" style="flex:2" onclick="saveAll()">LƯU TẤT CẢ THAY ĐỔI</button>
+                <button class="pink-btn" style="flex:2" onclick="saveAll()">LƯU TẤT CẢ</button>
                 <button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button>
             </div>
         </div>
     </div>
 
+    <div id="note-modal" class="modal">
+        <div class="modal-content" style="max-width:500px; height:auto">
+            <div style="padding:20px; border-bottom:1px solid #333; font-weight:700; color:var(--main-color)" id="note-modal-title">Ghi chú Session</div>
+            <div class="modal-body">
+                <textarea id="note-input" style="height:250px" placeholder="Viết ghi chú tại đây..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="grey-btn" onclick="deleteNote()">Xóa</button>
+                <button class="pink-btn" style="flex:2" onclick="saveNote()">Lưu Ghi Chú</button>
+                <button class="grey-btn" onclick="document.getElementById('note-modal').style.display='none'">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- DEVICE DETECTION ---
         const isMobile = window.matchMedia("(max-width: 768px)").matches || ('ontouchstart' in window);
-
-        // --- CORE DATA ---
         const fbConfig = { apiKey: "AIzaSyBvcsIGi-pqjeSFw9Dys0s9gp5K-ZfA7sc", authDomain: "meo-dash-rpg.firebaseapp.com", projectId: "meo-dash-rpg", storageBucket: "meo-dash-rpg.firebasestorage.app", messagingSenderId: "740973177634", appId: "1:740973177634:web:31c47cd5ed395edab4d37b" };
-        const quotesDB = [ { text: "Sáng tạo là kết tinh của vô tri.", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" }, { text: "ADHD là một siêu năng lực.", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80" } ];
-
+        
         let totalXP = parseInt(localStorage.getItem('zetmeo_xp_total')) || 0;
         let rpgConfig = JSON.parse(localStorage.getItem('zetmeo_rpg_config')) || { 
-            goalsStr: "Bán hàng | Core | 2026", 
-            rewardsStr: "5 | Gà Popeyes",
-            levelsStr: "1 | Mầm Xanh Nhảy Số\n11 | Phượng Hồng\n26 | Mùa Gặt", 
+            goals: "Sáng tạo | Core | 2026", 
+            rewards: "5 | Gà Popeyes", 
+            levels: "1 | Mầm Xanh\n11 | Phượng Hồng\n26 | Mùa Gặt", 
             fbUrl: "" 
         };
+        let sessionNotes = JSON.parse(localStorage.getItem('zetmeo_notes')) || {};
+        let activeNoteSession = "";
 
-        // --- FIREBASE ENGINE ---
+        // --- FIREBASE ---
         function getDB() {
             if(!rpgConfig.fbUrl) return null;
-            try {
-                if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl});
-                return firebase.database();
-            } catch(e) { return null; }
+            if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl});
+            return firebase.database();
         }
-
         async function syncUp() {
-            const db = getDB(); if(!db) { alert("Điền URL Firebase trong Admin trước nhé!"); return; }
+            const db = getDB(); if(!db) return alert("Cài Firebase URL trước!");
             const badge = document.getElementById('sync-badge'); badge.innerText = "⏳ Pushing..."; badge.style.display='flex'; badge.className='status-waiting';
             try {
-                await db.ref('meoOS_V38').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig) });
+                const data = { 
+                    dashboard: localStorage.getItem('dashboardData'), 
+                    xp: totalXP, 
+                    config: JSON.stringify(rpgConfig),
+                    notes: JSON.stringify(sessionNotes),
+                    braindom: localStorage.getItem('zetmeo_braindom'),
+                    writer: localStorage.getItem('zetmeo_writer')
+                };
+                await db.ref('meoOS_V38_9').set(data);
                 badge.innerText="✅ Cloud Synced"; badge.className="status-synced"; setTimeout(()=>badge.style.display='none', 2000);
             } catch(e) { alert("Lỗi Sync!"); }
         }
-
         async function syncDown() {
             const db = getDB(); if(!db) return;
-            if(!confirm("Tải dữ liệu mây về? (Dữ liệu cũ sẽ bị đè)")) return;
+            if(!confirm("Tải dữ liệu mây về?")) return;
             try {
-                const snap = await db.ref('meoOS_V38').once('value');
+                const snap = await db.ref('meoOS_V38_9').once('value');
                 const val = snap.val();
                 if(val) {
                     localStorage.setItem('dashboardData', val.dashboard);
                     localStorage.setItem('zetmeo_xp_total', val.xp);
                     localStorage.setItem('zetmeo_rpg_config', val.config);
+                    localStorage.setItem('zetmeo_notes', val.notes);
+                    localStorage.setItem('zetmeo_braindom', val.braindom);
+                    localStorage.setItem('zetmeo_writer', val.writer);
                     location.reload();
                 }
             } catch(e) { alert("Lỗi tải!"); }
         }
 
-        // --- RENDERER (V35.9 RESTORED) ---
+        // --- RENDERER ---
         function renderDashboard(val) {
             const board = document.getElementById('taskboard'); board.innerHTML = "";
-            const boxes = val.split(/(?=# )/);
-            boxes.forEach(box => {
+            val.split(/(?=# )/).forEach(box => {
                 const lines = box.split('\n'); if(!lines[0].startsWith('#')) return;
                 const title = lines[0].replace('# ', '').trim();
                 const boxDiv = document.createElement('div'); boxDiv.className = 'box';
-                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2><button class="pink-btn" style="padding:2px 10px" onclick="addTask('${title}')">+</button></div>`;
+                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2><span class="note-trigger" onclick="openNote('${title}')">📝</span></div>`;
                 const list = document.createElement('ul'); list.className = 'task-list';
-                lines.slice(1).forEach((line) => {
+                lines.slice(1).forEach(line => {
                     if(!line.trim().startsWith('- [')) return;
-                    const spaces = line.match(/^ */)[0].length;
-                    const lv = spaces >= 4 ? 3 : (spaces >= 2 ? 2 : 1);
-                    const isChecked = line.includes('[x]');
-                    const cleanText = line.replace(/^\s*- \[[ x]\] /, '');
-                    const li = document.createElement('li');
-                    li.className = `task-item level-${lv} ${isChecked ? 'checked' : ''}`;
-                    li.setAttribute('data-level', lv);
-                    li.innerHTML = `<div class="toggle-btn" onclick="toggleFolding(this)">${lv < 3 ? '▼' : ''}</div><input type="checkbox" class="custom-cb" ${isChecked ? 'checked' : ''} onchange="toggleTask(this, '${title}', '${cleanText.replace(/'/g, "\\'")}')"><input type="text" class="task-text" value="${cleanText}" onchange="updateDOMToData()">`;
+                    const sp = line.match(/^ */)[0].length;
+                    const lv = sp >= 4 ? 3 : (sp >= 2 ? 2 : 1);
+                    const chk = line.includes('[x]');
+                    const txt = line.replace(/^\s*- \[[ x]\] /, '');
+                    const li = document.createElement('li'); li.className = `task-item level-${lv} ${chk ? 'checked' : ''}`; li.setAttribute('data-level', lv);
+                    li.innerHTML = `<div class="toggle-btn" onclick="toggleFolding(this)">${lv<3?'▼':''}</div><input type="checkbox" class="custom-cb" ${chk?'checked':''} onchange="toggleTask(this,'${title}','${txt.replace(/'/g,"\\'")}')"><input type="text" class="task-text" value="${txt}" onchange="updateDOMToData()">`;
                     list.appendChild(li);
                 });
                 boxDiv.appendChild(list); board.appendChild(boxDiv);
-                new Sortable(list, { group: 'shared', animation: 150, disabled: isMobile, onEnd: updateDOMToData });
+                new Sortable(list, { group:'shared', animation:150, disabled:isMobile, onEnd:updateDOMToData });
             });
             localStorage.setItem('dashboardData', val);
-            initUIContent();
+            initStudios();
         }
 
-        function toggleFolding(btn) {
-            const li = btn.closest('.task-item'); const lv = parseInt(li.getAttribute('data-level'));
-            const isRotated = btn.classList.toggle('rotated'); let next = li.nextElementSibling;
-            while(next) {
-                const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break;
-                if(isRotated) next.classList.add('hidden-task');
-                else { next.classList.remove('hidden-task'); const subBtn = next.querySelector('.toggle-btn'); if(subBtn && subBtn.classList.contains('rotated')) { let sLv = nLv; let skip = next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip = skip.nextElementSibling; next = skip; continue; } }
-                next = next.nextElementSibling;
-            }
+        // --- SESSION NOTES ---
+        function openNote(session) {
+            activeNoteSession = session;
+            document.getElementById('note-modal-title').innerText = "📝 GHI CHÚ: " + session;
+            document.getElementById('note-input').value = sessionNotes[session] || "";
+            document.getElementById('note-modal').style.display = 'flex';
         }
-
-        // --- ACTIONS ---
-        function saveAll() {
-            const data = document.getElementById('task-editor').value;
-            rpgConfig.goalsStr = document.getElementById('goals-area').value;
-            rpgConfig.rewardsStr = document.getElementById('rewards-area').value;
-            rpgConfig.levelsStr = document.getElementById('level-titles-area').value;
-            rpgConfig.fbUrl = document.getElementById('fb-db').value.trim();
-            
-            localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig));
-            localStorage.setItem('dashboardData', data);
-            renderDashboard(data); updateRPGUI(); saveToHistory(data); closeAdmin();
+        function saveNote() {
+            sessionNotes[activeNoteSession] = document.getElementById('note-input').value;
+            localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes));
+            document.getElementById('note-modal').style.display = 'none';
         }
+        function deleteNote() { if(confirm("Xóa note này?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display = 'none'; } }
 
-        function updateDOMToData() {
-            let dataArr = []; document.querySelectorAll('.box').forEach(box => {
-                const title = box.querySelector('.box-title').innerText.replace('▼ ', '').replace('▶ ', ''); dataArr.push(`# ${title}`);
-                box.querySelectorAll('.task-item').forEach(li => {
-                    const cb = li.querySelector('.custom-cb').checked ? '[x]' : '[ ]'; const txt = li.querySelector('.task-text').value;
-                    const lv = parseInt(li.getAttribute('data-level')); const sp = lv === 3 ? '    ' : (lv === 2 ? '  ' : '');
-                    dataArr.push(`${sp}- ${cb} ${txt}`);
-                }); dataArr.push("");
-            }); localStorage.setItem('dashboardData', dataArr.join('\n').trim());
+        // --- STUDIOS ---
+        function initStudios() {
+            ['braindom', 'writer'].forEach(s => {
+                const val = localStorage.getItem('zetmeo_'+s) || "Chưa có nội dung...";
+                document.getElementById(s+'-display').innerText = val;
+                document.getElementById(s+'-input').value = val;
+            });
         }
+        function toggleEditStudio(s) {
+            const disp = document.getElementById(s+'-display');
+            const inp = document.getElementById(s+'-input');
+            if(inp.style.display === 'block') { inp.style.display = 'none'; disp.style.display = 'block'; }
+            else { inp.style.display = 'block'; disp.style.display = 'none'; inp.focus(); }
+        }
+        function saveStudio(s) {
+            const val = document.getElementById(s+'-input').value;
+            localStorage.setItem('zetmeo_'+s, val);
+            document.getElementById(s+'-display').innerText = val;
+            document.getElementById(s+'-input').style.display = 'none';
+            document.getElementById(s+'-display').style.display = 'block';
+        }
+        function copyStudio(s) { navigator.clipboard.writeText(document.getElementById(s+'-input').value); alert("Đã copy!"); }
+        function clearStudio(s) { if(confirm("Dọn sạch Studio này?")) { document.getElementById(s+'-input').value = ""; saveStudio(s); } }
 
-        function toggleTask(cb, boxName, text) {
+        // --- LOGIC ---
+        function toggleTask(cb, box, txt) {
             const val = localStorage.getItem('dashboardData');
-            const pts = boxName.toUpperCase().includes('CORE') ? 10 : (boxName.toUpperCase().includes('FOUNDATION') ? 8 : 2.5);
-            const newLines = val.split('\n').map(l => l.includes(text) ? (cb.checked ? l.replace('[ ]', '[x]') : l.replace('[x]', '[ ]')) : l);
-            totalXP = cb.checked ? totalXP + pts : Math.max(0, totalXP - pts);
+            const pts = box.toUpperCase().includes('CORE')?10:(box.toUpperCase().includes('FOUNDATION')?8:2.5);
+            const newLines = val.split('\n').map(l => l.includes(txt)?(cb.checked?l.replace('[ ]','[x]'):l.replace('[x]','[ ]')):l);
+            totalXP = cb.checked?totalXP+pts:Math.max(0,totalXP-pts);
             localStorage.setItem('zetmeo_xp_total', totalXP);
             renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData();
             if(cb.checked) launchFireworks(pts);
         }
-
-        function addTask(boxTitle) {
-            const val = localStorage.getItem('dashboardData') || "";
-            const lines = val.split('\n'); const idx = lines.findIndex(l => l.includes('# ' + boxTitle));
-            lines.splice(idx + 1, 0, `- [ ] Nhập việc...`);
-            renderDashboard(lines.join('\n'));
-            if(isMobile) setTimeout(() => { const inps = document.querySelectorAll('.task-text'); inps[inps.length-1].scrollIntoView({behavior:'smooth'}); inps[inps.length-1].focus(); }, 300);
+        function updateDOMToData() {
+            let arr = []; document.querySelectorAll('.box').forEach(b => {
+                const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`);
+                b.querySelectorAll('.task-item').forEach(li => {
+                    const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]'; const txt = li.querySelector('.task-text').value;
+                    const lv = parseInt(li.getAttribute('data-level')); const sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`);
+                }); arr.push("");
+            }); localStorage.setItem('dashboardData', arr.join('\n').trim());
         }
-
         function updateRPGUI() {
-            const maps = rpgConfig.levelsStr.split('\n').map(l => { const [lv, name] = l.split('|').map(s => s.trim()); return { lv: parseInt(lv), name }; }).sort((a,b) => b.lv - a.lv);
-            let lv = 1; while (100 * Math.pow(lv, 1.5) <= totalXP) lv++;
-            const title = maps.find(t => lv >= t.lv)?.name || "Mầm Xanh";
-            const nextXP = Math.ceil(100 * Math.pow(lv, 1.5));
-            const prevXP = lv === 1 ? 0 : Math.ceil(100 * Math.pow(lv-1, 1.5));
-            const nextLevelData = maps.slice().reverse().find(t => t.lv > lv) || { lv: lv + 1, name: "Đỉnh Cao" };
-
-            document.getElementById('lv-display').innerText = `Lv. ${lv} - ${title}`;
+            const maps = rpgConfig.levels.split('\n').map(l => { const [lv,n]=l.split('|').map(s=>s.trim()); return {lv:parseInt(lv),n}; }).sort((a,b)=>b.lv-a.lv);
+            let lv = 1; while(100*Math.pow(lv,1.5)<=totalXP) lv++;
+            const nextL = maps.slice().reverse().find(t=>t.lv>lv) || {lv:lv+1,n:"Đỉnh Cao"};
+            const nextXP = Math.ceil(100*Math.pow(lv,1.5)), prevXP = lv===1?0:Math.ceil(100*Math.pow(lv-1,1.5));
+            document.getElementById('lv-display').innerText = `Lv. ${lv} - ${maps.find(t=>lv>=t.lv)?.n || "Mầm Xanh"}`;
             document.getElementById('xp-summary').innerText = `${totalXP}/10000 XP`;
-            document.getElementById('lv-fill').style.width = `${Math.min(100, ((totalXP-prevXP)/(nextXP-prevXP))*100)}%`;
-            document.getElementById('next-lv-text').innerText = `Anh meo còn ${nextXP - totalXP} XP nữa để đạt Lv ${nextLevelData.lv} - ${nextLevelData.name}`;
-            
+            document.getElementById('lv-fill').style.width = `${Math.min(100,((totalXP-prevXP)/(nextXP-prevXP))*100)}%`;
+            document.getElementById('next-lv-text').innerText = `Anh meo còn ${nextXP-totalXP} XP nữa là đạt được Lv ${nextL.lv} - ${nextL.n}`;
             const gList = document.getElementById('goals-list'); gList.innerHTML = "";
-            rpgConfig.goalsStr.split('\n').forEach(line => {
-                const [t, g, time] = line.split('|').map(s => s.trim());
-                if(t) gList.innerHTML += `<div class="goal-item"><div class="goal-header"><span>${t} / ${g}</span><span>${time}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,(totalXP/10000)*100)}%"></div></div></div>`;
+            rpgConfig.goals.split('\n').forEach(l => {
+                const [t,g,time]=l.split('|').map(s=>s.trim()); if(t) gList.innerHTML += `<div class="goal-item"><div class="goal-header"><span>${t} | ${g}</span><span>${time}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,(totalXP/10000)*100)}%"></div></div></div>`;
             });
         }
 
-        function initUIContent() {
-            const q = quotesDB[Math.floor(Math.random() * quotesDB.length)];
-            document.getElementById('quote-text').innerText = q.text; document.getElementById('quote-area').style.backgroundImage = `url('${q.img}')`;
-            const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
-            if(lamLine) document.getElementById('lam-msg').innerText = lamLine.replace('!!!', '').trim();
+        // --- UI ---
+        function saveAll() {
+            rpgConfig.goals = document.getElementById('goals-area').value;
+            rpgConfig.rewards = document.getElementById('rewards-area').value;
+            rpgConfig.levels = document.getElementById('levels-area').value;
+            rpgConfig.fbUrl = document.getElementById('fb-db').value.trim();
+            localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig));
+            localStorage.setItem('dashboardData', document.getElementById('task-editor').value);
+            renderDashboard(document.getElementById('task-editor').value); updateRPGUI(); closeAdmin();
         }
-
-        // --- ADMIN UTILS ---
         function openAdmin() { 
-            document.getElementById('task-editor').value = localStorage.getItem('dashboardData') || ""; 
-            document.getElementById('goals-area').value = rpgConfig.goalsStr;
-            document.getElementById('rewards-area').value = rpgConfig.rewardsStr;
-            document.getElementById('level-titles-area').value = rpgConfig.levelsStr;
-            document.getElementById('fb-db').value = rpgConfig.fbUrl; 
-            renderHistory(); document.getElementById('admin-modal').style.display = 'flex'; 
+            document.getElementById('task-editor').value = localStorage.getItem('dashboardData')||"";
+            document.getElementById('goals-area').value = rpgConfig.goals;
+            document.getElementById('rewards-area').value = rpgConfig.rewards;
+            document.getElementById('levels-area').value = rpgConfig.levels;
+            document.getElementById('fb-db').value = rpgConfig.fbUrl;
+            document.getElementById('admin-modal').style.display='flex'; 
         }
-        function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
-        function switchTab(e, id) { document.querySelectorAll('.tab-panel, .tab-btn').forEach(el => el.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
-        function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼') ? el.innerText.replace('▼', '▶') : el.innerText.replace('▶', '▼'); }
-        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = `<strong style="color:var(--main-color); display:block; margin-bottom:8px">🕒 Lịch sử phiên bản</strong>` + hist.map((h, i) => `<div style="background:#222; padding:8px; border-radius:8px; margin-bottom:5px; cursor:pointer; font-size:12px" onclick="restoreHist(${i})">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
-        function saveToHistory(data) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: data }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
-        function restoreHist(i) { const h = JSON.parse(localStorage.getItem('zetmeo_history'))[i]; if(confirm("Khôi phục?")) { renderDashboard(h.content); closeAdmin(); } }
-        function resetXP() { if(confirm("Reset toàn bộ XP?")) { totalXP = 0; localStorage.setItem('zetmeo_xp_total', 0); location.reload(); } }
-        
+        function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
+        function switchTab(e,id) { document.querySelectorAll('.tab-panel, .tab-btn').forEach(el=>el.classList.remove('active')); document.getElementById(id).classList.add('active'); e.currentTarget.classList.add('active'); }
+        function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼')?el.innerText.replace('▼','▶'):el.innerText.replace('▶','▼'); }
+        function toggleFolding(btn) {
+            const li = btn.closest('.task-item'); const lv = parseInt(li.getAttribute('data-level'));
+            const rot = btn.classList.toggle('rotated'); let next = li.nextElementSibling;
+            while(next) {
+                const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break;
+                if(rot) next.classList.add('hidden-task');
+                else { next.classList.remove('hidden-task'); const sub = next.querySelector('.toggle-btn'); if(sub && sub.classList.contains('rotated')) { let sLv=nLv; let skip=next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip=skip.nextElementSibling; next=skip; continue; } }
+                next = next.nextElementSibling;
+            }
+        }
         function handleBulk(sel) {
-            const data = localStorage.getItem('dashboardData');
-            if(sel.value === 'archive') { const lines = data.split('\n'); renderDashboard(lines.filter(l => !l.includes('[x]')).join('\n')); alert("Đã dọn kho!"); }
-            if(sel.value === 'backup') { navigator.clipboard.writeText(data); alert("Đã copy toàn bộ dữ liệu!"); }
-            if(sel.value === 'export') { const blob = new Blob([data], {type:'text/csv'}); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='zetmeo_tasks.csv'; a.click(); }
-            sel.value = "";
+            const d = localStorage.getItem('dashboardData');
+            if(sel.value==='archive') { renderDashboard(d.split('\n').filter(l=>!l.includes('[x]')).join('\n')); alert("Đã dọn dẹp!"); }
+            if(sel.value==='backup') { navigator.clipboard.writeText(d); alert("Đã copy!"); }
+            sel.value="";
         }
-
         function launchFireworks(pts) { 
-            const p = document.getElementById('celeb-popup'); p.innerText = `Yeah A meo! +${pts} XP.`; p.style.display = 'block'; setTimeout(() => p.style.display = 'none', 2500); 
-            const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let parts = []; for(let i=0;i<40;i++) parts.push({x:canvas.width/2, y:canvas.height/2, vx:(Math.random()-0.5)*12, vy:(Math.random()-0.5)*12, color:`hsl(${Math.random()*360},100%,50%)`, life:1});
-            function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i) => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.15; p.life-=0.02; ctx.fillStyle=p.color; ctx.globalAlpha=p.life; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill(); if(p.life<=0) parts.splice(i,1); }); if(parts.length) requestAnimationFrame(draw); } draw();
+            const p = document.getElementById('celeb-popup'); p.innerText = `Yeah A meo! +${pts} XP.`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500); 
+            const canvas = document.getElementById('fireworks'); const ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+            let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1});
+            function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw();
         }
+        function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
 
-        window.onload = () => { renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Bắt đầu hành trình"); updateRPGUI(); };
+        window.onload = () => { 
+            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Task chiến lược"); 
+            updateRPGUI(); 
+            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực.", "Cộng hưởng để đi xa."];
+            document.getElementById('quote-text').innerText = q[Math.floor(Math.random()*q.length)];
+            document.getElementById('quote-area').style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')";
+        };
     </script>
 </body>
 </html>
