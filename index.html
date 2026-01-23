@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V40.2 (Archive UI Refined)</title>
+    <title>zetmeoOS - V40.3 (Admin UI Evolution)</title>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
 
@@ -38,7 +38,7 @@
         #sync-badge.status-synced { background: #2ecc71; color: #fff; display: flex !important; }
         #sync-countdown { background: var(--main-color); color: #fff; display: none; border: 2px solid rgba(255,255,255,0.2); }
 
-        /* SESSION 1: RPG HEADER */
+        /* RPG HEADER */
         .rpg-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .rpg-box { background: var(--bg-box); border-radius: 20px; padding: 15px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
         .profile-area { text-align: center; align-items: center; }
@@ -54,7 +54,7 @@
         body.light-mode .goal-header-inside { color: #333; }
         .avatar-xp-bar { height: 20px; border-radius: 10px; margin: 10px 0; width: 85%; }
 
-        /* SESSION 2: GUIDE */
+        /* GUIDE */
         .guide-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .guide-box { background: var(--bg-box); border-radius: 20px; min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 18px; border: 1px solid var(--border-color); position: relative; overflow: hidden; }
         #quote-area { background-size: cover; background-position: center; }
@@ -82,6 +82,12 @@
         .rotated { transform: rotate(-90deg); display: inline-block; }
         .hidden-task { display: none !important; }
 
+        /* STUDIO */
+        .studio-box { background: var(--bg-box); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; margin-bottom: 22px; border-left: 4px solid var(--main-color); }
+        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; text-transform: uppercase; }
+        .studio-btn { background: #333; color: #eee; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.75em; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .studio-textarea { width: 100%; height: 140px; background: var(--input-bg); color: var(--accent-green); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; font-family: monospace !important; resize: vertical; outline: none; font-size: 15px; }
+
         /* FOOTER VERSION */
         .footer-version { text-align: center; color: #444; font-size: 9px; font-weight: 700; margin: 30px 0; letter-spacing: 3px; text-transform: uppercase; }
 
@@ -92,51 +98,91 @@
         .menu-item.active { color: var(--main-color); }
         .menu-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
 
-        /* MODALS */
+        /* ARCHIVE UI */
+        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
+        .archive-time { font-size: 10px; color: var(--text-color); opacity: 0.5; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
+
+        /* MODALS & TABS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
         body.light-mode .modal { background: rgba(255,255,255,0.96); }
         .modal-content { background: var(--bg-box); border-radius: 25px; width: 100%; max-width: 950px; height: 92vh; display: flex; flex-direction: column; border: 1px solid var(--border-color); overflow: hidden; }
+        
+        /* ADMIN TABS HEADER - CHIA ĐỀU & CANH CHUẨN */
+        .tab-btn-group { 
+            display: flex; 
+            width: 100%;
+            padding: 10px 15px 0 15px; 
+            border-bottom: 1px solid var(--border-color); 
+            background: rgba(0,0,0,0.2); 
+            gap: 5px;
+        }
+        .tab-btn { 
+            flex: 1; /* Chia đều 4 tab */
+            background: none; 
+            border: none; 
+            color: #666; 
+            padding: 15px 5px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-size: 0.85em; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .tab-btn.active { 
+            color: var(--main-color); 
+            background: rgba(255, 133, 162, 0.08);
+            border-bottom: 3px solid var(--main-color); 
+        }
+
         .modal-body { flex-grow: 1; padding: 25px; overflow-y: auto; font-size: 17px; }
-        .tab-btn-group { display: flex; padding: 8px 15px; border-bottom: 1px solid var(--border-color); overflow-x: auto; white-space: nowrap; gap: 8px; background: rgba(0,0,0,0.2); }
-        .tab-btn { background: none; border: none; color: #666; padding: 12px 18px; font-weight: 700; cursor: pointer; font-size: 0.85em; text-transform: uppercase; }
-        .tab-btn.active { color: var(--main-color); border-bottom: 2px solid var(--main-color); }
         .tab-panel { display: none; }
         .tab-panel.active { display: block !important; }
 
         textarea, input { width: 100%; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; font-size: 17px; outline: none; margin-bottom: 15px; font-weight: 600; }
         
-        /* 3. MODAL FOOTER BUTTONS (CENTERED & LARGE) */
-        .modal-footer { padding: 25px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; gap: 20px; background: var(--bg-body); }
-        .modal-footer button { flex: none; min-width: 180px; padding: 16px 30px; font-size: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        /* MODAL FOOTER BUTTONS - CANH GIỮA & TO */
+        .modal-footer { 
+            padding: 30px; 
+            border-top: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 25px; 
+            background: var(--bg-body); 
+        }
+        .modal-footer button { 
+            flex: none; 
+            min-width: 220px; /* Tăng kích thước nút */
+            padding: 18px 35px; 
+            font-size: 17px; 
+            border-radius: 15px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         .pink-btn { background: var(--main-color); color: white; border: none; }
         .grey-btn { background: #333; color: #ccc; border: none; }
         body.light-mode .grey-btn { background: #e0e0e0; color: #333; }
 
-        /* 1. ARCHIVE TAB SPECIFIC BUTTON STYLING */
-        #tab-archive .pink-btn, 
-        #tab-archive .grey-btn,
-        #tab-archive select.grey-btn { 
-            height: 45px; 
-            border-radius: 12px !important; 
-            padding: 0 20px; 
-            font-size: 14px; 
-            min-width: auto; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
+        /* ARCHIVE TAB BUTTONS */
+        #tab-archive .pink-btn, #tab-archive .grey-btn, #tab-archive select { 
+            height: 45px; border-radius: 12px !important; padding: 0 20px; font-size: 14px; min-width: auto; 
         }
-
-        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
-        .archive-time { font-size: 10px; color: var(--text-color); opacity: 0.5; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
 
         .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
         .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
 
         @media (max-width: 600px) { 
             .rpg-container, .guide-container { grid-template-columns: 1fr; } 
-            .modal-footer { flex-direction: column; padding: 20px; }
+            .modal-footer { flex-direction: column; padding: 20px; gap: 15px; }
             .modal-footer button { width: 100%; min-width: 100%; }
+            .tab-btn { font-size: 0.7em; padding: 12px 2px; }
         }
     </style>
 </head>
@@ -150,7 +196,7 @@
     <div class="rpg-container">
         <div class="rpg-box profile-area">
             <img id="mascot-img" class="mascot-img" src="https://getdrawings.com/free-icon/cat-icon-png-53.png">
-            <div id="lv-display" class="level-title">...</div>
+            <div id="lv-display" class="level-title">Đang tải...</div>
             <div class="progress-bar avatar-xp-bar"><div id="lv-fill" class="progress-fill" style="width: 0%"></div></div>
             <div id="next-lv-text" class="next-lv-msg">...</div>
         </div>
@@ -192,7 +238,7 @@
         <textarea id="writer-input" class="studio-textarea" placeholder="Viết nháp sâu..."></textarea>
     </div>
 
-    <div class="footer-version">ZETMEO OS V40.2 - MASTER STABLE</div>
+    <div class="footer-version">ZETMEO OS V40.3 - MASTER STABLE</div>
 
     <div class="floating-nav">
         <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
@@ -217,17 +263,17 @@
             
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
-                    <label class="sync-label">Auto-Sync (phút) - Nhập 0 để tắt</label>
+                    <label class="sync-label">Đồng bộ tự động (phút) - Nhập 0 để tắt</label>
                     <input type="number" id="auto-sync-min" placeholder="1">
                     <textarea id="task-editor" style="height:400px" spellcheck="false"></textarea>
-                    <strong class="sync-label">🕒 Lịch sử phiên bản</strong>
-                    <div id="history-container" style="display:flex; flex-direction:column; gap:5px; margin-top:10px"></div>
+                    <strong class="sync-label">🕒 Lịch sử phiên bản (Backup)</strong>
+                    <div id="history-container" style="display:flex; flex-direction:column; gap:8px"></div>
                 </div>
 
                 <div id="tab-archive" class="tab-panel">
                     <div style="display:flex; gap:10px; margin-bottom:20px; align-items:center">
                         <button class="pink-btn" onclick="archiveDoneTasks()">🧹 Dọn dẹp Done</button>
-                        <select id="archive-sort" class="grey-btn" onchange="renderKhoTask()">
+                        <select id="archive-sort" class="grey-btn" style="height:45px" onchange="renderKhoTask()">
                             <option value="newest">Mới nhất trước</option>
                             <option value="oldest">Cũ nhất trước</option>
                         </select>
@@ -238,9 +284,12 @@
 
                 <div id="tab-rpg" class="tab-panel">
                     <button class="grey-btn" id="theme-toggle" style="width:100%; margin-bottom:20px" onclick="toggleTheme()">Tắt Night Mode</button>
-                    <label class="sync-label">MỤC TIÊU | NHÓM | HẠN</label><textarea id="goals-area" style="height:120px"></textarea>
-                    <label class="sync-label">LEVEL | PHẦN THƯỞNG</label><textarea id="rewards-area" style="height:100px"></textarea>
-                    <label class="sync-label">LEVEL | DANH HIỆU</label><textarea id="levels-area" style="height:100px"></textarea>
+                    <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
+                    <textarea id="goals-area" style="height:120px"></textarea>
+                    <label class="sync-label">PHẦN THƯỞNG (LEVEL | QUÀ)</label>
+                    <textarea id="rewards-area" style="height:100px"></textarea>
+                    <label class="sync-label">DANH HIỆU LEVEL (LEVEL | TÊN)</label>
+                    <textarea id="levels-area" style="height:100px"></textarea>
                     <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
                 </div>
 
@@ -276,33 +325,40 @@
         let taskArchive = JSON.parse(localStorage.getItem('zetmeo_task_archive')) || [];
         let studioArchives = JSON.parse(localStorage.getItem('zetmeo_studio_archive')) || { braindom: [], writer: [] };
         let sessionNotes = JSON.parse(localStorage.getItem('zetmeo_notes')) || {};
+        let activeNoteSession = "";
         let autoSyncSecs = 0, syncInterval = null;
 
+        // --- FIXED TAB SYSTEM ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            const btnMap = {'tab-task': 'btn-task', 'tab-archive': 'btn-archive', 'tab-rpg': 'btn-rpg', 'tab-fb': 'btn-fb'};
-            document.getElementById(btnMap[tabId]).classList.add('active');
+            const btnId = tabId.replace('tab-', 'btn-');
+            document.getElementById(btnId).classList.add('active');
         }
 
-        function startAutoSyncEngine() {
-            if(syncInterval) clearInterval(syncInterval);
-            const mins = parseInt(rpgConfig.autoSyncMin); if(mins <= 0) return;
-            autoSyncSecs = mins * 60;
-            syncInterval = setInterval(() => {
-                if(document.getElementById('admin-modal').style.display === 'flex') return;
-                autoSyncSecs--;
-                const countdownEl = document.getElementById('sync-countdown');
-                if(autoSyncSecs <= 10 && autoSyncSecs > 0) { countdownEl.style.display='block'; countdownEl.innerText=`☁️ LƯU SAU ${autoSyncSecs}S...`; } else { countdownEl.style.display='none'; }
-                if(autoSyncSecs <= 0) { syncUp(true); autoSyncSecs = mins * 60; }
-            }, 1000);
+        // --- FIXED OPEN ADMIN ---
+        function openAdmin() {
+            document.getElementById('auto-sync-min').value = rpgConfig.autoSyncMin;
+            document.getElementById('task-editor').value = localStorage.getItem('dashboardData') || "";
+            document.getElementById('goals-area').value = rpgConfig.goals;
+            document.getElementById('rewards-area').value = rpgConfig.rewards;
+            document.getElementById('levels-area').value = rpgConfig.levels;
+            document.getElementById('fb-db').value = rpgConfig.fbUrl;
+            renderKhoTask();
+            renderHistory();
+            document.getElementById('admin-modal').style.display = 'flex';
         }
 
+        function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
+
+        // --- FIREBASE ENGINE ---
         function getDB() { if(!rpgConfig.fbUrl) return null; if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl}); return firebase.database(); }
+        
         async function syncUp(silent = false) {
             const db = getDB(); if(!db) return silent ? null : alert("Cài Firebase URL!");
-            const badge = document.getElementById('sync-badge'); if(!silent) { badge.style.display='flex'; badge.className='status-waiting'; badge.innerText = "⏳ Pushing..."; }
+            const badge = document.getElementById('sync-badge');
+            if(!silent) { badge.style.display='flex'; badge.className='status-waiting'; badge.innerText = "⏳ Pushing..."; }
             try {
                 await db.ref('meoOS_V40').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig), taskArchive: JSON.stringify(taskArchive), studioArchive: JSON.stringify(studioArchives), notes: JSON.stringify(sessionNotes) });
                 if(silent) { badge.style.display='flex'; badge.className='status-synced'; badge.innerText="☁️ Auto-Synced"; setTimeout(()=>badge.style.display='none', 1500); }
@@ -325,6 +381,7 @@
             } catch(e) { alert("Download lỗi!"); }
         }
 
+        // --- CORE ENGINE ---
         function renderDashboard(val) {
             const board = document.getElementById('taskboard'); board.innerHTML = "";
             val.split(/(?=# )/).forEach(box => {
@@ -372,7 +429,7 @@
             const now = new Date(); const ts = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()}`;
             studioArchives[type].unshift({ time: ts, content: v });
             localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));
-            document.getElementById(type + '-input').value = ""; alert("Đã vào Kho!");
+            document.getElementById(type + '-input').value = ""; alert("Đã lưu!");
         }
 
         function openStudioArchive(type) {
@@ -393,7 +450,7 @@
             if(!done.length) return alert("Trống!");
             done.forEach(t => taskArchive.unshift({ time: new Date().toLocaleString(), text: t.replace(/^\s*- \[x\] /, '').trim() }));
             localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
-            localStorage.setItem('dashboardData', remain.join('\n')); renderDashboard(remain.join('\n')); renderKhoTask(); alert("Đã dọn!");
+            localStorage.setItem('dashboardData', remain.join('\n')); renderDashboard(remain.join('\n')); renderKhoTask();
         }
 
         function renderKhoTask() {
@@ -423,8 +480,6 @@
             renderDashboard(data); updateRPGUI(); startAutoSyncEngine(); closeAdmin(); alert("Đã lưu!");
         }
 
-        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
-        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:11px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="renderDashboard('${h.content.replace(/'/g,"\\'")}')">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
         function toggleTheme() { rpgConfig.lightMode = !rpgConfig.lightMode; applyTheme(); localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig)); }
         function applyTheme() { const btn = document.getElementById('theme-toggle'); if(rpgConfig.lightMode) { document.body.classList.add('light-mode'); if(btn) btn.innerText = "Bật Night Mode"; } else { document.body.classList.remove('light-mode'); if(btn) btn.innerText = "Tắt Night Mode"; } }
         function toggleTask(cb, box, txt) { const pts = box.toUpperCase().includes('CORE')?10:(box.toUpperCase().includes('FOUNDATION')?8:2.5); const d = localStorage.getItem('dashboardData'), newLines = d.split('\n').map(l => l.includes(txt)?(cb.checked?l.replace('[ ]','[x]'):l.replace('[x]','[ ]')):l); totalXP = cb.checked?totalXP+pts:Math.max(0,totalXP-pts); localStorage.setItem('zetmeo_xp_total', totalXP); renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData(); if(cb.checked) launchFireworks(pts); }
@@ -432,14 +487,33 @@
         function toggleFolding(btn) { const li = btn.closest('.task-item'), lv = parseInt(li.getAttribute('data-level')), rot = btn.classList.toggle('rotated'); let next = li.nextElementSibling; while(next) { const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break; if(rot) next.classList.add('hidden-task'); else { next.classList.remove('hidden-task'); const sub = next.querySelector('.toggle-btn'); if(sub && sub.classList.contains('rotated')) { let sLv=nLv, skip=next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip=skip.nextElementSibling; next=skip; continue; } } next = next.nextElementSibling; } }
         function openNote(s) { activeNoteSession=s; document.getElementById('note-modal-title').innerText="📝 NOTE: "+s; document.getElementById('note-input').value=sessionNotes[s]||""; document.getElementById('note-modal').style.display='flex'; }
         function saveNote() { sessionNotes[activeNoteSession]=document.getElementById('note-input').value; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; }
-        function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
+        function deleteNote() { if(confirm("Xóa?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; } }
+        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:13px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="renderDashboard('${h.content.replace(/'/g,"\\'")}')">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
+        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
         function launchFireworks(pts) { const canvas = document.getElementById('fireworks'), ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight; let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1}); function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw(); const p = document.getElementById('celeb-popup'); p.innerText=`Yeah! +${pts} XP`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500); }
         function exportCSV() { const blob = new Blob([localStorage.getItem('dashboardData')], {type:'text/csv'}); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='tasks.csv'; a.click(); }
         function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
+        function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼')?el.innerText.replace('▼','▶'):el.innerText.replace('▶','▼'); }
+
+        function startAutoSyncTimer() {
+            const mins = parseInt(rpgConfig.autoSyncMin); if(mins <= 0) return;
+            autoSyncSecs = mins * 60;
+            if(syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(() => {
+                if(document.getElementById('admin-modal').style.display === 'flex') return;
+                autoSyncSecs--;
+                const countdownEl = document.getElementById('sync-countdown');
+                if(autoSyncSecs <= 10 && autoSyncSecs > 0) { countdownEl.style.display='block'; countdownEl.innerText=`☁️ LƯU SAU ${autoSyncSecs}S...`; } else { countdownEl.style.display='none'; }
+                if(autoSyncSecs <= 0) { syncUp(true); autoSyncSecs = mins * 60; }
+            }, 1000);
+        }
 
         window.onload = () => { 
-            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Bắt đầu"); updateRPGUI(); applyTheme(); startAutoSyncEngine();
-            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực."]; document.getElementById('quote-text').innerText = `Anh meo ơi! "${q[Math.floor(Math.random()*q.length)]}"`;
+            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Khởi đầu"); 
+            updateRPGUI(); applyTheme(); startAutoSyncTimer();
+            const quotes = [{text: "Sáng tạo là sự kết tinh của kỷ luật.", author: "Zetmeo"}, {text: "ADHD là một siêu năng lực.", author: "Lam"}];
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote-text').innerText = `Anh meo ơi! "${q.text}" - ${q.author}`;
             document.getElementById('quote-area').style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')";
             const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
             if(lamLine) document.getElementById('lam-msg').innerText = lamLine.replace('!!!', '').trim();
