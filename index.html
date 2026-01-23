@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V40.3 (Admin UI Evolution)</title>
+    <title>zetmeoOS - V40.4 (Mobile Optimized)</title>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
 
@@ -36,9 +36,10 @@
         #sync-badge, #sync-countdown { position: fixed; top: 15px; right: 15px; z-index: 9999; padding: 8px 16px; border-radius: 25px; font-size: 0.75em; font-weight: 800; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-transform: uppercase; }
         #sync-badge.status-waiting { background: #f1c40f; color: #222; display: flex !important; }
         #sync-badge.status-synced { background: #2ecc71; color: #fff; display: flex !important; }
+        #sync-badge.status-local { background: var(--main-color); color: #fff; display: flex !important; }
         #sync-countdown { background: var(--main-color); color: #fff; display: none; border: 2px solid rgba(255,255,255,0.2); }
 
-        /* RPG HEADER */
+        /* SESSION 1: RPG HEADER */
         .rpg-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .rpg-box { background: var(--bg-box); border-radius: 20px; padding: 15px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
         .profile-area { text-align: center; align-items: center; }
@@ -66,124 +67,76 @@
         .lam-avatar { font-size: 2em; margin-bottom: 5px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-6px);} }
 
-        /* TASK LIST */
+        /* TASK LIST & TEXTAREA AUTO-WRAP */
         .box { background: var(--bg-box); border-radius: 20px; padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); }
         .box-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; }
         .box-title { color: var(--main-color); font-weight: 800; font-size: 1.1em; margin: 0; cursor: pointer; }
-        .task-item { display: flex; align-items: center; padding: 7px 0; }
+        .task-list { list-style: none; padding: 0; margin: 0; min-height: 20px; }
+        .task-item { display: flex; align-items: flex-start; padding: 8px 0; }
         .task-item.level-2 { margin-left: 28px; }
         .task-item.level-3 { margin-left: 55px; }
-        .custom-cb { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--main-color); border-radius: 50%; cursor: pointer; position: relative; margin-right: 12px; flex-shrink: 0; }
+        .custom-cb { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--main-color); border-radius: 50%; cursor: pointer; position: relative; margin-right: 12px; margin-top: 4px; flex-shrink: 0; }
         .custom-cb:checked { background: var(--main-color); }
         .custom-cb:checked::after { content: "✓"; color: white; position: absolute; left: 50%; top: 45%; transform: translate(-50%, -50%); font-size: 13px; font-weight: 900; }
-        .task-text { flex-grow: 1; border: none; background: transparent; color: var(--text-color); font-size: 1em; padding: 4px; outline: none; width: 100%; font-weight: 600; }
+        
+        /* MOBILE TEXT WRAP FIX */
+        .task-text { 
+            flex-grow: 1; border: none; background: transparent; color: var(--text-color); 
+            font-size: 1em; padding: 4px; outline: none; width: 100%; font-weight: 600; 
+            resize: none; overflow: hidden; height: auto; display: block; line-height: 1.4;
+        }
         .task-item.checked .task-text { color: var(--done-color); opacity: 0.6; text-decoration: line-through; }
-        .toggle-btn { margin-right: 6px; font-size: 0.7em; color: #666; cursor: pointer; width: 18px; text-align: center; }
+        .toggle-btn { margin-right: 6px; font-size: 0.7em; color: #666; cursor: pointer; width: 18px; text-align: center; margin-top: 6px; transition: 0.3s; }
         .rotated { transform: rotate(-90deg); display: inline-block; }
         .hidden-task { display: none !important; }
 
         /* STUDIO */
         .studio-box { background: var(--bg-box); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; margin-bottom: 22px; border-left: 4px solid var(--main-color); }
-        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; text-transform: uppercase; }
+        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; text-transform: uppercase; letter-spacing: 1px; }
         .studio-btn { background: #333; color: #eee; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.75em; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         .studio-textarea { width: 100%; height: 140px; background: var(--input-bg); color: var(--accent-green); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; font-family: monospace !important; resize: vertical; outline: none; font-size: 15px; }
 
         /* FOOTER VERSION */
         .footer-version { text-align: center; color: #444; font-size: 9px; font-weight: 700; margin: 30px 0; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* BOTTOM MENU */
+        /* BOTTOM MENU (MINIMALIST) */
         .bottom-menu { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-body); height: 80px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .menu-item { color: var(--dark-gray); cursor: pointer; display: flex; flex-direction: column; align-items: center; border: none; background: none; width: 25%; outline: none; transition: 0.3s; }
         .menu-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
         .menu-item.active { color: var(--main-color); }
         .menu-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
 
-        /* ARCHIVE UI */
-        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
-        .archive-time { font-size: 10px; color: var(--text-color); opacity: 0.5; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
-
-        /* MODALS & TABS */
+        /* MODALS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
         body.light-mode .modal { background: rgba(255,255,255,0.96); }
         .modal-content { background: var(--bg-box); border-radius: 25px; width: 100%; max-width: 950px; height: 92vh; display: flex; flex-direction: column; border: 1px solid var(--border-color); overflow: hidden; }
         
-        /* ADMIN TABS HEADER - CHIA ĐỀU & CANH CHUẨN */
-        .tab-btn-group { 
-            display: flex; 
-            width: 100%;
-            padding: 10px 15px 0 15px; 
-            border-bottom: 1px solid var(--border-color); 
-            background: rgba(0,0,0,0.2); 
-            gap: 5px;
-        }
-        .tab-btn { 
-            flex: 1; /* Chia đều 4 tab */
-            background: none; 
-            border: none; 
-            color: #666; 
-            padding: 15px 5px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            font-size: 0.85em; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            border-radius: 12px 12px 0 0;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .tab-btn.active { 
-            color: var(--main-color); 
-            background: rgba(255, 133, 162, 0.08);
-            border-bottom: 3px solid var(--main-color); 
-        }
+        .tab-btn-group { display: flex; width: 100%; padding: 10px 15px 0 15px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.2); gap: 5px; }
+        .tab-btn { flex: 1; background: none; border: none; color: #666; padding: 15px 5px; font-weight: 800; cursor: pointer; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px 12px 0 0; transition: all 0.3s ease; text-align: center; }
+        .tab-btn.active { color: var(--main-color); background: rgba(255, 133, 162, 0.08); border-bottom: 3px solid var(--main-color); }
 
         .modal-body { flex-grow: 1; padding: 25px; overflow-y: auto; font-size: 17px; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block !important; }
-
         textarea, input { width: 100%; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; font-size: 17px; outline: none; margin-bottom: 15px; font-weight: 600; }
         
-        /* MODAL FOOTER BUTTONS - CANH GIỮA & TO */
-        .modal-footer { 
-            padding: 30px; 
-            border-top: 1px solid var(--border-color); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 25px; 
-            background: var(--bg-body); 
-        }
+        /* 3. MODAL FOOTER BUTTONS (NO SHADOW & CENTERED) */
+        .modal-footer { padding: 30px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; gap: 25px; background: var(--bg-body); }
         .modal-footer button { 
-            flex: none; 
-            min-width: 220px; /* Tăng kích thước nút */
-            padding: 18px 35px; 
-            font-size: 17px; 
-            border-radius: 15px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            flex: none; min-width: 220px; padding: 18px 35px; font-size: 17px; 
+            border-radius: 15px; font-weight: 800; cursor: pointer; 
+            box-shadow: none !important; /* REMOVE SHADOW */
+            text-transform: uppercase; letter-spacing: 1px; 
         }
 
         .pink-btn { background: var(--main-color); color: white; border: none; }
         .grey-btn { background: #333; color: #ccc; border: none; }
         body.light-mode .grey-btn { background: #e0e0e0; color: #333; }
 
-        /* ARCHIVE TAB BUTTONS */
-        #tab-archive .pink-btn, #tab-archive .grey-btn, #tab-archive select { 
-            height: 45px; border-radius: 12px !important; padding: 0 20px; font-size: 14px; min-width: auto; 
-        }
-
         .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
         .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
 
-        @media (max-width: 600px) { 
-            .rpg-container, .guide-container { grid-template-columns: 1fr; } 
-            .modal-footer { flex-direction: column; padding: 20px; gap: 15px; }
-            .modal-footer button { width: 100%; min-width: 100%; }
-            .tab-btn { font-size: 0.7em; padding: 12px 2px; }
-        }
+        @media (max-width: 600px) { .rpg-container, .guide-container { grid-template-columns: 1fr; } .modal-footer { flex-direction: column; padding: 20px; gap: 15px; } .modal-footer button { width: 100%; min-width: 100%; } }
     </style>
 </head>
 <body>
@@ -238,7 +191,7 @@
         <textarea id="writer-input" class="studio-textarea" placeholder="Viết nháp sâu..."></textarea>
     </div>
 
-    <div class="footer-version">ZETMEO OS V40.3 - MASTER STABLE</div>
+    <div class="footer-version">ZETMEO OS V40.4 - MASTER STABLE</div>
 
     <div class="floating-nav">
         <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
@@ -260,42 +213,29 @@
                 <button class="tab-btn" id="btn-rpg" onclick="switchTab('tab-rpg')">RPG Config</button>
                 <button class="tab-btn" id="btn-fb" onclick="switchTab('tab-fb')">Firebase</button>
             </div>
-            
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
-                    <label class="sync-label">Đồng bộ tự động (phút) - Nhập 0 để tắt</label>
+                    <label class="sync-label">Đồng bộ tự động (phút)</label>
                     <input type="number" id="auto-sync-min" placeholder="1">
                     <textarea id="task-editor" style="height:400px" spellcheck="false"></textarea>
-                    <strong class="sync-label">🕒 Lịch sử phiên bản (Backup)</strong>
+                    <strong class="sync-label">🕒 Lịch sử phiên bản</strong>
                     <div id="history-container" style="display:flex; flex-direction:column; gap:8px"></div>
                 </div>
-
                 <div id="tab-archive" class="tab-panel">
                     <div style="display:flex; gap:10px; margin-bottom:20px; align-items:center">
-                        <button class="pink-btn" onclick="archiveDoneTasks()">🧹 Dọn dẹp Done</button>
-                        <select id="archive-sort" class="grey-btn" style="height:45px" onchange="renderKhoTask()">
-                            <option value="newest">Mới nhất trước</option>
-                            <option value="oldest">Cũ nhất trước</option>
-                        </select>
-                        <button class="grey-btn" onclick="exportCSV()">📊 Xuất CSV</button>
+                        <button class="pink-btn" style="min-width:auto; height:45px; border-radius:12px" onclick="archiveDoneTasks()">🧹 Dọn dẹp Done</button>
+                        <button class="grey-btn" style="min-width:auto; height:45px; border-radius:12px" onclick="exportCSV()">📊 Xuất CSV</button>
                     </div>
                     <div id="kho-task-list"></div>
                 </div>
-
                 <div id="tab-rpg" class="tab-panel">
                     <button class="grey-btn" id="theme-toggle" style="width:100%; margin-bottom:20px" onclick="toggleTheme()">Tắt Night Mode</button>
-                    <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
-                    <textarea id="goals-area" style="height:120px"></textarea>
-                    <label class="sync-label">PHẦN THƯỞNG (LEVEL | QUÀ)</label>
-                    <textarea id="rewards-area" style="height:100px"></textarea>
-                    <label class="sync-label">DANH HIỆU LEVEL (LEVEL | TÊN)</label>
-                    <textarea id="levels-area" style="height:100px"></textarea>
-                    <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
+                    <label class="sync-label">MỤC TIÊU | NHÓM | HẠN</label><textarea id="goals-area" style="height:120px"></textarea>
+                    <label class="sync-label">LEVEL | PHẦN THƯỞNG</label><textarea id="rewards-area" style="height:100px"></textarea>
+                    <label class="sync-label">LEVEL | DANH HIỆU</label><textarea id="levels-area" style="height:100px"></textarea>
                 </div>
-
                 <div id="tab-fb" class="tab-panel"><label class="sync-label">FIREBASE URL</label><input type="text" id="fb-db"></div>
             </div>
-
             <div class="modal-footer"><button class="pink-btn" onclick="saveAll()">LƯU TẤT CẢ</button><button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button></div>
         </div>
     </div>
@@ -328,7 +268,6 @@
         let activeNoteSession = "";
         let autoSyncSecs = 0, syncInterval = null;
 
-        // --- FIXED TAB SYSTEM ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -337,22 +276,19 @@
             document.getElementById(btnId).classList.add('active');
         }
 
-        // --- FIXED OPEN ADMIN ---
-        function openAdmin() {
-            document.getElementById('auto-sync-min').value = rpgConfig.autoSyncMin;
-            document.getElementById('task-editor').value = localStorage.getItem('dashboardData') || "";
-            document.getElementById('goals-area').value = rpgConfig.goals;
-            document.getElementById('rewards-area').value = rpgConfig.rewards;
-            document.getElementById('levels-area').value = rpgConfig.levels;
-            document.getElementById('fb-db').value = rpgConfig.fbUrl;
-            renderKhoTask();
-            renderHistory();
-            document.getElementById('admin-modal').style.display = 'flex';
+        function startAutoSyncEngine() {
+            if(syncInterval) clearInterval(syncInterval);
+            const mins = parseInt(rpgConfig.autoSyncMin); if(mins <= 0) return;
+            autoSyncSecs = mins * 60;
+            syncInterval = setInterval(() => {
+                if(document.getElementById('admin-modal').style.display === 'flex') return;
+                autoSyncSecs--;
+                const countdownEl = document.getElementById('sync-countdown');
+                if(autoSyncSecs <= 10 && autoSyncSecs > 0) { countdownEl.style.display='block'; countdownEl.innerText=`☁️ LƯU SAU ${autoSyncSecs}S...`; } else { countdownEl.style.display='none'; }
+                if(autoSyncSecs <= 0) { syncUp(true); autoSyncSecs = mins * 60; }
+            }, 1000);
         }
 
-        function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
-
-        // --- FIREBASE ENGINE ---
         function getDB() { if(!rpgConfig.fbUrl) return null; if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl}); return firebase.database(); }
         
         async function syncUp(silent = false) {
@@ -381,7 +317,7 @@
             } catch(e) { alert("Download lỗi!"); }
         }
 
-        // --- CORE ENGINE ---
+        // --- RENDERER (V35.9 ENGINE WITH AUTO-WRAP FIX) ---
         function renderDashboard(val) {
             const board = document.getElementById('taskboard'); board.innerHTML = "";
             val.split(/(?=# )/).forEach(box => {
@@ -395,8 +331,10 @@
                     const sp = line.match(/^ */)[0].length, lv = sp >= 4 ? 3 : (sp >= 2 ? 2 : 1);
                     const chk = line.includes('[x]'), txt = line.replace(/^\s*- \[[ x]\] /, '');
                     const li = document.createElement('li'); li.className = `task-item level-${lv} ${chk ? 'checked' : ''}`; li.setAttribute('data-level', lv);
-                    li.innerHTML = `<div class="toggle-btn" onclick="toggleFolding(this)">${lv<3?'▼':''}</div><input type="checkbox" class="custom-cb" ${chk?'checked':''} onchange="toggleTask(this,'${title}','${txt.replace(/'/g,"\\'")}')"><input type="text" class="task-text" value="${txt}" onchange="updateDOMToData()">`;
+                    li.innerHTML = `<div class="toggle-btn" onclick="toggleFolding(this)">${lv<3?'▼':''}</div><input type="checkbox" class="custom-cb" ${chk?'checked':''} onchange="toggleTask(this,'${title}','${txt.replace(/'/g,"\\'")}')"><textarea class="task-text" oninput="this.style.height='';this.style.height=this.scrollHeight+'px'" onchange="updateDOMToData()">${txt}</textarea>`;
                     list.appendChild(li);
+                    // Initial resize
+                    setTimeout(() => { const ta = li.querySelector('textarea'); ta.style.height = ta.scrollHeight + 'px'; }, 10);
                 });
                 board.appendChild(boxDiv);
                 new Sortable(list, { group:'shared', animation:150, disabled:isMobile, onEnd:updateDOMToData });
@@ -429,12 +367,11 @@
             const now = new Date(); const ts = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()}`;
             studioArchives[type].unshift({ time: ts, content: v });
             localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));
-            document.getElementById(type + '-input').value = ""; alert("Đã lưu!");
+            document.getElementById(type + '-input').value = ""; alert("Đã vào Kho!");
         }
 
         function openStudioArchive(type) {
-            const c = document.getElementById('studio-archive-list'); document.getElementById('studio-archive-title').innerText = "KHO: " + type.toUpperCase();
-            c.innerHTML = "";
+            const c = document.getElementById('studio-archive-list'); c.innerHTML = "";
             studioArchives[type].forEach((item, i) => {
                 const div = document.createElement('div'); div.className = "archive-item";
                 div.innerHTML = `<span class="archive-time">${item.time}</span><textarea id="st-${type}-${i}" class="archive-editor" rows="6">${item.content}</textarea>
@@ -456,12 +393,7 @@
         function renderKhoTask() {
             const c = document.getElementById('kho-task-list'), sort = document.getElementById('archive-sort').value;
             let list = [...taskArchive]; if(sort==='oldest') list.reverse();
-            c.innerHTML = list.length ? "" : "<p style='color:#666'>Trống...</p>";
-            list.forEach((t, i) => {
-                const div = document.createElement('div'); div.className = "archive-item";
-                div.innerHTML = `<span class="archive-time">${t.time}</span><div style="font-size:14px; margin-bottom:10px">${t.text}</div><button class="pink-btn" style="height:35px; min-width:auto; padding:0 15px" onclick="restoreTask(${i})">Khôi phục</button>`;
-                c.appendChild(div);
-            });
+            c.innerHTML = list.map((t, i) => `<div class="archive-item"><span class="archive-time">${t.time}</span><div style="font-size:14px; margin-bottom:10px">${t.text}</div><button class="pink-btn" style="height:35px; min-width:auto; padding:0 15px" onclick="restoreTask(${i})">Khôi phục</button></div>`).join('');
         }
 
         function restoreTask(i) {
@@ -477,7 +409,19 @@
             rpgConfig.levels = document.getElementById('levels-area').value; rpgConfig.fbUrl = document.getElementById('fb-db').value.trim();
             localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig));
             const data = document.getElementById('task-editor').value; localStorage.setItem('dashboardData', data); saveToHistory(data);
-            renderDashboard(data); updateRPGUI(); startAutoSyncEngine(); closeAdmin(); alert("Đã lưu!");
+            renderDashboard(data); updateRPGUI(); startAutoSyncEngine(); closeAdmin(); 
+            // SHOW "ĐÃ LƯU" NOTIFICATION
+            const badge = document.getElementById('sync-badge');
+            badge.innerText = "💾 ĐÃ LƯU CỤC BỘ"; badge.style.display='flex'; badge.className='status-local';
+            setTimeout(() => badge.style.display='none', 1500);
+        }
+
+        function openAdmin() { 
+            document.getElementById('auto-sync-min').value = rpgConfig.autoSyncMin;
+            document.getElementById('task-editor').value = localStorage.getItem('dashboardData')||"";
+            document.getElementById('goals-area').value = rpgConfig.goals; document.getElementById('rewards-area').value = rpgConfig.rewards;
+            document.getElementById('levels-area').value = rpgConfig.levels; document.getElementById('fb-db').value = rpgConfig.fbUrl;
+            renderKhoTask(); renderHistory(); document.getElementById('admin-modal').style.display='flex'; 
         }
 
         function toggleTheme() { rpgConfig.lightMode = !rpgConfig.lightMode; applyTheme(); localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig)); }
@@ -488,6 +432,7 @@
         function openNote(s) { activeNoteSession=s; document.getElementById('note-modal-title').innerText="📝 NOTE: "+s; document.getElementById('note-input').value=sessionNotes[s]||""; document.getElementById('note-modal').style.display='flex'; }
         function saveNote() { sessionNotes[activeNoteSession]=document.getElementById('note-input').value; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; }
         function deleteNote() { if(confirm("Xóa?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; } }
+        function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
         function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:13px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="renderDashboard('${h.content.replace(/'/g,"\\'")}')">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
         function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
         function launchFireworks(pts) { const canvas = document.getElementById('fireworks'), ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight; let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1}); function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw(); const p = document.getElementById('celeb-popup'); p.innerText=`Yeah! +${pts} XP`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500); }
@@ -495,22 +440,8 @@
         function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
         function toggleBox(el) { const list = el.parentElement.nextElementSibling; list.classList.toggle('hidden-task'); el.innerText = el.innerText.includes('▼')?el.innerText.replace('▼','▶'):el.innerText.replace('▶','▼'); }
 
-        function startAutoSyncTimer() {
-            const mins = parseInt(rpgConfig.autoSyncMin); if(mins <= 0) return;
-            autoSyncSecs = mins * 60;
-            if(syncInterval) clearInterval(syncInterval);
-            syncInterval = setInterval(() => {
-                if(document.getElementById('admin-modal').style.display === 'flex') return;
-                autoSyncSecs--;
-                const countdownEl = document.getElementById('sync-countdown');
-                if(autoSyncSecs <= 10 && autoSyncSecs > 0) { countdownEl.style.display='block'; countdownEl.innerText=`☁️ LƯU SAU ${autoSyncSecs}S...`; } else { countdownEl.style.display='none'; }
-                if(autoSyncSecs <= 0) { syncUp(true); autoSyncSecs = mins * 60; }
-            }, 1000);
-        }
-
         window.onload = () => { 
-            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Khởi đầu"); 
-            updateRPGUI(); applyTheme(); startAutoSyncTimer();
+            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Khởi đầu"); updateRPGUI(); applyTheme(); startAutoSyncEngine();
             const quotes = [{text: "Sáng tạo là sự kết tinh của kỷ luật.", author: "Zetmeo"}, {text: "ADHD là một siêu năng lực.", author: "Lam"}];
             const q = quotes[Math.floor(Math.random() * quotes.length)];
             document.getElementById('quote-text').innerText = `Anh meo ơi! "${q.text}" - ${q.author}`;
