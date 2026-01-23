@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>zetmeoOS - V40.1 (UI Perfect)</title>
+    <title>zetmeoOS - V40.2 (Archive UI Refined)</title>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>">
 
@@ -29,7 +29,6 @@
             --input-bg: #ffffff; --border-color: #dddddd;
         }
 
-        /* 2. TOÀN BỘ FONT QUICKSAND */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Quicksand', sans-serif !important; }
         body { background-color: var(--bg-body); color: var(--text-color); margin: 0; padding: 10px 10px 120px 10px; overflow-x: hidden; transition: background 0.3s ease; }
 
@@ -83,13 +82,7 @@
         .rotated { transform: rotate(-90deg); display: inline-block; }
         .hidden-task { display: none !important; }
 
-        /* STUDIO */
-        .studio-box { background: var(--bg-box); border: 1px solid var(--border-color); border-radius: 20px; padding: 18px; margin-bottom: 22px; border-left: 4px solid var(--main-color); }
-        .studio-title { font-weight: 800; color: var(--main-color); font-size: 1.1em; text-transform: uppercase; }
-        .studio-btn { background: #333; color: #eee; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.75em; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .studio-textarea { width: 100%; height: 140px; background: var(--input-bg); color: var(--accent-green); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; font-family: monospace !important; resize: vertical; outline: none; font-size: 15px; }
-
-        /* 4. FOOTER VERSION (CENTERED & 10% SMALLER) */
+        /* FOOTER VERSION */
         .footer-version { text-align: center; color: #444; font-size: 9px; font-weight: 700; margin: 30px 0; letter-spacing: 3px; text-transform: uppercase; }
 
         /* BOTTOM MENU */
@@ -99,17 +92,10 @@
         .menu-item.active { color: var(--main-color); }
         .menu-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
 
-        /* ARCHIVE UI */
-        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
-        .archive-time { font-size: 10px; color: var(--text-color); opacity: 0.5; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
-        .archive-editor { width: 100%; background: #000; color: #81c784; border: 1px solid #222; border-radius: 10px; padding: 10px; font-family: monospace !important; font-size: 14px; margin-bottom: 10px; }
-
-        /* MODALS & TABS */
+        /* MODALS */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 15px; }
         body.light-mode .modal { background: rgba(255,255,255,0.96); }
         .modal-content { background: var(--bg-box); border-radius: 25px; width: 100%; max-width: 950px; height: 92vh; display: flex; flex-direction: column; border: 1px solid var(--border-color); overflow: hidden; }
-        
-        /* 2. ADMIN FONT SIZE +10% */
         .modal-body { flex-grow: 1; padding: 25px; overflow-y: auto; font-size: 17px; }
         .tab-btn-group { display: flex; padding: 8px 15px; border-bottom: 1px solid var(--border-color); overflow-x: auto; white-space: nowrap; gap: 8px; background: rgba(0,0,0,0.2); }
         .tab-btn { background: none; border: none; color: #666; padding: 12px 18px; font-weight: 700; cursor: pointer; font-size: 0.85em; text-transform: uppercase; }
@@ -117,32 +103,32 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block !important; }
 
-        /* 2. INPUTS IN ADMIN +10% SIZE */
         textarea, input { width: 100%; background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; font-size: 17px; outline: none; margin-bottom: 15px; font-weight: 600; }
         
         /* 3. MODAL FOOTER BUTTONS (CENTERED & LARGE) */
-        .modal-footer { 
-            padding: 25px; 
-            border-top: 1px solid var(--border-color); 
-            display: flex; 
-            justify-content: center; 
+        .modal-footer { padding: 25px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; align-items: center; gap: 20px; background: var(--bg-body); }
+        .modal-footer button { flex: none; min-width: 180px; padding: 16px 30px; font-size: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        .pink-btn { background: var(--main-color); color: white; border: none; }
+        .grey-btn { background: #333; color: #ccc; border: none; }
+        body.light-mode .grey-btn { background: #e0e0e0; color: #333; }
+
+        /* 1. ARCHIVE TAB SPECIFIC BUTTON STYLING */
+        #tab-archive .pink-btn, 
+        #tab-archive .grey-btn,
+        #tab-archive select.grey-btn { 
+            height: 45px; 
+            border-radius: 12px !important; 
+            padding: 0 20px; 
+            font-size: 14px; 
+            min-width: auto; 
+            display: inline-flex; 
             align-items: center; 
-            gap: 20px; 
-            background: var(--bg-body); 
-        }
-        .modal-footer button { 
-            flex: none; 
-            min-width: 180px; 
-            padding: 16px 30px; 
-            font-size: 16px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            justify-content: center; 
         }
 
-        .pink-btn { background: var(--main-color); color: white; border: none; font-weight: 800; cursor: pointer; }
-        .grey-btn { background: #333; color: #ccc; border: none; font-weight: 800; cursor: pointer; }
-        body.light-mode .grey-btn { background: #e0e0e0; color: #333; }
-        .sync-label { font-size: 0.85em; color: var(--main-color); display: block; margin-bottom: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .archive-item { background: var(--input-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 3px solid var(--main-color); }
+        .archive-time { font-size: 10px; color: var(--text-color); opacity: 0.5; margin-bottom: 8px; display: block; font-weight: 800; text-transform: uppercase; }
 
         .floating-nav { position: fixed; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 10px; z-index: 90; }
         .nav-circle { width: 45px; height: 45px; background: #2a2a2a; border: 1px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; opacity: 0.8; font-size: 20px; }
@@ -164,7 +150,7 @@
     <div class="rpg-container">
         <div class="rpg-box profile-area">
             <img id="mascot-img" class="mascot-img" src="https://getdrawings.com/free-icon/cat-icon-png-53.png">
-            <div id="lv-display" class="level-title">Đang tải...</div>
+            <div id="lv-display" class="level-title">...</div>
             <div class="progress-bar avatar-xp-bar"><div id="lv-fill" class="progress-fill" style="width: 0%"></div></div>
             <div id="next-lv-text" class="next-lv-msg">...</div>
         </div>
@@ -206,7 +192,7 @@
         <textarea id="writer-input" class="studio-textarea" placeholder="Viết nháp sâu..."></textarea>
     </div>
 
-    <div class="footer-version">ZETMEO OS V40.1 - MASTER STABLE</div>
+    <div class="footer-version">ZETMEO OS V40.2 - MASTER STABLE</div>
 
     <div class="floating-nav">
         <div class="nav-circle" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</div>
@@ -214,22 +200,10 @@
     </div>
 
     <div class="bottom-menu">
-        <button class="menu-item active" onclick="location.reload()">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span class="menu-label">Home</span>
-        </button>
-        <button class="menu-item" onclick="syncUp()">
-            <svg viewBox="0 0 24 24"><path d="M12 19v-7m0 0l-3 3m3-3l3 3M12 3a9 9 0 0 0 0 18z"></path></svg>
-            <span class="menu-label">Push</span>
-        </button>
-        <button class="menu-item" onclick="syncDown()">
-            <svg viewBox="0 0 24 24"><path d="M12 5v7m0 0l-3-3m3 3l3-3M12 21a9 9 0 0 0 0-18z"></path></svg>
-            <span class="menu-label">Pull</span>
-        </button>
-        <button class="menu-item" onclick="openAdmin()">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            <span class="menu-label">Admin</span>
-        </button>
+        <button class="menu-item active" onclick="location.reload()"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span class="menu-label">Home</span></button>
+        <button class="menu-item" onclick="syncUp()"><svg viewBox="0 0 24 24"><path d="M12 19v-7m0 0l-3 3m3-3l3 3M12 3a9 9 0 0 0 0 18z"></path></svg><span class="menu-label">Push</span></button>
+        <button class="menu-item" onclick="syncDown()"><svg viewBox="0 0 24 24"><path d="M12 5v7m0 0l-3-3m3 3l3-3M12 21a9 9 0 0 0 0-18z"></path></svg><span class="menu-label">Pull</span></button>
+        <button class="menu-item" onclick="openAdmin()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span class="menu-label">Admin</span></button>
     </div>
 
     <div id="admin-modal" class="modal">
@@ -243,17 +217,17 @@
             
             <div class="modal-body">
                 <div id="tab-task" class="tab-panel active">
-                    <label class="sync-label">Đồng bộ tự động (phút) - Nhập 0 để tắt</label>
+                    <label class="sync-label">Auto-Sync (phút) - Nhập 0 để tắt</label>
                     <input type="number" id="auto-sync-min" placeholder="1">
                     <textarea id="task-editor" style="height:400px" spellcheck="false"></textarea>
-                    <strong class="sync-label">🕒 Lịch sử phiên bản (Click để khôi phục)</strong>
+                    <strong class="sync-label">🕒 Lịch sử phiên bản</strong>
                     <div id="history-container" style="display:flex; flex-direction:column; gap:5px; margin-top:10px"></div>
                 </div>
 
                 <div id="tab-archive" class="tab-panel">
                     <div style="display:flex; gap:10px; margin-bottom:20px; align-items:center">
                         <button class="pink-btn" onclick="archiveDoneTasks()">🧹 Dọn dẹp Done</button>
-                        <select id="archive-sort" class="grey-btn" style="height:45px" onchange="renderKhoTask()">
+                        <select id="archive-sort" class="grey-btn" onchange="renderKhoTask()">
                             <option value="newest">Mới nhất trước</option>
                             <option value="oldest">Cũ nhất trước</option>
                         </select>
@@ -264,33 +238,24 @@
 
                 <div id="tab-rpg" class="tab-panel">
                     <button class="grey-btn" id="theme-toggle" style="width:100%; margin-bottom:20px" onclick="toggleTheme()">Tắt Night Mode</button>
-                    <label class="sync-label">QUẢN LÝ NHÓM (Mục Tiêu | Nhóm | Hạn)</label>
-                    <textarea id="goals-area" style="height:120px"></textarea>
-                    <label class="sync-label">PHẦN THƯỞNG (LEVEL | QUÀ)</label>
-                    <textarea id="rewards-area" style="height:100px"></textarea>
-                    <label class="sync-label">DANH HIỆU LEVEL (LEVEL | TÊN)</label>
-                    <textarea id="levels-area" style="height:100px"></textarea>
+                    <label class="sync-label">MỤC TIÊU | NHÓM | HẠN</label><textarea id="goals-area" style="height:120px"></textarea>
+                    <label class="sync-label">LEVEL | PHẦN THƯỞNG</label><textarea id="rewards-area" style="height:100px"></textarea>
+                    <label class="sync-label">LEVEL | DANH HIỆU</label><textarea id="levels-area" style="height:100px"></textarea>
                     <button class="grey-btn" style="width:100%" onclick="resetXP()">Reset XP về 0</button>
                 </div>
 
-                <div id="tab-fb" class="tab-panel">
-                    <label class="sync-label">FIREBASE DATABASE URL</label>
-                    <input type="text" id="fb-db" placeholder="https://...">
-                </div>
+                <div id="tab-fb" class="tab-panel"><label class="sync-label">FIREBASE URL</label><input type="text" id="fb-db"></div>
             </div>
 
-            <div class="modal-footer">
-                <button class="pink-btn" onclick="saveAll()">LƯU TẤT CẢ</button>
-                <button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button>
-            </div>
+            <div class="modal-footer"><button class="pink-btn" onclick="saveAll()">LƯU TẤT CẢ</button><button class="grey-btn" onclick="closeAdmin()">ĐÓNG</button></div>
         </div>
     </div>
 
     <div id="studio-archive-modal" class="modal">
         <div class="modal-content">
-            <div style="padding:15px; border-bottom:1px solid var(--border-color); font-weight:800; color:var(--main-color)" id="studio-archive-title">KHO LƯU TRỮ</div>
+            <div style="padding:15px; border-bottom:1px solid var(--border-color); font-weight:800; color:var(--main-color)" id="studio-archive-title">KHO STUDIO</div>
             <div class="modal-body" id="studio-archive-list"></div>
-            <div class="modal-footer"><button class="grey-btn" onclick="document.getElementById('studio-archive-modal').style.display='none'">Đóng</button></div>
+            <div class="modal-footer"><button class="grey-btn" style="min-width:200px" onclick="document.getElementById('studio-archive-modal').style.display='none'">Đóng</button></div>
         </div>
     </div>
 
@@ -298,7 +263,7 @@
         <div class="modal-content" style="max-width:500px; height:auto">
             <div style="padding:20px; border-bottom:1px solid var(--border-color); font-weight:700; color:var(--main-color)" id="note-modal-title">Ghi chú</div>
             <div class="modal-body"><textarea id="note-input" style="height:250px"></textarea></div>
-            <div class="modal-footer"><button class="pink-btn" style="flex:2" onclick="saveNote()">Lưu</button><button class="grey-btn" onclick="document.getElementById('note-modal').style.display='none'">Đóng</button></div>
+            <div class="modal-footer"><button class="pink-btn" style="min-width:150px" onclick="saveNote()">Lưu</button><button class="grey-btn" style="min-width:150px" onclick="document.getElementById('note-modal').style.display='none'">Đóng</button></div>
         </div>
     </div>
 
@@ -311,9 +276,7 @@
         let taskArchive = JSON.parse(localStorage.getItem('zetmeo_task_archive')) || [];
         let studioArchives = JSON.parse(localStorage.getItem('zetmeo_studio_archive')) || { braindom: [], writer: [] };
         let sessionNotes = JSON.parse(localStorage.getItem('zetmeo_notes')) || {};
-        let activeNoteSession = "";
-        let autoSyncSecs = 0;
-        let syncInterval = null;
+        let autoSyncSecs = 0, syncInterval = null;
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -325,26 +288,21 @@
 
         function startAutoSyncEngine() {
             if(syncInterval) clearInterval(syncInterval);
-            const mins = parseInt(rpgConfig.autoSyncMin);
-            if(mins <= 0) return;
+            const mins = parseInt(rpgConfig.autoSyncMin); if(mins <= 0) return;
             autoSyncSecs = mins * 60;
             syncInterval = setInterval(() => {
                 if(document.getElementById('admin-modal').style.display === 'flex') return;
                 autoSyncSecs--;
                 const countdownEl = document.getElementById('sync-countdown');
-                if(autoSyncSecs <= 10 && autoSyncSecs > 0) {
-                    countdownEl.style.display = 'block'; countdownEl.innerText = `☁️ ĐỒNG BỘ SAU ${autoSyncSecs}S...`;
-                } else { countdownEl.style.display = 'none'; }
+                if(autoSyncSecs <= 10 && autoSyncSecs > 0) { countdownEl.style.display='block'; countdownEl.innerText=`☁️ LƯU SAU ${autoSyncSecs}S...`; } else { countdownEl.style.display='none'; }
                 if(autoSyncSecs <= 0) { syncUp(true); autoSyncSecs = mins * 60; }
             }, 1000);
         }
 
         function getDB() { if(!rpgConfig.fbUrl) return null; if(!firebase.apps.length) firebase.initializeApp({...fbConfig, databaseURL: rpgConfig.fbUrl}); return firebase.database(); }
-        
         async function syncUp(silent = false) {
             const db = getDB(); if(!db) return silent ? null : alert("Cài Firebase URL!");
-            const badge = document.getElementById('sync-badge');
-            if(!silent) { badge.style.display='flex'; badge.className='status-waiting'; badge.innerText = "⏳ Pushing..."; }
+            const badge = document.getElementById('sync-badge'); if(!silent) { badge.style.display='flex'; badge.className='status-waiting'; badge.innerText = "⏳ Pushing..."; }
             try {
                 await db.ref('meoOS_V40').set({ dashboard: localStorage.getItem('dashboardData'), xp: totalXP, config: JSON.stringify(rpgConfig), taskArchive: JSON.stringify(taskArchive), studioArchive: JSON.stringify(studioArchives), notes: JSON.stringify(sessionNotes) });
                 if(silent) { badge.style.display='flex'; badge.className='status-synced'; badge.innerText="☁️ Auto-Synced"; setTimeout(()=>badge.style.display='none', 1500); }
@@ -373,30 +331,20 @@
                 const lines = box.split('\n'); if(!lines[0].startsWith('#')) return;
                 const title = lines[0].replace('# ', '').trim();
                 const boxDiv = document.createElement('div'); boxDiv.className = 'box';
-                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2><span class="note-trigger" onclick="openNote('${title}')">📝</span></div>`;
-                const list = document.createElement('ul'); list.className = 'task-list';
+                boxDiv.innerHTML = `<div class="box-header"><h2 class="box-title" onclick="toggleBox(this)">▼ ${title}</h2><span class="note-trigger" onclick="openNote('${title}')">📝</span></div><ul class="task-list"></ul>`;
+                const list = boxDiv.querySelector('.task-list');
                 lines.slice(1).forEach(line => {
                     if(!line.trim().startsWith('- [')) return;
-                    const sp = line.match(/^ */)[0].length;
-                    const lv = sp >= 4 ? 3 : (sp >= 2 ? 2 : 1);
+                    const sp = line.match(/^ */)[0].length, lv = sp >= 4 ? 3 : (sp >= 2 ? 2 : 1);
                     const chk = line.includes('[x]'), txt = line.replace(/^\s*- \[[ x]\] /, '');
                     const li = document.createElement('li'); li.className = `task-item level-${lv} ${chk ? 'checked' : ''}`; li.setAttribute('data-level', lv);
                     li.innerHTML = `<div class="toggle-btn" onclick="toggleFolding(this)">${lv<3?'▼':''}</div><input type="checkbox" class="custom-cb" ${chk?'checked':''} onchange="toggleTask(this,'${title}','${txt.replace(/'/g,"\\'")}')"><input type="text" class="task-text" value="${txt}" onchange="updateDOMToData()">`;
                     list.appendChild(li);
                 });
-                boxDiv.appendChild(list); board.appendChild(boxDiv);
+                board.appendChild(boxDiv);
                 new Sortable(list, { group:'shared', animation:150, disabled:isMobile, onEnd:updateDOMToData });
             });
             localStorage.setItem('dashboardData', val);
-        }
-
-        function getXPBySession(sessionName) {
-            const data = localStorage.getItem('dashboardData') || "";
-            const target = data.split(/(?=# )/).find(b => b.includes('# ' + sessionName));
-            if(!target) return 0;
-            let xp = 0;
-            target.split('\n').forEach(l => { if(l.includes('[x]')) { if(sessionName.toUpperCase().includes('CORE')) xp += 10; else if(sessionName.toUpperCase().includes('FOUNDATION')) xp += 8; else xp += 2.5; } });
-            return xp;
         }
 
         function updateRPGUI() {
@@ -404,77 +352,66 @@
             let lv = 1; while(100*Math.pow(lv,1.5)<=totalXP) lv++;
             const title = maps.find(t=>lv>=t.lv)?.n || "Khởi Nguyên", nextL = maps.slice().reverse().find(t=>t.lv>lv) || {lv:lv+1,n:"Đỉnh Cao"};
             const nextXP = Math.ceil(100*Math.pow(lv,1.5)), prevXP = lv===1?0:Math.ceil(100*Math.pow(lv-1,1.5));
-
             document.getElementById('lv-display').innerText = `Lv. ${lv} - ${title}`;
             document.getElementById('xp-summary').innerText = `${totalXP}/10000 XP`;
             document.getElementById('lv-fill').style.width = `${Math.min(100, ((totalXP-prevXP)/(nextXP-prevXP))*100)}%`;
             document.getElementById('next-lv-text').innerText = `Anh meo ơi! Còn ${nextXP-totalXP} XP nữa là đạt được Lv ${nextL.lv} - ${nextL.n}`;
-            
             const gList = document.getElementById('goals-list'); gList.innerHTML = "";
             rpgConfig.goals.split('\n').forEach(l => {
-                const [t,g,time]=l.split('|').map(s=>s.trim()); 
-                if(t) {
-                    const lXP = getXPBySession(g), per = Math.min(100, (lXP / 2000) * 100);
+                const [t,g,time]=l.split('|').map(s=>s.trim()); if(t) {
+                    const data = localStorage.getItem('dashboardData')||""; const target = data.split(/(?=# )/).find(b => b.includes('# '+g));
+                    let xp = 0; if(target) target.split('\n').forEach(tl => { if(tl.includes('[x]')) xp += (g.toUpperCase().includes('CORE')?10:(g.toUpperCase().includes('FOUNDATION')?8:2.5)); });
+                    const per = Math.min(100, (xp / 2000) * 100);
                     gList.innerHTML += `<div class="goal-item"><div class="progress-bar"><div class="goal-header-inside"><span>${t} | ${g}</span><span>${time}</span></div><div class="progress-fill" style="width:${per}%"></div></div></div>`;
                 }
             });
         }
 
-        // --- STUDIO ---
         function saveToStudio(type) {
             const v = document.getElementById(type + '-input').value.trim(); if(!v) return;
             const now = new Date(); const ts = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} - ${now.getHours()}:${now.getMinutes()}`;
             studioArchives[type].unshift({ time: ts, content: v });
             localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));
-            document.getElementById(type + '-input').value = ""; alert("Đã lưu!");
+            document.getElementById(type + '-input').value = ""; alert("Đã vào Kho!");
         }
+
         function openStudioArchive(type) {
-            const c = document.getElementById('studio-archive-list');
-            document.getElementById('studio-archive-title').innerText = "KHO STUDIO: " + type.toUpperCase();
+            const c = document.getElementById('studio-archive-list'); document.getElementById('studio-archive-title').innerText = "KHO: " + type.toUpperCase();
             c.innerHTML = "";
             studioArchives[type].forEach((item, i) => {
                 const div = document.createElement('div'); div.className = "archive-item";
-                div.innerHTML = `<span class="archive-time">${item.time}</span>
-                <textarea id="studio-txt-${type}-${i}" class="archive-editor" rows="6">${item.content}</textarea>
-                <div style="display:flex; gap:5px">
-                    <button class="pink-btn" style="min-width:auto; padding:8px 15px" onclick="navigator.clipboard.writeText(document.getElementById('studio-txt-${type}-${i}').value); alert('Copy!')">Copy</button>
-                    <button class="grey-btn" style="min-width:auto; padding:8px 15px" onclick="studioArchives['${type}'][${i}].content=document.getElementById('studio-txt-${type}-${i}').value;localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));alert('Đã lưu!')">Lưu</button>
-                    <button class="grey-btn" style="min-width:auto; padding:8px 15px" onclick="studioArchives['${type}'].splice(${i},1);localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));openStudioArchive('${type}')">Xóa</button>
-                </div>`;
+                div.innerHTML = `<span class="archive-time">${item.time}</span><textarea id="st-${type}-${i}" class="archive-editor" rows="6">${item.content}</textarea>
+                <div style="display:flex; gap:5px"><button class="pink-btn" style="padding:8px 15px; min-width:auto" onclick="navigator.clipboard.writeText(document.getElementById('st-${type}-${i}').value); alert('Copy!')">Copy</button><button class="grey-btn" style="padding:8px 15px; min-width:auto" onclick="studioArchives['${type}'][${i}].content=document.getElementById('st-${type}-${i}').value;localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));alert('Lưu!')">Lưu</button><button class="grey-btn" style="padding:8px 15px; min-width:auto" onclick="studioArchives['${type}'].splice(${i},1);localStorage.setItem('zetmeo_studio_archive', JSON.stringify(studioArchives));openStudioArchive('${type}')">Xóa</button></div>`;
                 c.appendChild(div);
             });
             document.getElementById('studio-archive-modal').style.display = 'flex';
         }
 
-        // --- ACTIONS ---
         function archiveDoneTasks() {
-            const data = localStorage.getItem('dashboardData');
-            const lines = data.split('\n'); const done = lines.filter(l => l.includes('[x]')), remain = lines.filter(l => !l.includes('[x]'));
+            const data = localStorage.getItem('dashboardData'), lines = data.split('\n'); 
+            const done = lines.filter(l => l.includes('[x]')), remain = lines.filter(l => !l.includes('[x]'));
             if(!done.length) return alert("Trống!");
             done.forEach(t => taskArchive.unshift({ time: new Date().toLocaleString(), text: t.replace(/^\s*- \[x\] /, '').trim() }));
             localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
-            localStorage.setItem('dashboardData', remain.join('\n'));
-            renderDashboard(remain.join('\n')); renderKhoTask(); alert("Đã dọn!");
+            localStorage.setItem('dashboardData', remain.join('\n')); renderDashboard(remain.join('\n')); renderKhoTask(); alert("Đã dọn!");
         }
 
-        // 1. RESTORE TASK FUNCTION (RESTORED)
         function renderKhoTask() {
             const c = document.getElementById('kho-task-list'), sort = document.getElementById('archive-sort').value;
             let list = [...taskArchive]; if(sort==='oldest') list.reverse();
             c.innerHTML = list.length ? "" : "<p style='color:#666'>Trống...</p>";
             list.forEach((t, i) => {
                 const div = document.createElement('div'); div.className = "archive-item";
-                div.innerHTML = `<span class="archive-time">${t.time}</span><div style="font-size:14px; margin-bottom:10px">${t.text}</div>
-                <button class="pink-btn" style="min-width:auto; padding:5px 12px; font-size:12px" onclick="restoreTask(${i})">Khôi phục</button>`;
+                div.innerHTML = `<span class="archive-time">${t.time}</span><div style="font-size:14px; margin-bottom:10px">${t.text}</div><button class="pink-btn" style="height:35px; min-width:auto; padding:0 15px" onclick="restoreTask(${i})">Khôi phục</button>`;
                 c.appendChild(div);
             });
         }
+
         function restoreTask(i) {
             const t = taskArchive[i]; let data = localStorage.getItem('dashboardData');
             const lines = data.split('\n'); lines.splice(1, 0, `- [ ] ${t.text}`);
             taskArchive.splice(i,1); localStorage.setItem('zetmeo_task_archive', JSON.stringify(taskArchive));
-            localStorage.setItem('dashboardData', lines.join('\n'));
-            renderDashboard(lines.join('\n')); renderKhoTask(); alert("Đã khôi phục về Taskboard!");
+            localStorage.setItem('dashboardData', lines.join('\n')); renderDashboard(lines.join('\n')); renderKhoTask();
         }
 
         function saveAll() {
@@ -485,41 +422,24 @@
             const data = document.getElementById('task-editor').value; localStorage.setItem('dashboardData', data); saveToHistory(data);
             renderDashboard(data); updateRPGUI(); startAutoSyncEngine(); closeAdmin(); alert("Đã lưu!");
         }
-        function openAdmin() { 
-            document.getElementById('auto-sync-min').value = rpgConfig.autoSyncMin;
-            document.getElementById('task-editor').value = localStorage.getItem('dashboardData')||"";
-            document.getElementById('goals-area').value = rpgConfig.goals; document.getElementById('rewards-area').value = rpgConfig.rewards;
-            document.getElementById('levels-area').value = rpgConfig.levels; document.getElementById('fb-db').value = rpgConfig.fbUrl;
-            renderKhoTask(); renderHistory(); document.getElementById('admin-modal').style.display='flex'; 
-        }
+
+        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
+        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:11px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="renderDashboard('${h.content.replace(/'/g,"\\'")}')">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
         function toggleTheme() { rpgConfig.lightMode = !rpgConfig.lightMode; applyTheme(); localStorage.setItem('zetmeo_rpg_config', JSON.stringify(rpgConfig)); }
         function applyTheme() { const btn = document.getElementById('theme-toggle'); if(rpgConfig.lightMode) { document.body.classList.add('light-mode'); if(btn) btn.innerText = "Bật Night Mode"; } else { document.body.classList.remove('light-mode'); if(btn) btn.innerText = "Tắt Night Mode"; } }
-        function toggleTask(cb, box, txt) {
-            const pts = box.toUpperCase().includes('CORE')?10:(box.toUpperCase().includes('FOUNDATION')?8:2.5);
-            const d = localStorage.getItem('dashboardData');
-            const newLines = d.split('\n').map(l => l.includes(txt)?(cb.checked?l.replace('[ ]','[x]'):l.replace('[x]','[ ]')):l);
-            totalXP = cb.checked?totalXP+pts:Math.max(0,totalXP-pts);
-            localStorage.setItem('zetmeo_xp_total', totalXP);
-            renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData();
-            if(cb.checked) launchFireworks(pts);
-        }
-        function updateDOMToData() { let arr = []; document.querySelectorAll('.box').forEach(b => { const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`); b.querySelectorAll('.task-item').forEach(li => { const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]'; const txt = li.querySelector('.task-text').value, lv = parseInt(li.getAttribute('data-level')), sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`); }); arr.push(""); }); localStorage.setItem('dashboardData', arr.join('\n').trim()); }
-        function toggleFolding(btn) { const li = btn.closest('.task-item'), lv = parseInt(li.getAttribute('data-level')), rot = btn.classList.toggle('rotated'); let next = li.nextElementSibling; while(next) { const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break; if(rot) next.classList.add('hidden-task'); else { next.classList.remove('hidden-task'); const sub = next.querySelector('.toggle-btn'); if(sub && sub.classList.contains('rotated')) { let sLv=nLv; let skip=next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip=skip.nextElementSibling; next=skip; continue; } } next = next.nextElementSibling; } }
+        function toggleTask(cb, box, txt) { const pts = box.toUpperCase().includes('CORE')?10:(box.toUpperCase().includes('FOUNDATION')?8:2.5); const d = localStorage.getItem('dashboardData'), newLines = d.split('\n').map(l => l.includes(txt)?(cb.checked?l.replace('[ ]','[x]'):l.replace('[x]','[ ]')):l); totalXP = cb.checked?totalXP+pts:Math.max(0,totalXP-pts); localStorage.setItem('zetmeo_xp_total', totalXP); renderDashboard(newLines.join('\n')); updateRPGUI(); updateDOMToData(); if(cb.checked) launchFireworks(pts); }
+        function updateDOMToData() { let arr = []; document.querySelectorAll('.box').forEach(b => { const t = b.querySelector('.box-title').innerText.replace('▼ ','').replace('▶ ',''); arr.push(`# ${t}`); b.querySelectorAll('.task-item').forEach(li => { const c = li.querySelector('.custom-cb').checked?'[x]':'[ ]', txt = li.querySelector('.task-text').value, lv = parseInt(li.getAttribute('data-level')), sp = lv===3?'    ':(lv===2?'  ':''); arr.push(`${sp}- ${c} ${txt}`); }); arr.push(""); }); localStorage.setItem('dashboardData', arr.join('\n').trim()); }
+        function toggleFolding(btn) { const li = btn.closest('.task-item'), lv = parseInt(li.getAttribute('data-level')), rot = btn.classList.toggle('rotated'); let next = li.nextElementSibling; while(next) { const nLv = parseInt(next.getAttribute('data-level')); if(nLv <= lv) break; if(rot) next.classList.add('hidden-task'); else { next.classList.remove('hidden-task'); const sub = next.querySelector('.toggle-btn'); if(sub && sub.classList.contains('rotated')) { let sLv=nLv, skip=next.nextElementSibling; while(skip && parseInt(skip.getAttribute('data-level')) > sLv) skip=skip.nextElementSibling; next=skip; continue; } } next = next.nextElementSibling; } }
         function openNote(s) { activeNoteSession=s; document.getElementById('note-modal-title').innerText="📝 NOTE: "+s; document.getElementById('note-input').value=sessionNotes[s]||""; document.getElementById('note-modal').style.display='flex'; }
         function saveNote() { sessionNotes[activeNoteSession]=document.getElementById('note-input').value; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; }
-        function deleteNote() { if(confirm("Xóa?")) { delete sessionNotes[activeNoteSession]; localStorage.setItem('zetmeo_notes', JSON.stringify(sessionNotes)); document.getElementById('note-modal').style.display='none'; } }
         function closeAdmin() { document.getElementById('admin-modal').style.display='none'; }
-        function renderHistory() { const hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); document.getElementById('history-container').innerHTML = hist.map((h, i) => `<div style="background:var(--input-bg); padding:10px; border-radius:10px; font-size:13px; cursor:pointer; border:1px solid var(--border-color); margin-bottom:5px" onclick="renderDashboard('${h.content.replace(/'/g,"\\'")}'); document.getElementById('task-editor').value='${h.content.replace(/'/g,"\\'")}'">${h.time} <span style="float:right; color:var(--main-color)">Khôi phục</span></div>`).join(''); }
-        function saveToHistory(d) { let hist = JSON.parse(localStorage.getItem('zetmeo_history') || "[]"); hist.unshift({ time: new Date().toLocaleString(), content: d }); localStorage.setItem('zetmeo_history', JSON.stringify(hist.slice(0, 5))); }
         function launchFireworks(pts) { const canvas = document.getElementById('fireworks'), ctx = canvas.getContext('2d'); canvas.width=window.innerWidth; canvas.height=window.innerHeight; let parts=[]; for(let i=0;i<40;i++) parts.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-0.5)*12,vy:(Math.random()-0.5)*12,color:`hsl(${Math.random()*360},100%,50%)`,life:1}); function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); parts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.02;ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();if(p.life<=0)parts.splice(i,1);}); if(parts.length) requestAnimationFrame(draw); } draw(); const p = document.getElementById('celeb-popup'); p.innerText=`Yeah! +${pts} XP`; p.style.display='block'; setTimeout(()=>p.style.display='none',2500); }
         function exportCSV() { const blob = new Blob([localStorage.getItem('dashboardData')], {type:'text/csv'}); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='tasks.csv'; a.click(); }
         function resetXP() { if(confirm("Reset XP?")) { totalXP=0; localStorage.setItem('zetmeo_xp_total',0); location.reload(); } }
 
         window.onload = () => { 
-            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Khởi đầu"); 
-            updateRPGUI(); applyTheme(); startAutoSyncEngine();
-            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực."];
-            document.getElementById('quote-text').innerText = `Anh meo ơi! "${q[Math.floor(Math.random()*q.length)]}"`;
+            renderDashboard(localStorage.getItem('dashboardData') || "# 🎯 CORE\n- [ ] Bắt đầu"); updateRPGUI(); applyTheme(); startAutoSyncEngine();
+            const q = ["Sáng tạo là kỷ luật.", "ADHD là siêu năng lực."]; document.getElementById('quote-text').innerText = `Anh meo ơi! "${q[Math.floor(Math.random()*q.length)]}"`;
             document.getElementById('quote-area').style.backgroundImage = "url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')";
             const lamLine = (localStorage.getItem('dashboardData') || "").split('\n').find(l => l.trim().startsWith('!!!'));
             if(lamLine) document.getElementById('lam-msg').innerText = lamLine.replace('!!!', '').trim();
